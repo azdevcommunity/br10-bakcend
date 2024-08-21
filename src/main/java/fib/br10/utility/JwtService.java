@@ -89,8 +89,8 @@ public class JwtService {
     public String extractJwtFromRequest(HttpServletRequest request) {
         String jwt = request.getHeader("Authorization");
 
-        if (Objects.isNull(jwt)) {
-            throw new JWTRequiredException();
+        if(Objects.isNull(jwt)) {
+            return null;
         }
 
         if (jwt.startsWith("Bearer ")) {
