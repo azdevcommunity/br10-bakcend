@@ -61,7 +61,7 @@ security:
     algorithm: AES
     key-size: 128
   jwt:
-    secret: MZl1GC5OHL+km2NKuTrUNH7PcnqMyvbUBzeUVsPGAlqY7BqAGjFcEJgAZTd4ziYB
+    secret: ${BR10_JWT_SECRET:MZl1GC5OHL+km2NKuTrUNH7PcnqMyvbUBzeUVsPGAlqY7BqAGjFcEJgAZTd4ziYB}
     refresh-expiration: ${BR10_JWT_REFRESH_EXPIRATION:86400000}
     jwt-expiration: ${BR10_JWT_EXPIRATION:86400000}
   endpoint-white-list:
