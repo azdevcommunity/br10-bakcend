@@ -4,15 +4,15 @@ server:
     context-path: /api
 spring:
   profiles:
-    active: ${BR10_PROFILE:prod}
+    active: ${BR10_PROFILE:dev}
   servlet:
     multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
+      max-file-size: ${BR10_MAX_FILE_SIZE:10MB}
+      max-request-size: ${BR10_MAX_REQUEST_SIZE:10MB}
   datasource:
-    url: jdbc:postgresql://localhost:5433/br10db
-    username: postgres
-    password: 123456789
+    url: ${BR10_DB_URL:jdbc:postgresql://localhost:5433/br10db}
+    username: ${BR10_DB_USERNAME:postgres}
+    password: ${BR10_DB_PASSWORD:123456789}
   jpa:
     hibernate:
       ddl-auto: none
@@ -26,8 +26,8 @@ spring:
     name: br10
   data:
     redis:
-      host: localhost
-      port: 6379
+      host: ${BR10_REDIS_HOST:localhost}
+      port: ${BR10_REDIS_PORT:6379}
   jackson:
     serialization:
       write-dates-as-timestamps: false
@@ -36,11 +36,6 @@ spring:
     enabled: true
     drop-first: false
     default-schema: public
-  #    mongodb:
-#      uri: mongodb+srv://yusifhasanov17:CSmTcK7jnAvfD14t@db.rmwnuwf.mongodb.net/db?retryWrites=true&w=majority&ssl=true
-#      ssl:
-#        enabled: true
-#      database: db
   messages:
     basename: messages
     encoding: utf-8
@@ -51,18 +46,7 @@ spring:
 
 
 file:
-  upload-dir: ./uploads
-imagedb:
-  url: https://api.imgbb.com/1/upload?key=4abd1a2ca517f4d54950eade197a9c60
-
-#springdoc:
-#  api-docs:
-#    enabled: true
-#    path: /v3/api-docs
-#  swagger-ui:
-#    enabled: true
-#    path: /swagger-ui.html
-#    operations-sorter: method
+  upload-dir: ${BR10_UPLOAD_DIR:./uploads}
 
 management:
   endpoint:
@@ -71,17 +55,15 @@ management:
 
 
 security:
-  cors-allowed-origins:
-    - http://localhost:5500/
-    - http://localhost:5173/
+  cors-allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:5173/}
   encryption:
     secret: 123456789
     algorithm: AES
     key-size: 128
   jwt:
     secret: MZl1GC5OHL+km2NKuTrUNH7PcnqMyvbUBzeUVsPGAlqY7BqAGjFcEJgAZTd4ziYB
-    refresh-expiration: 180000000
-    jwt-expiration: 90000000
+    refresh-expiration: ${BR10_JWT_REFRESH_EXPIRATION:86400000}
+    jwt-expiration: ${BR10_JWT_EXPIRATION:86400000}
   endpoint-white-list:
     - /auth/register
     - /auth/refresh-token
@@ -94,7 +76,6 @@ security:
     - /v3/api-docs/**
     - /swagger-ui.html/**
     - /actuator/**
-    - /file/**
     - /app/**
 
 log-level: info
