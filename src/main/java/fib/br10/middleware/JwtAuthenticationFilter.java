@@ -67,6 +67,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             final String jwt = jwtService.extractJwtFromRequest(request);
 
+            if (Objects.isNull(jwt)) {
+                throw new JWTRequiredException();
+            }
+
             tokenService.validateTokenExistsOnBlackList(jwt);
 
             final String phoneNumber = jwtService.extractUsername(jwt);

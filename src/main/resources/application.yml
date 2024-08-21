@@ -37,10 +37,10 @@ spring:
     drop-first: false
     default-schema: public
   #    mongodb:
-#      uri: mongodb+srv://yusifhasanov17:CSmTcK7jnAvfD14t@db.rmwnuwf.mongodb.net/db?retryWrites=true&w=majority&ssl=true
-#      ssl:
-#        enabled: true
-#      database: db
+  #      uri: mongodb+srv://yusifhasanov17:CSmTcK7jnAvfD14t@db.rmwnuwf.mongodb.net/db?retryWrites=true&w=majority&ssl=true
+  #      ssl:
+  #        enabled: true
+  #      database: db
   messages:
     basename: messages
     encoding: utf-8
