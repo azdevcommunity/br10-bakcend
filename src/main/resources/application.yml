@@ -1,0 +1,111 @@
+server:
+  port: 8000
+  servlet:
+    context-path: /api
+spring:
+  profiles:
+    active: dev
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  datasource:
+    url: jdbc:postgresql://localhost:5433/br10db
+    username: postgres
+    password: 123456789
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+    generate-ddl: false
+    open-in-view: false
+  application:
+    name: br10
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yml
+    enabled: true
+    drop-first: false
+    default-schema: public
+  #    mongodb:
+#      uri: mongodb+srv://yusifhasanov17:CSmTcK7jnAvfD14t@db.rmwnuwf.mongodb.net/db?retryWrites=true&w=majority&ssl=true
+#      ssl:
+#        enabled: true
+#      database: db
+  messages:
+    basename: messages
+    encoding: utf-8
+  thymeleaf:
+    encoding: utf-8
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+
+
+file:
+  upload-dir: ./uploads
+imagedb:
+  url: https://api.imgbb.com/1/upload?key=4abd1a2ca517f4d54950eade197a9c60
+
+#springdoc:
+#  api-docs:
+#    enabled: true
+#    path: /v3/api-docs
+#  swagger-ui:
+#    enabled: true
+#    path: /swagger-ui.html
+#    operations-sorter: method
+
+management:
+  endpoint:
+    health:
+      show-details: always
+
+
+security:
+  cors-allowed-origins:
+    - http://localhost:5500/
+    - http://localhost:5173/
+  encryption:
+    secret: 123456789
+    algorithm: AES
+    key-size: 128
+  jwt:
+    secret: MZl1GC5OHL+km2NKuTrUNH7PcnqMyvbUBzeUVsPGAlqY7BqAGjFcEJgAZTd4ziYB
+    refresh-expiration: 180000000
+    jwt-expiration: 90000000
+  endpoint-white-list:
+    - /auth/register
+    - /auth/refresh-token
+    - /auth/activate-user-verify-otp
+    - /auth/get-otp
+    - /auth/login
+    - /auth/reset-password-verify-otp
+    - /auth/reset-password
+    - /ws/**
+    - /v3/api-docs/**
+    - /swagger-ui.html/**
+    - /actuator/**
+    - /file/**
+    - /app/**
+
+log-level: info
+logging:
+  level:
+    org:
+      springframework:
+        security: ${log-level}
+        web: ${log-level}
+        data: ${log-level}
+        hibernate: ${log-level}
+        jpa: ${log-level}
+        thymeleaf: ${log-level}
+        springdoc: ${log-level}

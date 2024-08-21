@@ -1,0 +1,57 @@
+databaseChangeLog:
+  - changeSet:
+      id: SPECIALITIES
+      author: YUSIF_HASANOV
+      changes:
+        - createTable:
+            tableName: SPECIALITIES
+            columns:
+              - column:
+                  name: ID
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: STATUS
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: LAST_MODIFIED_DATE
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: CREATED_DATE
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: CREATED_BY
+                  type: VARCHAR(255)
+              - column:
+                  name: LAST_MODIFIED_BY
+                  type: VARCHAR(255)
+              - column:
+                  name: DELETED_BY
+                  type: VARCHAR(255)
+              - column:
+                  name: ACTIVITY_ID
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: NAME
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: NAME_EN
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: NAME_RU
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false

@@ -1,0 +1,1769 @@
+{
+	"info": {
+		"_postman_id": "a1871a7d-5a45-43b9-8afc-dd8e6cb8b9f4",
+		"name": "Br10",
+		"description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this template**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Scripts\" tab**\n\nAdding tests to your requests can help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/fa30ea0a-373d-4545-a668-e7b283cca343/aW1hZ2UucG5n\" alt=\"\" height=\"1530\" width=\"2162\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n    \n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21900877"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "az",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"specialist4\",\r\n    \"password\": \"test\",\r\n    \"confirmPassword\": \"test\",\r\n    \"phoneNumber\": \"0551112236\",\r\n    \"specialityId\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phoneNumberOrUsername\": \"0551112231\",\r\n    \"password\": \"test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "refresh-token",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"refreshToken\": \"eyJhbGciOiJIUzI1NiJ9.eyJDVVJSRU5UX1VTRVJfSUQiOjEsIlRPS0VOX0lEIjo3MzU2MzAsInN1YiI6IjcwNTgxOTkxMSIsImlhdCI6MTcyMDc4MzUyNSwiZXhwIjoxNzIwNzg0NDI1fQ.-FuT-gfuEb1MmRipYAvVUfgX4wzw0NZNfsiWD--g1Fc\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/refresh-token",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"refresh-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activate-user-verify-otp",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "ACTIVITY_ID",
+								"value": "182978ca-4e04-4304-b4b6-ddf8f21166bc",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"otp\":7068,\r\n    \"phoneNumber\": \"0551112232\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/activate-user-verify-otp",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"activate-user-verify-otp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-otp",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "{{TIME_ZONE}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"phoneNumberOrUsername\": \"0551112235\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/get-otp",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"get-otp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reset-password-verify-otp",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "{{TIME_ZONE}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"otp\": 1234,\r\n    \"phoneNumber\": \"0551112233\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/reset-password-verify-otp",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"reset-password-verify-otp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reset-password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"password\": \"test123\",\r\n  \"confirmPassword\": \"test123\",\r\n  \"token\": \"8/sp1fN3KJ3oEZdS/QnhmgRMQF6qBhwij1s4oWe4U8kyW9vb7p6BvWNjDhw9batj\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/reset-password",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "specialist-profile",
+			"item": [
+				{
+					"name": "update",
+					"protocolProfileBehavior": {
+						"strictSSL": false
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "speciality",
+									"value": "berebr",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/specialist-profile/update",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"specialist-profile",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\":7\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/specialist-profile/read",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"specialist-profile",
+								"read"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "specialist-service",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "duration",
+									"value": "10",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "pipi22",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "10.00",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/Users/yusifhasanov/Desktop/sample_640×426.jpeg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/specialist-service/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"specialist-service",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "duration",
+									"value": "12",
+									"type": "text"
+								},
+								{
+									"key": "name",
+									"value": "pipi4",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "10.00",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/Users/yusifhasanov/Desktop/sample_640×426.jpeg",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/specialist-service/update",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"specialist-service",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/specialist-service/delete",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"specialist-service",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jw}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Language",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\":2\r\n  \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/specialist-service/read",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"specialist-service",
+								"read"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "appointment",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"vacationDate\": \"2024-06-26T09:52:15.020188+00:00\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/appointments/create-appointment",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"appointments",
+								"create-appointment"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "file",
+			"item": [
+				{
+					"name": "download",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"vacationDate\": \"2024-06-26T09:52:15.020188+00:00\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/file/upload",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"file",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "list",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"vacationDate\": \"2024-06-26T09:52:15.020188+00:00\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/file/upload",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"file",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "upload",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/Users/yusifhasanov/Desktop/sample_640×426.jpeg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/file/upload",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"file",
+								"upload"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "reservation",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"reservationDate\": \"2024-07-23T08:23:47.020188+04:00\",\r\n    \"specialistUserId\": 1,\r\n    \"customerUserId\": 2,\r\n    \"specialistServiceId\": 1,\r\n    \"reservationSource\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/reservations/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reservations",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"reservationDate\": \"2024-07-23T09:30:52.020188+04:00\",\r\n    \"specialistUserId\":1,\r\n    \"customerUserId\": 2,\r\n    \"specialistServiceId\": 1,\r\n    \"reservationSource\": 1,\r\n    \"reservationId\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/reservations/update",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reservations",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cancel",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"reservationId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/reservations/cancel",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reservations",
+								"cancel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/reservations/read",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reservations",
+								"read"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "category",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"MEYVE3\",\r\n  \"description\": \"chewekin meyveleri\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/categories/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"categories",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 3,\r\n  \"name\": \"MEYVE\",\r\n  \"description\": \"cheweekin meyveleri\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/categories/update",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"categories",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/categories/delete",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"categories",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "findAll",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/categories",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "product",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"mehsul\",\r\n  \"description\": \"description_1b0b3b84008c\",\r\n  \"price\": 3.00,\r\n  \"categoryId\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/products/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"mehsul1\",\r\n  \"description\": \"description_1b0b3b84008c\",\r\n  \"price\": 3.00,\r\n  \"categoryId\": 2,\r\n  \"id\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/products/update",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/products/delete",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\":2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/products/read",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"read"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "speciality",
+			"item": [
+				{
+					"name": "create",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"berber\",\r\n  \"name_en\": \"berber_en\",\r\n  \"name_ru\": \"berber_ru\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/specialities/create",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"specialities",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/specialities/delete",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"specialities",
+								"delete"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 1,\r\n    \"name\": \"berber\",\r\n    \"name_en\": \"berber_en\",\r\n    \"name_ru\": \"berber_ru\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/specialities/update",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"specialities",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/specialities/read",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"specialities",
+								"read"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "specialist-customer",
+			"item": [
+				{
+					"name": "block",
+					"protocolProfileBehavior": {
+						"strictSSL": false
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n//   \"specialistUserId\": 1,\r\n  \"customerUserId\": 9,\r\n  \"reason\": \"zibilini cixartdi\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/specialist-customer/block",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"specialist-customer",
+								"block"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "unblock",
+					"protocolProfileBehavior": {
+						"strictSSL": false
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"customerUserId\":9\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/specialist-customer/unblock",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"specialist-customer",
+								"unblock"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-blocked-customers",
+					"protocolProfileBehavior": {
+						"strictSSL": false
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/specialist-customer/get-blocked-customers",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"specialist-customer",
+								"get-blocked-customers"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{jwt}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "TIME_ZONE",
+			"value": "+04:00"
+		},
+		{
+			"key": "base_url",
+			"value": "http://localhost:8054/api"
+		},
+		{
+			"key": "jwt",
+			"value": "eyJhbGciOiJIUzI1NiJ9.eyJUSU1FX1pPTkUiOiIrMDQ6MDAiLCJVU0VSX0lEIjoyLCJUT0tFTl9JRCI6MTgwNTIxLCJzdWIiOiIwNTUxMTEyMjM2IiwiaWF0IjoxNzI0MjIxNjAxLCJleHAiOjE3MjQzMTE2MDF9.LUNFqHzycLy9CW0QI5kpezI1cUqYI-z-ZOhAGkMRQE8"
+		}
+	]
+}

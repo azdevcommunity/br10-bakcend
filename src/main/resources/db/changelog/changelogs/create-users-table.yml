@@ -1,0 +1,72 @@
+databaseChangeLog:
+  - changeSet:
+      id: USERS
+      author: YUSIF_HASANOV
+      changes:
+        - createTable:
+            tableName: USERS
+            columns:
+              - column:
+                  name: ID
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: STATUS
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: LAST_MODIFIED_DATE
+                  type: TIMESTAMP WITH TIME ZONE
+              - column:
+                  name: CREATED_DATE
+                  type: TIMESTAMP WITH TIME ZONE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: CREATED_BY
+                  type: VARCHAR(255)
+              - column:
+                  name: LAST_MODIFIED_BY
+                  type: VARCHAR(255)
+              - column:
+                  name: DELETED_BY
+                  type: VARCHAR(255)
+              - column:
+                  name: ACTIVITY_ID
+                  type: UUID
+                  constraints:
+                    nullable: false
+              - column:
+                  name: NAME
+                  type: VARCHAR(100)
+              - column:
+                  name: SURNAME
+                  type: VARCHAR(100)
+              - column:
+                  name: USERNAME
+                  type: VARCHAR(100)
+#              - column:
+#                  name: USER_TYPE
+#                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: PHONE_NUMBER
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: PASSWORD
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: EMAIL
+                  type: VARCHAR(100)
+              - column:
+                  name: BIRTH_DAY
+                  type: TIMESTAMP WITH TIME ZONE
