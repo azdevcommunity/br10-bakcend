@@ -1,6 +1,5 @@
 package fib.br10.controller;
 
-import fib.br10.core.dto.ResponseWrapper;
 import fib.br10.core.dto.Token;
 import fib.br10.dto.auth.request.*;
 import fib.br10.dto.auth.response.OtpResponse;

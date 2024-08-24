@@ -10,10 +10,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,12 +25,12 @@ public class SpecialistAvailabilityController {
    SpecialistAvailabilityService specialistAvailabilityService;
 
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<Long> create(@RequestBody @Valid CreateSpecialistAvailabilityRequest request) {
         return ResponseEntity.ok(specialistAvailabilityService.crate(request));
     }
 
-    @PostMapping("/read")
+    @GetMapping
     public ResponseEntity<List<SpecialistAvailabilityReadResponse>> read() {
         return ResponseEntity.ok(specialistAvailabilityService.read());
     }
