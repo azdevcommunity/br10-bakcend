@@ -44,7 +44,7 @@ public class ReservationService {
 
     ReservationRepository reservationRepository;
     ReservationMapper reservationMapper;
-    SpecialistServicesService specialistServicesService;
+    SpecialistServiceManager specialistServiceManager;
     SpecialistBlockedCustomerService specialistBlockedCustomerService;
     WebSocketHandler webSocketHandler;
     UserService userService;
@@ -71,7 +71,7 @@ public class ReservationService {
 
         specialistBlockedCustomerService.checkIsCustomerBlocked(request.getSpecialistUserId(), request.getCustomerUserId());
 
-        SpecialistService service = specialistServicesService.findById(request.getSpecialistServiceId());
+        SpecialistService service = specialistServiceManager.findById(request.getSpecialistServiceId());
 
         OffsetDateTime start = request.getReservationDate();
         OffsetDateTime end = start.plusMinutes(service.getDuration());
@@ -115,7 +115,7 @@ public class ReservationService {
                 request.getCustomerUserId()
         );
 
-        SpecialistService service = specialistServicesService.findById(request.getSpecialistServiceId());
+        SpecialistService service = specialistServiceManager.findById(request.getSpecialistServiceId());
 
         //TODO: add this to validateReservation mehtod
         OffsetDateTime start = request.getReservationDate();

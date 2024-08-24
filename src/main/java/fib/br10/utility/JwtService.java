@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.security.Key;
 import java.util.Date;
@@ -89,7 +90,7 @@ public class JwtService {
     public String extractJwtFromRequest(HttpServletRequest request) {
         String jwt = request.getHeader("Authorization");
 
-        if(Objects.isNull(jwt)) {
+        if(ObjectUtils.isEmpty(jwt)) {
             return null;
         }
 

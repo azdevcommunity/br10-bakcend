@@ -100,6 +100,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
            log.error(e);
             modifyResponseBody(request.getLocale(), response, e.getMessage());
         } catch (Exception e) {
+            log.error(e);
             modifyResponseBody(request.getLocale(), response, Messages.ERROR);
         }
     }
