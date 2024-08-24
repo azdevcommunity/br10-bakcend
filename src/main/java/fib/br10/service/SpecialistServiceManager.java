@@ -14,7 +14,6 @@ import fib.br10.exception.specialist.specialistservice.SpecialistServiceAlreadyE
 import fib.br10.exception.specialist.specialistservice.SpecialistServiceNotFoundException;
 import fib.br10.mapper.SpecialistServiceMapper;
 import fib.br10.repository.SpecialistServiceRepository;
-import fib.br10.service.abstracts.FileService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -34,7 +33,7 @@ import static fib.br10.utility.CacheKeys.SPECIALIST_SERVICES;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 @Log4j2
-public class SpecialistServicesService {
+public class SpecialistServiceManager {
 
     SpecialistServiceRepository specialistServicesRepository;
     SpecialistServiceMapper specialistServicesMapper;
@@ -126,6 +125,7 @@ public class SpecialistServicesService {
                         table.duration,
                         table.name,
                         table.price,
+                        table.description,
                         image.path))
                 .from(table)
                 .leftJoin(image)

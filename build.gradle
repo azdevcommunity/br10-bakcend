@@ -21,6 +21,14 @@ java {
     }
 }
 
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'fib.br10.Br10Application'
+        )
+    }
+}
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor

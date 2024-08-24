@@ -26,5 +26,7 @@ public class CreateSpecialistServiceRequest {
     @NotNull(message = Messages.SPECIALIST_SERVICE_PRICE_REQUIRED)
     BigDecimal price;
 
+    String description;
+
     MultipartFile image;
 }
