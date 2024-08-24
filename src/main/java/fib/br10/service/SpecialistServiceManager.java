@@ -128,10 +128,6 @@ public class SpecialistServiceManager {
         QSpecialistService table = QSpecialistService.specialistService;
         QImage image = QImage.image;
 
-        if(Objects.isNull(request.getId())){
-            request.setId(provider.getUserId());
-        }
-
         List<ReadSpecialistServiceResponse> specialistServices = jpaQuery
                 .select(Projections.constructor(ReadSpecialistServiceResponse.class,
                         table.id,
