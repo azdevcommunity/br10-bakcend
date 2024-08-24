@@ -31,13 +31,13 @@ public class SpecialistProfileController {
     SpecialistProfileService specialistProfileService;
 
     @PreAuthorize("permitAll()")
-    @GetMapping("/read")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<SpecialistProfileReadResponse> read(@RequestBody @Valid RequestById request) {
         return ResponseEntity.ok(specialistProfileService.read(request));
     }
 
-    @PostMapping("/update")
+    @PutMapping
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Long> update(
             @RequestPart("profilePicture") @Nullable MultipartFile profilePicture,

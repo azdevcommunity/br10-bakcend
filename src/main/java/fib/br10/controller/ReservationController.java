@@ -27,23 +27,23 @@ public class ReservationController {
 
     ReservationService reservationService;
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<ReservationResponse> create(@RequestBody @Valid CreateReservationRequest request) {
         return ResponseEntity.ok(reservationService.createReservation(request));
     }
 
-    @PostMapping("/read")
+    @GetMapping
     public ResponseEntity<List<ReservationResponse>> findAll(@RequestBody @Valid RequestById request) {
         return ResponseEntity.ok(reservationService.findAllReservations(request));
     }
 
     @PreAuthorize("hasRole('SPECIALIST')")
-    @PostMapping("/cancel")
+    @PutMapping("/cancel")
     public ResponseEntity<Long> cancel(@RequestBody @Valid CancelReservationRequest request) {
         return ResponseEntity.ok(reservationService.cancelReservation(request));
     }
 
-    @PostMapping("/update")
+    @PutMapping
     public ResponseEntity<ReservationResponse> update(@RequestBody @Valid UpdateReservationRequest request) {
         return ResponseEntity.ok(reservationService.updateReservation(request));
     }

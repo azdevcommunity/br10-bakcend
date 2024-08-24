@@ -13,11 +13,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,17 +28,17 @@ public class CategoryController {
     CategoryService categoryService;
     RequestContextProvider provider;
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<Long> create(@RequestBody @Valid CreateCategoryRequest request) {
         return ResponseEntity.ok(categoryService.create(request, provider.getUserId()));
     }
 
-    @PostMapping("/update")
+    @PutMapping
     public ResponseEntity<Long> update(@RequestBody @Valid UpdateCategoryRequest request) {
         return ResponseEntity.ok(categoryService.update(request, provider.getUserId()));
     }
 
-    @PostMapping("/delete")
+    @DeleteMapping
     public ResponseEntity<Long> update(@RequestBody @Valid RequestById request) {
         return ResponseEntity.ok(categoryService.delete(request, provider.getUserId()));
     }
@@ -51,6 +47,12 @@ public class CategoryController {
     @GetMapping
     public ResponseEntity<List<CategoryResponse>> findAllCategories() {
         return ResponseEntity.ok(categoryService.findAllCategories(provider.getUserId()));
+    }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping("/specialist/{specialistId}")
+    public ResponseEntity<List<CategoryResponse>> findAllCategories(@PathVariable("specialistId") @Valid Long specialistId)  {
+        return ResponseEntity.ok(categoryService.findAllCategories(specialistId));
     }
 }
 

@@ -13,15 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 @RestController
@@ -33,25 +26,26 @@ import java.util.List;
 public class SpecialityController {
     SpecialityService specialityService;
 
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Long> create(@RequestBody @Valid CreateSpecialityRequest request) {
         return ResponseEntity.ok(specialityService.create(request));
     }
 
-    @PostMapping("/delete")
+    @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Long> delete(@RequestBody @Valid RequestById request) {
         return ResponseEntity.ok(specialityService.delete(request));
     }
-    @PostMapping("/update")
+
+    @PutMapping
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Long> update(@RequestBody @Valid UpdateSpecialityRequest request) {
         return ResponseEntity.ok(specialityService.update(request));
     }
 
     @PreAuthorize("permitAll()")
-    @GetMapping("/read")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<SpecialityResponse>> findAll() {
         return ResponseEntity.ok(specialityService.findAll());
