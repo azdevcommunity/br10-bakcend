@@ -10,12 +10,14 @@ import fib.br10.dto.specialist.specialistservice.request.GetSpecialistServicesRe
 import fib.br10.dto.specialist.specialistservice.request.UpdateSpecialistServiceRequest;
 import fib.br10.dto.specialist.specialistservice.response.ReadSpecialistServiceResponse;
 import fib.br10.entity.QImage;
+import fib.br10.entity.reservation.ReservationStatus;
 import fib.br10.entity.specialist.QSpecialistService;
 import fib.br10.entity.specialist.SpecialistService;
 import fib.br10.exception.specialist.specialistservice.ServiceAlreadyUsedOnAnyReservationException;
 import fib.br10.exception.specialist.specialistservice.SpecialistServiceAlreadyExistsException;
 import fib.br10.exception.specialist.specialistservice.SpecialistServiceNotFoundException;
 import fib.br10.mapper.SpecialistServiceMapper;
+import fib.br10.repository.ReservationRepository;
 import fib.br10.repository.SpecialistServiceRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +46,7 @@ public class SpecialistServiceManager {
     JPAQueryFactory jpaQuery;
     ImageService imageService;
     RequestContextProvider provider;
-    ReservationService reservationService;
+    ReservationRepository reservationRepository;
 
     @CacheEvict(value = SPECIALIST_SERVICES, key = "#userId")
     @Transactional
@@ -108,7 +110,7 @@ public class SpecialistServiceManager {
                 .findByIdAndSpecialistUserId(request.getId(), userId)
                 .orElseThrow(SpecialistServiceNotFoundException::new);
 
-        if(reservationService.existsActiveReservationByServiceId(request.getId())){
+        if(reservationRepository.existsBySpecialistServiceIdAndStatusNot(request.getId(), ReservationStatus.CANCELLED.getValue())){
             throw new ServiceAlreadyUsedOnAnyReservationException();
         }
 
