@@ -13,11 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,19 +28,19 @@ public class SpecialistBlockedCustomerController {
     SpecialistBlockedCustomerService specialistBlockedCustomerService;
     RequestContextProvider provider;
 
-    @PostMapping("/block")
+    @PutMapping("/block")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Boolean> blockCustomer(@RequestBody @Valid BlockCustomerRequest request) {
         return ResponseEntity.ok(specialistBlockedCustomerService.blockCustomer(request, provider.getUserId()));
     }
 
-    @PostMapping("/get-blocked-customers")
+    @GetMapping("/blocked-customers")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<SpecialistBlockedCustomerResponse>> getBlockedCustomers() {
         return ResponseEntity.ok(specialistBlockedCustomerService.getBlockedCustomers(provider.getUserId()));
     }
 
-    @PostMapping("/unblock")
+    @PutMapping("/unblock")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Boolean> unblockCustomer(@RequestBody @Valid UnBlockCustomerRequest request) {
         return ResponseEntity.ok(specialistBlockedCustomerService.unblockCustomer(request, provider.getUserId()));

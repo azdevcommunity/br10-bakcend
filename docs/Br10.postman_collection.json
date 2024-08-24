@@ -217,13 +217,13 @@
 							},
 							{
 								"key": "ACTIVITY_ID",
-								"value": "96aa2f33-0515-4a74-8e9f-785e80df694f",
+								"value": "15c51711-efdc-4a41-92ac-8321c4fc340a",
 								"type": "text"
 							}
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"otp\":7169,\r\n    \"phoneNumber\": \"0551112231\"\r\n}",
+							"raw": "{\r\n    \"otp\":7521,\r\n    \"phoneNumber\": \"0551112231\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -363,7 +363,7 @@
 						"strictSSL": false
 					},
 					"request": {
-						"method": "POST",
+						"method": "PUT",
 						"header": [
 							{
 								"key": "Authorization",
@@ -392,13 +392,12 @@
 							]
 						},
 						"url": {
-							"raw": "{{base_url}}/specialist-profile/update",
+							"raw": "{{base_url}}/specialist-profile",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"specialist-profile",
-								"update"
+								"specialist-profile"
 							]
 						}
 					},
@@ -438,13 +437,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/specialist-profile/read",
+							"raw": "{{base_url}}/specialist-profile",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"specialist-profile",
-								"read"
+								"specialist-profile"
 							]
 						}
 					},
@@ -486,7 +484,7 @@
 								},
 								{
 									"key": "name",
-									"value": "pipi2",
+									"value": "pipi1",
 									"type": "text"
 								},
 								{
@@ -497,7 +495,7 @@
 								{
 									"key": "image",
 									"type": "file",
-									"src": "/Users/yusifhasanov/Desktop/sample_640×426.jpeg"
+									"src": "/C:/Users/Yusif/Desktop/cvn.jpg"
 								},
 								{
 									"key": "description",
@@ -507,13 +505,12 @@
 							]
 						},
 						"url": {
-							"raw": "{{base_url}}/specialist-service/create",
+							"raw": "{{base_url}}/specialist-service",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"specialist-service",
-								"create"
+								"specialist-service"
 							]
 						}
 					},
@@ -522,7 +519,7 @@
 				{
 					"name": "update",
 					"request": {
-						"method": "POST",
+						"method": "PUT",
 						"header": [
 							{
 								"key": "Authorization",
@@ -545,7 +542,7 @@
 							"formdata": [
 								{
 									"key": "id",
-									"value": "1",
+									"value": "2",
 									"type": "text"
 								},
 								{
@@ -555,7 +552,7 @@
 								},
 								{
 									"key": "name",
-									"value": "pipi4",
+									"value": "pipi5",
 									"type": "text"
 								},
 								{
@@ -566,19 +563,17 @@
 								{
 									"key": "image",
 									"type": "file",
-									"src": "/Users/yusifhasanov/Desktop/sample_640×426.jpeg",
-									"disabled": true
+									"src": "/C:/Users/Yusif/Desktop/a.png"
 								}
 							]
 						},
 						"url": {
-							"raw": "{{base_url}}/specialist-service/update",
+							"raw": "{{base_url}}/specialist-service",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"specialist-service",
-								"update"
+								"specialist-service"
 							]
 						}
 					},
@@ -587,7 +582,7 @@
 				{
 					"name": "delete",
 					"request": {
-						"method": "POST",
+						"method": "DELETE",
 						"header": [
 							{
 								"key": "Authorization",
@@ -615,13 +610,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/specialist-service/delete",
+							"raw": "{{base_url}}/specialist-service",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"specialist-service",
-								"delete"
+								"specialist-service"
 							]
 						}
 					},
@@ -653,7 +647,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"id\":7\r\n  \r\n}",
+							"raw": " ",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -661,13 +655,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/specialist-service/read",
+							"raw": "{{base_url}}/specialist-service",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"specialist-service",
-								"read"
+								"specialist-service"
 							]
 						}
 					},
@@ -709,13 +702,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/appointments/create-appointment",
+							"raw": "{{base_url}}/appointments",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"appointments",
-								"create-appointment"
+								"appointments"
 							]
 						}
 					},
@@ -892,13 +884,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/reservations/create",
+							"raw": "{{base_url}}/reservations",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"reservations",
-								"create"
+								"reservations"
 							]
 						}
 					},
@@ -907,7 +898,7 @@
 				{
 					"name": "update",
 					"request": {
-						"method": "POST",
+						"method": "PUT",
 						"header": [
 							{
 								"key": "Authorization",
@@ -935,13 +926,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/reservations/update",
+							"raw": "{{base_url}}/reservations",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"reservations",
-								"update"
+								"reservations"
 							]
 						}
 					},
@@ -950,7 +940,7 @@
 				{
 					"name": "cancel",
 					"request": {
-						"method": "POST",
+						"method": "PUT",
 						"header": [
 							{
 								"key": "Authorization",
@@ -992,8 +982,11 @@
 				},
 				{
 					"name": "read",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
@@ -1021,13 +1014,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/reservations/read",
+							"raw": "{{base_url}}/reservations",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"reservations",
-								"read"
+								"reservations"
 							]
 						}
 					},
@@ -1069,13 +1061,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/categories/create",
+							"raw": "{{base_url}}/categories",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"categories",
-								"create"
+								"categories"
 							]
 						}
 					},
@@ -1084,7 +1075,7 @@
 				{
 					"name": "update",
 					"request": {
-						"method": "POST",
+						"method": "PUT",
 						"header": [
 							{
 								"key": "Authorization",
@@ -1112,13 +1103,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/categories/update",
+							"raw": "{{base_url}}/categories",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"categories",
-								"update"
+								"categories"
 							]
 						}
 					},
@@ -1127,7 +1117,7 @@
 				{
 					"name": "delete",
 					"request": {
-						"method": "POST",
+						"method": "DELETE",
 						"header": [
 							{
 								"key": "Authorization",
@@ -1155,13 +1145,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/categories/delete",
+							"raw": "{{base_url}}/categories",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"categories",
-								"delete"
+								"categories"
 							]
 						}
 					},
@@ -1248,13 +1237,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/products/create",
+							"raw": "{{base_url}}/products",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"products",
-								"create"
+								"products"
 							]
 						}
 					},
@@ -1263,7 +1251,7 @@
 				{
 					"name": "update",
 					"request": {
-						"method": "POST",
+						"method": "PUT",
 						"header": [
 							{
 								"key": "Authorization",
@@ -1291,13 +1279,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/products/update",
+							"raw": "{{base_url}}/products",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"products",
-								"update"
+								"products"
 							]
 						}
 					},
@@ -1306,7 +1293,7 @@
 				{
 					"name": "delete",
 					"request": {
-						"method": "POST",
+						"method": "DELETE",
 						"header": [
 							{
 								"key": "Authorization",
@@ -1334,13 +1321,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/products/delete",
+							"raw": "{{base_url}}/products",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"products",
-								"delete"
+								"products"
 							]
 						}
 					},
@@ -1380,13 +1366,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/products/read",
+							"raw": "{{base_url}}/products",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"products",
-								"read"
+								"products"
 							]
 						}
 					},
@@ -1428,13 +1413,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/specialities/create",
+							"raw": "{{base_url}}/specialities",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"specialities",
-								"create"
+								"specialities"
 							]
 						}
 					},
@@ -1443,7 +1427,7 @@
 				{
 					"name": "delete",
 					"request": {
-						"method": "POST",
+						"method": "DELETE",
 						"header": [
 							{
 								"key": "Authorization",
@@ -1471,13 +1455,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/specialities/delete",
+							"raw": "{{base_url}}/specialities",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"specialities",
-								"delete"
+								"specialities"
 							]
 						}
 					},
@@ -1486,7 +1469,7 @@
 				{
 					"name": "update",
 					"request": {
-						"method": "POST",
+						"method": "PUT",
 						"header": [
 							{
 								"key": "Authorization",
@@ -1514,13 +1497,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/specialities/update",
+							"raw": "{{base_url}}/specialities",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"specialities",
-								"update"
+								"specialities"
 							]
 						}
 					},
@@ -1560,13 +1542,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/specialities/read",
+							"raw": "{{base_url}}/specialities",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
-								"specialities",
-								"read"
+								"specialities"
 							]
 						}
 					},
@@ -1583,7 +1564,7 @@
 						"strictSSL": false
 					},
 					"request": {
-						"method": "POST",
+						"method": "PUT",
 						"header": [
 							{
 								"key": "Authorization",
@@ -1629,7 +1610,7 @@
 						"strictSSL": false
 					},
 					"request": {
-						"method": "POST",
+						"method": "PUT",
 						"header": [
 							{
 								"key": "Authorization",
@@ -1672,10 +1653,11 @@
 				{
 					"name": "get-blocked-customers",
 					"protocolProfileBehavior": {
-						"strictSSL": false
+						"strictSSL": false,
+						"disableBodyPruning": true
 					},
 					"request": {
-						"method": "POST",
+						"method": "GET",
 						"header": [
 							{
 								"key": "Authorization",
@@ -1703,13 +1685,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{base_url}}/specialist-customer/get-blocked-customers",
+							"raw": "{{base_url}}/specialist-customer/blocked-customers",
 							"host": [
 								"{{base_url}}"
 							],
 							"path": [
 								"specialist-customer",
-								"get-blocked-customers"
+								"blocked-customers"
 							]
 						}
 					},
@@ -1748,11 +1730,11 @@
 		},
 		{
 			"key": "base_url",
-			"value": "http://localhost:8000/api"
+			"value": "http://localhost:8082/api"
 		},
 		{
 			"key": "jwt",
-			"value": "eyJhbGciOiJIUzI1NiJ9.eyJUSU1FX1pPTkUiOiIrMDQ6MDAiLCJVU0VSX0lEIjo3LCJUT0tFTl9JRCI6NzIzODgxLCJzdWIiOiIwNTUxMTEyMjMxIiwiaWF0IjoxNzI0NTA1NTI4LCJleHAiOjE3MjQ1OTE5Mjh9.Oto5Yb0pUDWQd6h67HhPpbayhbhjTBApwt6-ysgMd4k"
+			"value": "eyJhbGciOiJIUzI1NiJ9.eyJUSU1FX1pPTkUiOiIrMDQ6MDAiLCJVU0VSX0lEIjoyLCJUT0tFTl9JRCI6NDMyNzYyLCJzdWIiOiIwNTUxMTEyMjMxIiwiaWF0IjoxNzI0NTM3NDc1LCJleHAiOjE3MjQ2MjM4NzV9.SZREznh2V8XD6cCgNm4KIhiB5ZLEA6tVWqOfm1cgA2E"
 		}
 	]
 }
