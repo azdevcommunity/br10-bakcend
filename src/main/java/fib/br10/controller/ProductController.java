@@ -13,11 +13,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,24 +27,30 @@ public class ProductController {
     ProductService productService;
     RequestContextProvider provider;
 
-    @PostMapping("/create")
+    @PostMapping
     public ResponseEntity<Long> create(@RequestBody @Valid CreateProductRequest request) {
         return ResponseEntity.ok(productService.create(request, provider.getUserId()));
     }
 
-    @PostMapping("/update")
+    @PutMapping
     public ResponseEntity<Long> update(@RequestBody @Valid UpdateProductRequest request) {
         return ResponseEntity.ok(productService.update(request, provider.getUserId()));
     }
 
-    @PostMapping("/delete")
+    @DeleteMapping
     public ResponseEntity<Long> delete(@RequestBody @Valid RequestById request) {
         return ResponseEntity.ok(productService.delete(request, provider.getUserId()));
     }
 
     @PreAuthorize("permitAll()")
-    @GetMapping("/read")
-    public ResponseEntity<List<ProductResponse>> findAllCategories(@RequestBody @Valid RequestById request) {
-        return ResponseEntity.ok(productService.findAllProducts(request));
+    @GetMapping("{specialistId}")
+    public ResponseEntity<List<ProductResponse>> findAllCategories(@PathVariable("specialistId") @Valid Long id) {
+        return ResponseEntity.ok(productService.findAllProducts(id));
+    }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping
+    public ResponseEntity<List<ProductResponse>> findAllCategories() {
+        return ResponseEntity.ok(productService.findAllProducts(provider.getUserId()));
     }
 }
