@@ -91,9 +91,9 @@ public class ProductService {
         return product.getId();
     }
 
-    @Cacheable(value = PRODUCTS, key = "#request.id")
-    public List<ProductResponse> findAllProducts(RequestById request) {
-        return new ArrayList<>(productRepository.findAllProducts(request.getId()));
+    @Cacheable(value = PRODUCTS, key = "#id")
+    public List<ProductResponse> findAllProducts(Long id ) {
+        return new ArrayList<>(productRepository.findAllProducts(id));
     }
 
     public Product findById(Long id) {

@@ -1,7 +1,5 @@
 server:
   port: ${PORT:8082}
-  servlet:
-    context-path: /api
 spring:
   servlet:
     multipart:
@@ -44,7 +42,7 @@ spring:
 
 
 file:
-  upload-dir: ${BR10_UPLOAD_DIR:./uploads}
+  context-path: ${BR10_CONTEXT_PATH:/api}
 
 management:
   endpoint:
