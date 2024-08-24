@@ -211,6 +211,10 @@ public class ReservationService {
         return reservationRepository.findById(id).orElseThrow(ReservationNotFoundException::new);
     }
 
+    public boolean existsActiveReservationByServiceId(Long serviceId) {
+        return reservationRepository.existsBySpecialistServiceIdAndStatusNot(serviceId, ReservationStatus.CANCELLED.getValue());
+    }
+
     private ReservationResponse prepareResponse(Reservation reservation,
                                                 Long specialistUserId,
                                                 Long customerUserId) {

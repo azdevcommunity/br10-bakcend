@@ -51,6 +51,7 @@ specialist-service:
   price-required: İxtisas xidməti qiyməti tələb olunur
   not-found: İxtisas xidməti tapılmadı
   already-exists: İxtisas xidməti artıq mövcuddur
+  already-used-on-any-reservation: İxtisas xidməti artıq rezervasiyada istifadə olunub
 reservation:
   date-required: Rezervasiya tarixi tələb olunur
   specialistUserId-required: İxtisasçı istifadəçi ID tələb olunur
