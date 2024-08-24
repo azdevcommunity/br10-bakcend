@@ -1,4 +1,4 @@
-package fib.br10.configuration;
+package fib.br10.middleware;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
