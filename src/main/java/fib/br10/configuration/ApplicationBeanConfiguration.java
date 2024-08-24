@@ -3,12 +3,8 @@ package fib.br10.configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import fib.br10.core.entity.BaseEntityListener;
 import fib.br10.core.service.RequestContextProvider;
-import fib.br10.core.utility.DateUtil;
 import fib.br10.core.utility.RandomUtil;
-import fib.br10.core.utility.RequestContextEnum;
-import fib.br10.core.utility.RequestContext;
 import fib.br10.entity.specialist.Speciality;
 import fib.br10.entity.user.RoleEnum;
 import fib.br10.entity.user.User;
@@ -21,7 +17,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.client.RestTemplate;
 
 
 import java.util.List;
@@ -62,11 +57,6 @@ public class ApplicationBeanConfiguration {
                 specialityRepository.saveAllAndFlush(specialities);
             }
         };
-    }
-
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
     }
 
     @Bean
