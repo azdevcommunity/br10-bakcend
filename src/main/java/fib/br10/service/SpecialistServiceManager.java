@@ -110,7 +110,7 @@ public class SpecialistServiceManager {
                 .findByIdAndSpecialistUserId(request.getId(), userId)
                 .orElseThrow(SpecialistServiceNotFoundException::new);
 
-        if(reservationRepository.existsBySpecialistServiceIdAndStatusNot(request.getId(), ReservationStatus.CANCELLED.getValue())){
+        if (reservationRepository.existsBySpecialistServiceIdAndStatusNot(request.getId(), ReservationStatus.CANCELLED.getValue())) {
             throw new ServiceAlreadyUsedOnAnyReservationException();
         }
 
@@ -123,8 +123,8 @@ public class SpecialistServiceManager {
         return specialistService.getId();
     }
 
-    @Cacheable(value = SPECIALIST_SERVICES, key = "#request.id")
-    public List<ReadSpecialistServiceResponse> findAllSpecialistServices(GetSpecialistServicesRequest request) {
+    @Cacheable(value = SPECIALIST_SERVICES, key = "#specialistId")
+    public List<ReadSpecialistServiceResponse> findAllSpecialistServices(Long specialistId) {
         QSpecialistService table = QSpecialistService.specialistService;
         QImage image = QImage.image;
 
@@ -140,14 +140,16 @@ public class SpecialistServiceManager {
                 .from(table)
                 .leftJoin(image)
                 .on(table.imageId.eq(image.id))
-                .where(table.specialistUserId.eq(request.getId()))
+                .where(table.specialistUserId.eq(specialistId))
                 .fetch();
 
-        return new ArrayList<>(specialistServices);
+        return specialistServices;
     }
+
 
     public SpecialistService findById(Long id) {
         return specialistServicesRepository.findById(id)
                 .orElseThrow(SpecialistServiceNotFoundException::new);
     }
+
 }
