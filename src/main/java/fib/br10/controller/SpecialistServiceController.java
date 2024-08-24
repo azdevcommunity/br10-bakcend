@@ -3,6 +3,7 @@ package fib.br10.controller;
 import fib.br10.core.dto.RequestById;
 import fib.br10.core.service.RequestContextProvider;
 import fib.br10.dto.specialist.specialistservice.request.CreateSpecialistServiceRequest;
+import fib.br10.dto.specialist.specialistservice.request.GetSpecialistServicesRequest;
 import fib.br10.dto.specialist.specialistservice.request.UpdateSpecialistServiceRequest;
 import fib.br10.dto.specialist.specialistservice.response.ReadSpecialistServiceResponse;
 import fib.br10.service.SpecialistServiceManager;
@@ -55,7 +56,7 @@ public class SpecialistServiceController {
     @PreAuthorize("permitAll()")
     @GetMapping("/read")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<ReadSpecialistServiceResponse>> getAll(@RequestBody @Valid RequestById request) {
+    public ResponseEntity<List<ReadSpecialistServiceResponse>> getAll(@RequestBody @Valid GetSpecialistServicesRequest request) {
         return ResponseEntity.ok(specialistServiceManager.findAllSpecialistServices(request));
     }
 }
