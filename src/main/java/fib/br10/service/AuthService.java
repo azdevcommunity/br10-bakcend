@@ -92,9 +92,7 @@ public class AuthService {
 
         userService.save(user);
 
-        Token token = tokenService.get(user);
-
-        return token;
+        return tokenService.get(user);
     }
 
     public OtpResponse getOtp(GetOtpRequest request) {

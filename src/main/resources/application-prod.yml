@@ -3,8 +3,6 @@ server:
   servlet:
     context-path: /api
 spring:
-  profiles:
-    active: ${BR10_PROFILE:prod}
   servlet:
     multipart:
       max-file-size: ${BR10_MAX_FILE_SIZE:10MB}

@@ -11,7 +11,6 @@ import fib.br10.exception.speciality.SpecialityNotFoundException;
 import fib.br10.mapper.SpecialityMapper;
 import fib.br10.repository.SpecialistProfileRepository;
 import fib.br10.repository.SpecialityRepository;
-import fib.br10.utility.Messages;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static fib.br10.utility.CacheKeys.SPECILITIES_KEY;
-import static fib.br10.utility.CacheKeys.SPECILITIES;
+import static fib.br10.utility.CacheKeys.SPECIALITIES_KEY;
+import static fib.br10.utility.CacheKeys.SPECIALITIES;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +35,7 @@ public class SpecialityService {
     SpecialityRepository specialityRepository;
     SpecialityMapper specialityMapper;
 
-    @CacheEvict(value = SPECILITIES, key = SPECILITIES_KEY)
+    @CacheEvict(value = SPECIALITIES, key = SPECIALITIES_KEY)
     public Long create(CreateSpecialityRequest request) {
         if (specialityRepository.existsByNameAndStatus(request.getName(), EntityStatus.ACTIVE.getValue())) {
             throw new BaseException("burada error olacaq");
@@ -49,7 +48,7 @@ public class SpecialityService {
         return speciality.getId();
     }
 
-    @CacheEvict(value = SPECILITIES, key = SPECILITIES_KEY)
+    @CacheEvict(value = SPECIALITIES, key = SPECIALITIES_KEY)
     public Long update(UpdateSpecialityRequest request) {
         Speciality speciality = specialityRepository.findByIdAndStatus(request.getId(), EntityStatus.ACTIVE.getValue())
                 .orElseThrow(SpecialityNotFoundException::new);
@@ -65,7 +64,7 @@ public class SpecialityService {
         return speciality.getId();
     }
 
-    @CacheEvict(value = SPECILITIES, key = SPECILITIES_KEY)
+    @CacheEvict(value = SPECIALITIES, key = SPECIALITIES_KEY)
     @Transactional
     public Long delete(RequestById request) {
         if (specialistProfileRepository.existsBySpecialityId(request.getId())) {
@@ -81,7 +80,7 @@ public class SpecialityService {
         return speciality.getId();
     }
 
-    @Cacheable(value = SPECILITIES, key = SPECILITIES_KEY)
+    @Cacheable(value = SPECIALITIES, key = SPECIALITIES_KEY)
     public List<SpecialityResponse> findAll() {
        return specialityRepository
                 .findByStatus(EntityStatus.ACTIVE.getValue())

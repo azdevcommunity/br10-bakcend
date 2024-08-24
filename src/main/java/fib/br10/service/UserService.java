@@ -55,9 +55,9 @@ public class UserService implements UserDetailsService {
     }
 
     public User findByUserNameOrPhoneNumber(String userNameOrPhoneNumber) {
-        return userRepository.findByUsername(userNameOrPhoneNumber)
-                .orElse(userRepository.findByPhoneNumber(userNameOrPhoneNumber)
-                        .orElseThrow(UserNotFoundException::new));
+        return userRepository.findByPhoneNumber(userNameOrPhoneNumber)
+                .orElseGet(() -> userRepository.findByUsername(userNameOrPhoneNumber)
+                .orElseThrow(UserNotFoundException::new));
     }
 
     public User findByPhoneNumber(String phoneNumber) {

@@ -26,5 +26,7 @@ public class UpdateSpecialistServiceRequest {
     @NotNull
     BigDecimal price;
 
+    String description;
+
     MultipartFile image;
 }

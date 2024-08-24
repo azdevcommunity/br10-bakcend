@@ -3,9 +3,10 @@ package fib.br10.controller;
 import fib.br10.core.dto.RequestById;
 import fib.br10.core.service.RequestContextProvider;
 import fib.br10.dto.specialist.specialistservice.request.CreateSpecialistServiceRequest;
+import fib.br10.dto.specialist.specialistservice.request.GetSpecialistServicesRequest;
 import fib.br10.dto.specialist.specialistservice.request.UpdateSpecialistServiceRequest;
 import fib.br10.dto.specialist.specialistservice.response.ReadSpecialistServiceResponse;
-import fib.br10.service.SpecialistServicesService;
+import fib.br10.service.SpecialistServiceManager;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
@@ -27,7 +28,7 @@ import java.util.List;
 @Validated
 @PreAuthorize("hasRole('SPECIALIST')")
 public class SpecialistServiceController {
-    SpecialistServicesService specialistServicesService;
+    SpecialistServiceManager specialistServiceManager;
     RequestContextProvider provider;
 
     @PostMapping("/create")
@@ -35,7 +36,7 @@ public class SpecialistServiceController {
     public ResponseEntity<Long> create(@RequestPart("image") @Nullable MultipartFile image,
                                        @ModelAttribute @Valid CreateSpecialistServiceRequest request) {
         request.setImage(image);
-        return ResponseEntity.ok(specialistServicesService.create(request, provider.getUserId()));
+        return ResponseEntity.ok(specialistServiceManager.create(request, provider.getUserId()));
     }
 
     @PostMapping("/update")
@@ -43,19 +44,19 @@ public class SpecialistServiceController {
     public ResponseEntity<Long> update(@RequestPart("image") @Nullable MultipartFile image,
                                        @ModelAttribute @Valid UpdateSpecialistServiceRequest request) {
         request.setImage(image);
-        return ResponseEntity.ok(specialistServicesService.update(request, provider.getUserId()));
+        return ResponseEntity.ok(specialistServiceManager.update(request, provider.getUserId()));
     }
 
     @PostMapping("/delete")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Long> update(@RequestBody @Valid RequestById request) {
-        return ResponseEntity.ok(specialistServicesService.delete(request, provider.getUserId()));
+        return ResponseEntity.ok(specialistServiceManager.delete(request, provider.getUserId()));
     }
 
     @PreAuthorize("permitAll()")
     @GetMapping("/read")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<ReadSpecialistServiceResponse>> getAll(@RequestBody @Valid RequestById request) {
-        return ResponseEntity.ok(specialistServicesService.findAllSpecialistServices(request));
+    public ResponseEntity<List<ReadSpecialistServiceResponse>> getAll(@RequestBody @Valid GetSpecialistServicesRequest request) {
+        return ResponseEntity.ok(specialistServiceManager.findAllSpecialistServices(request));
     }
 }

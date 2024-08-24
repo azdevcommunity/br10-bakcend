@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class ReadSpecialistServiceResponse{
     Long id;
+
     Long specialistUserId;
 
     Integer duration;
@@ -22,6 +23,8 @@ public class ReadSpecialistServiceResponse{
     String name;
 
     BigDecimal price;
+
+    String description;
 
     String image;
 }

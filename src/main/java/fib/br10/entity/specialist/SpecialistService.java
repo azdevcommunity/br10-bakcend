@@ -33,9 +33,12 @@ public class SpecialistService extends BaseEntity {
     @Column(name = "NAME", length = 100, nullable = false)
     String name;
 
-    @Column(name = "PRICE",nullable = false)
+    @Column(name = "PRICE", nullable = false)
     BigDecimal price;
 
     @Column(name = "IMAGE_ID")
     Long imageId;
+
+    @Column(name = "DESCRIPTION", length = 500)
+    String description;
 }

@@ -3,8 +3,10 @@ package fib.br10.service;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import fib.br10.core.dto.RequestById;
+import fib.br10.core.service.RequestContextProvider;
 import fib.br10.dto.image.response.CreateImageResponse;
 import fib.br10.dto.specialist.specialistservice.request.CreateSpecialistServiceRequest;
+import fib.br10.dto.specialist.specialistservice.request.GetSpecialistServicesRequest;
 import fib.br10.dto.specialist.specialistservice.request.UpdateSpecialistServiceRequest;
 import fib.br10.dto.specialist.specialistservice.response.ReadSpecialistServiceResponse;
 import fib.br10.entity.QImage;
@@ -14,7 +16,6 @@ import fib.br10.exception.specialist.specialistservice.SpecialistServiceAlreadyE
 import fib.br10.exception.specialist.specialistservice.SpecialistServiceNotFoundException;
 import fib.br10.mapper.SpecialistServiceMapper;
 import fib.br10.repository.SpecialistServiceRepository;
-import fib.br10.service.abstracts.FileService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -34,13 +35,14 @@ import static fib.br10.utility.CacheKeys.SPECIALIST_SERVICES;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 @Log4j2
-public class SpecialistServicesService {
+public class SpecialistServiceManager {
 
     SpecialistServiceRepository specialistServicesRepository;
     SpecialistServiceMapper specialistServicesMapper;
     UserService userService;
     JPAQueryFactory jpaQuery;
     ImageService imageService;
+    RequestContextProvider provider;
 
     @CacheEvict(value = SPECIALIST_SERVICES, key = "#userId")
     @Transactional
@@ -116,9 +118,14 @@ public class SpecialistServicesService {
     }
 
     @Cacheable(value = SPECIALIST_SERVICES, key = "#request.id")
-    public List<ReadSpecialistServiceResponse> findAllSpecialistServices(RequestById request) {
+    public List<ReadSpecialistServiceResponse> findAllSpecialistServices(GetSpecialistServicesRequest request) {
         QSpecialistService table = QSpecialistService.specialistService;
         QImage image = QImage.image;
+
+        if(Objects.isNull(request.getId())){
+            request.setId(provider.getUserId());
+        }
+
         List<ReadSpecialistServiceResponse> specialistServices = jpaQuery
                 .select(Projections.constructor(ReadSpecialistServiceResponse.class,
                         table.id,
@@ -126,6 +133,7 @@ public class SpecialistServicesService {
                         table.duration,
                         table.name,
                         table.price,
+                        table.description,
                         image.path))
                 .from(table)
                 .leftJoin(image)
