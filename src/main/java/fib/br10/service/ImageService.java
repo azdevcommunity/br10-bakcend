@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -51,10 +52,12 @@ public class ImageService {
 
     @Transactional
     public void delete(Long id){
-        Image image = imageRepository.findById(id).orElseThrow(BaseException::new);
+        Optional<Image> image = imageRepository.findById(id);
 
-        imageRepository.delete(image);
-        fileService.deleteFile(image.getPath());
+        if (image.isPresent()) {
+            imageRepository.delete(image.get());
+            fileService.deleteFile(image.get().getPath());
+        }
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)

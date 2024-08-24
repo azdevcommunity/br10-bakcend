@@ -89,7 +89,7 @@ public class SpecialistServiceManager {
         SpecialistService specialistService = specialistServicesRepository.findById(request.getId())
                 .orElseThrow(SpecialistServiceNotFoundException::new);
 
-        if (Objects.isNull(request.getImage())) {
+        if (Objects.isNull(request.getImage()) && Objects.nonNull(specialistService.getImageId())) {
             imageService.delete(specialistService.getImageId());
             specialistService.setImageId(null);
         } else {
