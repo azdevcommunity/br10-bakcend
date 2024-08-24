@@ -66,4 +66,11 @@ public class SpecialistServiceController {
     public ResponseEntity<List<ReadSpecialistServiceResponse>> getAll() {
         return ResponseEntity.ok(specialistServiceManager.findAllSpecialistServices(provider.getUserId()));
     }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ReadSpecialistServiceResponse> getById(@PathVariable("id") @Valid Long id) {
+        return ResponseEntity.ok(specialistServiceManager.findServiceById(id));
+    }
 }
