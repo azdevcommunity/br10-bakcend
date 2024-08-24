@@ -85,7 +85,7 @@ public class CategoryService {
         return category.getId();
     }
 
-    @Cacheable(value = PRODUCTS, key = "#userId")
+    @Cacheable(value = CATEGORIES, key = "#userId")
     public List<CategoryResponse> findAllCategories(Long userId) {
         return new ArrayList<>(categoryRepository.findAllSpecialistCategories(userId));
     }
