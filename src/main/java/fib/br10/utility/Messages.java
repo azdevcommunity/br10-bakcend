@@ -59,6 +59,7 @@ public final class Messages {
     public static final String SPECIALIST_SERVICE_ALREADY_EXISTS = "specialistService.already-exists";
     public static final String SPECIALIST_SERVICE_NAME_REQUIRED = "specialistService.name-required";
     public static final String SPECIALIST_SERVICE_PRICE_REQUIRED = "specialistService.price-required";
+    public static final String SERVICE_ALREADY_USED_ON_ANY_RESERVATION = "specialistService.already-used-on-any-reservation";
 
     //general
 

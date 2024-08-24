@@ -12,6 +12,7 @@ import fib.br10.dto.specialist.specialistservice.response.ReadSpecialistServiceR
 import fib.br10.entity.QImage;
 import fib.br10.entity.specialist.QSpecialistService;
 import fib.br10.entity.specialist.SpecialistService;
+import fib.br10.exception.specialist.specialistservice.ServiceAlreadyUsedOnAnyReservationException;
 import fib.br10.exception.specialist.specialistservice.SpecialistServiceAlreadyExistsException;
 import fib.br10.exception.specialist.specialistservice.SpecialistServiceNotFoundException;
 import fib.br10.mapper.SpecialistServiceMapper;
@@ -43,6 +44,7 @@ public class SpecialistServiceManager {
     JPAQueryFactory jpaQuery;
     ImageService imageService;
     RequestContextProvider provider;
+    ReservationService reservationService;
 
     @CacheEvict(value = SPECIALIST_SERVICES, key = "#userId")
     @Transactional
@@ -102,12 +104,14 @@ public class SpecialistServiceManager {
     @CacheEvict(value = SPECIALIST_SERVICES, key = "#userId")
     @Transactional
     public Long delete(RequestById request, Long userId) {
-        //TODO: check is service use anny reservation dont delete
         SpecialistService specialistService = specialistServicesRepository
                 .findByIdAndSpecialistUserId(request.getId(), userId)
                 .orElseThrow(SpecialistServiceNotFoundException::new);
 
-//        specialistService.setStatus(EntityStatus.DELETED.getValue());
+        if(reservationService.existsActiveReservationByServiceId(request.getId())){
+            throw new ServiceAlreadyUsedOnAnyReservationException();
+        }
+
         specialistServicesRepository.delete(specialistService);
 
         if (Objects.nonNull(specialistService.getImageId())) {
