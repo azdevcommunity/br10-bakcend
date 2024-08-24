@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -57,6 +58,9 @@ public class SpecialistServiceController {
     @GetMapping("/read")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<ReadSpecialistServiceResponse>> getAll(@RequestBody @Valid GetSpecialistServicesRequest request) {
+        if(Objects.isNull(request.getId())){
+            request.setId(provider.getUserId());
+        }
         return ResponseEntity.ok(specialistServiceManager.findAllSpecialistServices(request));
     }
 }
