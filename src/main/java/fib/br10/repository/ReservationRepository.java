@@ -52,4 +52,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
                                                          int reservationStatus);
 
     boolean findByCustomerUserIdAndReservationStatusAndStatus(Long userId, Integer reservStatus,Integer status);
+
+    boolean existsBySpecialistServiceIdAndStatusNot(Long specialistServiceId, Integer status);
 }
