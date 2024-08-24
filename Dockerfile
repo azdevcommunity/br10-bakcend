@@ -9,7 +9,7 @@ COPY src /app/src
 RUN gradle build --no-daemon
 
 FROM openjdk:17-jdk
-
+ 
 WORKDIR /app
 
 COPY --from=build /app/build/libs/*.jar app.jar
