@@ -37,7 +37,7 @@ public class ProductService {
     CategoryService categoryService;
 
     @CacheEvict(value = PRODUCTS, key = "#userId")
-    public Long create(CreateProductRequest request, Long userId ) {
+    public Long create(CreateProductRequest request, Long userId) {
         if (productRepository.existsByName(request.getName())) {
             throw new BaseException("product exists same name");
         }
@@ -77,7 +77,7 @@ public class ProductService {
     }
 
     @CacheEvict(value = PRODUCTS, key = "#userId")
-    public Long delete(RequestById request,Long userId ) {
+    public Long delete(RequestById request, Long userId) {
         if (productRepository.existsById(request.getId())) {
             throw new CategoryHaveProductException();
         }
@@ -92,11 +92,18 @@ public class ProductService {
     }
 
     @Cacheable(value = PRODUCTS, key = "#id")
-    public List<ProductResponse> findAllProducts(Long id ) {
+    public List<ProductResponse> findAllProducts(Long id) {
         return new ArrayList<>(productRepository.findAllProducts(id));
     }
 
+    public ProductResponse findProductById(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(ProductNotFoundException::new);
+        return productMapper.productToProductResponse(product);
+    }
+
     public Product findById(Long id) {
-        return productRepository.findById(id).orElseThrow(ProductNotFoundException::new);
+        return productRepository.findById(id)
+                .orElseThrow(ProductNotFoundException::new);
     }
 }
