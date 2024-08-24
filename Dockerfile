@@ -3,7 +3,7 @@ FROM gradle:8.4.0-jdk17 as build
 WORKDIR /app
 
 COPY build.gradle settings.gradle /app/     
-COPY gradlew* /app/
+COPY gradlew* /app/ 
 COPY src /app/src
 
 RUN gradle build --no-daemon
