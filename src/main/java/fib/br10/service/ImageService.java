@@ -64,4 +64,8 @@ public class ImageService {
     public void delete(String path){
         fileService.deleteFile(path);
     }
+
+    public Image findById(Long id) {
+        return imageRepository.findById(id).orElse(null);
+    }
 }

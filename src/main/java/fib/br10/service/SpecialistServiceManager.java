@@ -9,6 +9,7 @@ import fib.br10.dto.specialist.specialistservice.request.CreateSpecialistService
 import fib.br10.dto.specialist.specialistservice.request.GetSpecialistServicesRequest;
 import fib.br10.dto.specialist.specialistservice.request.UpdateSpecialistServiceRequest;
 import fib.br10.dto.specialist.specialistservice.response.ReadSpecialistServiceResponse;
+import fib.br10.entity.Image;
 import fib.br10.entity.QImage;
 import fib.br10.entity.reservation.ReservationStatus;
 import fib.br10.entity.specialist.QSpecialistService;
@@ -31,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static fib.br10.utility.CacheKeys.SPECIALIST_SERVICES;
 
@@ -146,7 +148,12 @@ public class SpecialistServiceManager {
         return specialistServices;
     }
 
+    public ReadSpecialistServiceResponse findServiceById(Long id) {
+        ReadSpecialistServiceResponse specialistService =  specialistServicesRepository.findSpecialist(id)
+                .orElseThrow(SpecialistServiceNotFoundException::new);
 
+        return specialistService;
+    }
     public SpecialistService findById(Long id) {
         return specialistServicesRepository.findById(id)
                 .orElseThrow(SpecialistServiceNotFoundException::new);
