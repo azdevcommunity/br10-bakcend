@@ -28,10 +28,4 @@ public class WebConfig implements WebMvcConfigurer {
         WebMvcConfigurer.super.configureMessageConverters(converters);
         converters.add(0, new MappingJackson2HttpMessageConverter());
     }
-
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/demo/uploads/**")
-                .addResourceLocations("file:/app/uploads/");
-    }
 }

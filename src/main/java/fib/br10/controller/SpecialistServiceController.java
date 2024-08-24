@@ -32,7 +32,7 @@ public class SpecialistServiceController {
     SpecialistServiceManager specialistServiceManager;
     RequestContextProvider provider;
 
-    @PostMapping("/create")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Long> create(@RequestPart("image") @Nullable MultipartFile image,
                                        @ModelAttribute @Valid CreateSpecialistServiceRequest request) {
@@ -40,7 +40,7 @@ public class SpecialistServiceController {
         return ResponseEntity.ok(specialistServiceManager.create(request, provider.getUserId()));
     }
 
-    @PostMapping("/update")
+    @PutMapping
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Long> update(@RequestPart("image") @Nullable MultipartFile image,
                                        @ModelAttribute @Valid UpdateSpecialistServiceRequest request) {
@@ -48,21 +48,21 @@ public class SpecialistServiceController {
         return ResponseEntity.ok(specialistServiceManager.update(request, provider.getUserId()));
     }
 
-    @PostMapping("/delete")
+    @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Long> update(@RequestBody @Valid RequestById request) {
+    public ResponseEntity<Long> delete(@RequestBody @Valid RequestById request) {
         return ResponseEntity.ok(specialistServiceManager.delete(request, provider.getUserId()));
     }
 
     @PreAuthorize("permitAll()")
-    @GetMapping("/read/{specialistId}")
+    @GetMapping("{specialistId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<ReadSpecialistServiceResponse>> getAllById(@PathVariable @Valid Long specialistId) {
+    public ResponseEntity<List<ReadSpecialistServiceResponse>> getAllById(@PathVariable("specialistId") @Valid Long specialistId) {
         return ResponseEntity.ok(specialistServiceManager.findAllSpecialistServices(specialistId));
     }
 
     @PreAuthorize("permitAll()")
-    @GetMapping("/read")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<ReadSpecialistServiceResponse>> getAll() {
         return ResponseEntity.ok(specialistServiceManager.findAllSpecialistServices(provider.getUserId()));
