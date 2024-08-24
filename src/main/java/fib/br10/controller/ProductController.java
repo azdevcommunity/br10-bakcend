@@ -43,7 +43,13 @@ public class ProductController {
     }
 
     @PreAuthorize("permitAll()")
-    @GetMapping("{specialistId}")
+    @GetMapping("{id}")
+    public ResponseEntity<ProductResponse> findById(@PathVariable("id") @Valid Long id) {
+        return ResponseEntity.ok(productService.findProductById(id));
+    }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping("/specialist/{specialistId}")
     public ResponseEntity<List<ProductResponse>> findAllCategories(@PathVariable("specialistId") @Valid Long id) {
         return ResponseEntity.ok(productService.findAllProducts(id));
     }
