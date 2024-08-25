@@ -22,6 +22,7 @@ import java.util.List;
 @RequestMapping("/products")
 @RequiredArgsConstructor
 @Validated
+@CrossOrigin
 @PreAuthorize("hasRole('SPECIALIST')")
 public class ProductController {
     ProductService productService;

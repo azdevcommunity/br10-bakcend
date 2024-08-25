@@ -22,6 +22,7 @@ import java.util.List;
 @RequestMapping("/categories")
 @RequiredArgsConstructor
 @Validated
+@CrossOrigin
 @PreAuthorize("hasRole('SPECIALIST')")
 public class CategoryController {
 

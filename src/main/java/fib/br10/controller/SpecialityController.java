@@ -22,6 +22,7 @@ import java.util.List;
 @RequestMapping("/specialities")
 @RequiredArgsConstructor
 @Validated
+@CrossOrigin
 @PreAuthorize("hasRole('ADMIN')")
 public class SpecialityController {
     SpecialityService specialityService;
