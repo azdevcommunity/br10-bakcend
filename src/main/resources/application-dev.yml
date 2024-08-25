@@ -75,7 +75,7 @@ security:
     - /swagger-ui.html/**
     - /actuator/**
     - /app/**
-
+ 
 log-level: info
 logging:
   level:
