@@ -72,3 +72,4 @@ Configuration:
               additivity: false
               AppenderRef:
                   - ref: service_log_appender
+                  
