@@ -10,6 +10,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.security.Principal;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 @RequiredArgsConstructor
 @Log4j2
 @Validated
+@CrossOrigin
 public class WebSocketController {
     WebSocketHandler webSocketHandler;
     private static final ArrayList<TodoItem> todoItems = new ArrayList<>();
