@@ -23,6 +23,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -43,6 +44,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
+                .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(securityEnv.getEndpointWhiteList().toArray(new String[0]))
@@ -51,7 +53,6 @@ public class SecurityConfiguration {
                                 .authenticated()
                 )
 //                .cors(cors -> cors.configurationSource(apiConfigurationSource()))
-                .cors(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .httpBasic(AbstractHttpConfigurer::disable)
@@ -73,13 +74,25 @@ public class SecurityConfiguration {
         roleHierarchy.setHierarchy(hierarchy);
         return roleHierarchy;
     }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
     @Bean
     CorsConfigurationSource apiConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(securityEnv.getCorsAllowedOrigins());
-        configuration.setAllowedMethods((List.of("GET", "POST","PUT", "DELETE","OPTIONS")));
-        configuration.setAllowedHeaders(List.of("*"));
+//        configuration.setAllowedOrigins(securityEnv.getCorsAllowedOrigins());
+//        configuration.setAllowedMethods((List.of("GET", "POST","PUT", "DELETE","OPTIONS")));
+//        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowedOrigins(Collections.singletonList("*"));
+        configuration.setAllowedMethods(Collections.singletonList("*"));
+        configuration.setAllowedHeaders(Collections.singletonList("*"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
 
