@@ -76,8 +76,7 @@ public class SecurityConfiguration {
     @Bean
     CorsConfigurationSource apiConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.setAllowedOrigins(securityEnv.getCorsAllowedOrigins());
-        configuration.setAllowedOrigins(List.of("*"));
+        configuration.setAllowedOrigins(securityEnv.getCorsAllowedOrigins());
         configuration.setAllowedMethods((List.of("GET", "POST","PUT", "DELETE","OPTIONS")));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

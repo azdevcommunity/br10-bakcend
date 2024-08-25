@@ -19,7 +19,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 @Validated
-public class AuthController {
+@CrossOrigin
+public class AuthController{
 
     AuthService authService;
 

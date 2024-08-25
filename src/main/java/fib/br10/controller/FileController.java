@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.concurrent.CompletableFuture;
 
 
+@CrossOrigin
 @RestController
 @RequestMapping("/file")
 @RequiredArgsConstructor
