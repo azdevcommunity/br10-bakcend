@@ -26,7 +26,7 @@ import java.util.List;
 @RequestMapping("/specialist-service")
 @RequiredArgsConstructor
 @Validated
-@CrossOrigin(origins = "*", allowedHeaders = "*")(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @PreAuthorize("hasRole('SPECIALIST')")
 public class SpecialistServiceController {
     SpecialistServiceManager specialistServiceManager;
