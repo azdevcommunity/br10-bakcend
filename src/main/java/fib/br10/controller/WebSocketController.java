@@ -20,7 +20,7 @@ import java.util.ArrayList;
 @RequiredArgsConstructor
 @Log4j2
 @Validated
-@CrossOrigin
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class WebSocketController {
     WebSocketHandler webSocketHandler;
     private static final ArrayList<TodoItem> todoItems = new ArrayList<>();

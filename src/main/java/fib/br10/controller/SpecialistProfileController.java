@@ -25,7 +25,7 @@ import static fib.br10.core.utility.RequestContextEnum.USER_ID;
 @RequestMapping("/specialist-profile")
 @RequiredArgsConstructor
 @Validated
-@CrossOrigin
+@CrossOrigin(origins = "*", allowedHeaders = "*")(origins = "*", allowedHeaders = "*")
 @PreAuthorize("hasRole('SPECIALIST')")
 public class SpecialistProfileController {
 

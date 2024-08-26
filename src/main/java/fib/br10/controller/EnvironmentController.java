@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.security.Security;
 import java.util.List;
 
-@CrossOrigin
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/env")
 @RequiredArgsConstructor
