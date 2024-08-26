@@ -12,6 +12,7 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyUtils;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -45,7 +46,8 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                .cors(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())
+//                .cors(cors -> cors.configurationSource(apiConfigurationSource()))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
@@ -54,7 +56,6 @@ public class SecurityConfiguration {
                                 .anyRequest()
                                 .authenticated()
                 )
-//                .cors(cors -> cors.configurationSource(apiConfigurationSource()))
                 .formLogin(AbstractHttpConfigurer::disable)
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .httpBasic(AbstractHttpConfigurer::disable)
