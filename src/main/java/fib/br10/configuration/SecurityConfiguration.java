@@ -47,6 +47,7 @@ public class SecurityConfiguration {
 
         http
 //                .cors(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(securityEnv.getEndpointWhiteList().toArray(new String[0]))
@@ -82,9 +83,6 @@ public class SecurityConfiguration {
 //        configuration.setAllowedOrigins(securityEnv.getCorsAllowedOrigins());
 //        configuration.setAllowedMethods((List.of("GET", "POST","PUT", "DELETE","OPTIONS")));
 //        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowedOrigins(Collections.singletonList("*"));
-        configuration.setAllowedMethods(Collections.singletonList("*"));
-        configuration.setAllowedHeaders(Collections.singletonList("*"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
 
