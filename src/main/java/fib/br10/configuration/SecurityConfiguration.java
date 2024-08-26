@@ -46,12 +46,10 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-//                .cors(Customizer.withDefaults())
-                .cors(cors -> cors.configurationSource(apiConfigurationSource()))
-//                .csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())
+//                .cors(cors -> cors.configurationSource(apiConfigurationSource()))
                 .authorizeHttpRequests(req ->
-                        req.requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-                                .requestMatchers(securityEnv.getEndpointWhiteList().toArray(new String[0]))
+                        req.requestMatchers(securityEnv.getEndpointWhiteList().toArray(new String[0]))
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated()
@@ -77,18 +75,9 @@ public class SecurityConfiguration {
         roleHierarchy.setHierarchy(hierarchy);
         return roleHierarchy;
     }
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-
-        configuration.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
 
     @Bean
-    CorsConfigurationSource apiConfigurationSource() {
+    CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 //        configuration.setAllowedOrigins(securityEnv.getCorsAllowedOrigins());
 //        configuration.setAllowedMethods((List.of("GET", "POST","PUT", "DELETE","OPTIONS")));
