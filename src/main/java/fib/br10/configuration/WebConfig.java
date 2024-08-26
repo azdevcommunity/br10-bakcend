@@ -30,4 +30,11 @@ public class WebConfig implements WebMvcConfigurer {
         WebMvcConfigurer.super.configureMessageConverters(converters);
         converters.add(0, new MappingJackson2HttpMessageConverter());
     }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("*")
+                .allowedMethods("GET","POST", "PUT", "DELETE", "OPTIONS", "HEAD");
+    }
 }
