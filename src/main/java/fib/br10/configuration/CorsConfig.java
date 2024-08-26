@@ -12,16 +12,13 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-//@Component
-//@Order(Ordered.HIGHEST_PRECEDENCE)
-//@Log4j2
-public class CorsConfig
-//        implements Filter
-
-{
+@Component
+@Order(Ordered.HIGHEST_PRECEDENCE)
+@Log4j2
+public class CorsConfig implements Filter {
 
 
-//    @Override
+    @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
 
 
@@ -48,11 +45,11 @@ public class CorsConfig
         }
     }
 
-//    @Override
+    @Override
     public void destroy() {
     }
 
-//    @Override
+    @Override
     public void init(FilterConfig config) throws ServletException {
     }
 }
