@@ -5,6 +5,7 @@ import fib.br10.middleware.JwtAuthenticationFilter;
 import fib.br10.utility.PrefixUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -93,5 +94,12 @@ public class SecurityConfiguration {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+    }
+    @Bean
+    public FilterRegistrationBean<CorsConfig> corsFilter() {
+        FilterRegistrationBean<CorsConfig> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new CorsConfig());
+        registrationBean.addUrlPatterns("/*");
+        return registrationBean;
     }
 }
