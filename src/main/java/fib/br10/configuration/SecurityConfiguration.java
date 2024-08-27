@@ -47,7 +47,7 @@ public class SecurityConfiguration {
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+//                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(securityEnv.getEndpointWhiteList().toArray(new String[0]))
                                 .permitAll()
