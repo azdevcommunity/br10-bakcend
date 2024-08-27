@@ -19,7 +19,6 @@ import java.util.List;
 @RequestMapping("/specialist-availability")
 @RequiredArgsConstructor
 @Validated
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @PreAuthorize("hasRole('SPECIALIST')")
 public class SpecialistAvailabilityController {
 
