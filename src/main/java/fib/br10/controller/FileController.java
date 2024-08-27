@@ -1,11 +1,9 @@
 package fib.br10.controller;
 
 
-import fib.br10.core.dto.ResponseWrapper;
 import fib.br10.core.service.RequestContextProvider;
 import fib.br10.dto.file.response.FileUploadResponse;
 
-import fib.br10.service.ImageService;
 import fib.br10.service.abstracts.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
@@ -15,8 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.concurrent.CompletableFuture;
 
-
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/file")
 @RequiredArgsConstructor
@@ -24,7 +20,6 @@ import java.util.concurrent.CompletableFuture;
 public class FileController {
 
     private final FileService fileService;
-    private final ImageService imageService;
     private final RequestContextProvider provider;
 
     @PostMapping("/upload")
