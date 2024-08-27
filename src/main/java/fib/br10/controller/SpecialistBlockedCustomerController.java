@@ -22,7 +22,6 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequestMapping("/specialist-customer")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 @Validated
 @PreAuthorize("hasRole('SPECIALIST')")
 public class SpecialistBlockedCustomerController {

@@ -46,7 +46,6 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-//                .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(req ->
@@ -69,32 +68,30 @@ public class SecurityConfiguration {
 
     @Bean
     public RoleHierarchyImpl roleHierarchy() {
-        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-        String hierarchy = PrefixUtil.ROLE + RoleEnum.ADMIN + " > " +
-                PrefixUtil.ROLE + RoleEnum.SPECIALIST + " > " +
-                PrefixUtil.ROLE + RoleEnum.CUSTOMER;
-        roleHierarchy.setHierarchy(hierarchy);
-        return roleHierarchy;
+        String hierarchy = "ROLE_ADMIN > ROLE_SPECIALIST \n ROLE_SPECIALIST > ROLE_CUSTOMER";
+        return RoleHierarchyImpl.fromHierarchy(hierarchy);
     }
+//    @Bean
+//    public RoleHierarchyImpl roleHierarchy() {
+//        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+//        String hierarchy = PrefixUtil.ROLE + RoleEnum.ADMIN + " > " +
+//                PrefixUtil.ROLE + RoleEnum.SPECIALIST + " > " +
+//                PrefixUtil.ROLE + RoleEnum.CUSTOMER;
+//        roleHierarchy.setHierarchy(hierarchy);
+//        return roleHierarchy;
+//    }
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Allow all origins (only in development)
-        configuration.setAllowedOrigins(Collections.singletonList("*"));
-
-        // Allow all methods
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-
-        // Allow all headers
+        configuration.setAllowedOrigins(List.of("http://109.199.110.107", "http://br10.az"));
+        configuration.setAllowedMethods((List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")));
         configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
 
-        // Disable credentials if using "*" for origins
-        configuration.setAllowCredentials(false);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-
     }
-
 }
