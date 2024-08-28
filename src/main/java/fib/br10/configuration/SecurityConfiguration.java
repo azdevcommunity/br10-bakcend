@@ -81,7 +81,7 @@ public class SecurityConfiguration {
     CorsConfigurationSource corsConfigurationSource() {
 
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://frontend-app","http://109.199.110.107"));
+        configuration.setAllowedOrigins(List.of("http://frontend-app"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
