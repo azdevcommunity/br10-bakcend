@@ -40,9 +40,9 @@ public class SpecialistProfileService{
     SpecialityService specialityService;
     RequestContextProvider provider;
 
-    @Cacheable(value = SPECIALIST_PROFILE, key = "#request.id")
-    public SpecialistProfileReadResponse read(RequestById request) {
-        SpecialistProfile specialistProfile = findBySpecialistUserId(request.getId());
+    @Cacheable(value = SPECIALIST_PROFILE, key = "#id")
+    public SpecialistProfileReadResponse read(Long  id) {
+        SpecialistProfile specialistProfile = findBySpecialistUserId(id);
         SpecialistProfileReadResponse response = specialistProfileMapper.specialistProfileToSpecialistProfileResponse(specialistProfile);
 
         Speciality speciality = specialityService.findById(response.getSpecialityId());

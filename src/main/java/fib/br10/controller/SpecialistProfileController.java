@@ -1,11 +1,13 @@
 package fib.br10.controller;
 
 import fib.br10.core.dto.RequestById;
+import fib.br10.core.service.RequestContextProvider;
 import fib.br10.dto.specialist.specialistprofile.request.UpdateSpecialistProfileRequest;
 import fib.br10.dto.specialist.specialistprofile.response.SpecialistProfileReadResponse;
 import fib.br10.service.SpecialistProfileService;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -29,13 +31,21 @@ import static fib.br10.core.utility.RequestContextEnum.USER_ID;
 public class SpecialistProfileController {
 
     SpecialistProfileService specialistProfileService;
+    RequestContextProvider provider;
 
-    @PreAuthorize("permitAll()")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<SpecialistProfileReadResponse> read(@RequestBody @Valid RequestById request) {
-        return ResponseEntity.ok(specialistProfileService.read(request));
+    public ResponseEntity<SpecialistProfileReadResponse> read() {
+        return ResponseEntity.ok(specialistProfileService.read(provider.getUserId()));
     }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping("/specialist/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<SpecialistProfileReadResponse> read(@PathVariable("id") @NotNull Long id) {
+        return ResponseEntity.ok(specialistProfileService.read(id));
+    }
+
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
