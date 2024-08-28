@@ -5,7 +5,6 @@ import fib.br10.middleware.JwtAuthenticationFilter;
 import fib.br10.utility.PrefixUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -47,8 +46,9 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
+//                .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-//                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(securityEnv.getEndpointWhiteList().toArray(new String[0]))
                                 .permitAll()
@@ -69,37 +69,24 @@ public class SecurityConfiguration {
 
     @Bean
     public RoleHierarchyImpl roleHierarchy() {
-        String hierarchy = "ROLE_ADMIN > ROLE_SPECIALIST \n ROLE_SPECIALIST > ROLE_CUSTOMER";
-        return RoleHierarchyImpl.fromHierarchy(hierarchy);
+        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+        String hierarchy = PrefixUtil.ROLE + RoleEnum.ADMIN + " > " +
+                PrefixUtil.ROLE + RoleEnum.SPECIALIST + " > " +
+                PrefixUtil.ROLE + RoleEnum.CUSTOMER;
+        roleHierarchy.setHierarchy(hierarchy);
+        return roleHierarchy;
     }
-//    @Bean
-//    public RoleHierarchyImpl roleHierarchy() {
-//        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-//        String hierarchy = PrefixUtil.ROLE + RoleEnum.ADMIN + " > " +
-//                PrefixUtil.ROLE + RoleEnum.SPECIALIST + " > " +
-//                PrefixUtil.ROLE + RoleEnum.CUSTOMER;
-//        roleHierarchy.setHierarchy(hierarchy);
-//        return roleHierarchy;
-//    }
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://109.199.110.107", "http://br10.az"));
-        configuration.setAllowedMethods((List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")));
+        configuration.setAllowedOrigins(Collections.singletonList("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true);
-        configuration.setMaxAge(3600L);
-
+        configuration.setAllowCredentials(false);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-    @Bean
-    public FilterRegistrationBean<CorsConfig> corsFilter() {
-        FilterRegistrationBean<CorsConfig> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new CorsConfig());
-        registrationBean.addUrlPatterns("/*");
-        return registrationBean;
-    }
+
 }
