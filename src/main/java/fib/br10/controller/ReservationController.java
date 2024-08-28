@@ -23,7 +23,6 @@ import java.util.List;
 @RequestMapping("/reservations")
 @RequiredArgsConstructor
 @Validated
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ReservationController {
 
     ReservationService reservationService;
