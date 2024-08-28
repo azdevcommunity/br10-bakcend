@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "a6fd7fc0-445c-4ddd-a025-78bc38b86de1",
+		"_postman_id": "f34ba60c-2467-4389-a527-dc86ecb016e7",
 		"name": "Br10",
 		"description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this template**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Scripts\" tab**\n\nAdding tests to your requests can help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/fa30ea0a-373d-4545-a668-e7b283cca343/aW1hZ2UucG5n\" alt=\"\" height=\"1530\" width=\"2162\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n    \n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
@@ -443,6 +443,53 @@
 							],
 							"path": [
 								"specialist-profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "read by id",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/specialist-profile/specialist/7",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"specialist-profile",
+								"specialist",
+								"7"
 							]
 						}
 					},
@@ -1730,11 +1777,11 @@
 		},
 		{
 			"key": "base_url",
-			"value": "http://localhost:8082/api"
+			"value": "http://localhost:8042/api"
 		},
 		{
 			"key": "jwt",
-			"value": "eyJhbGciOiJIUzI1NiJ9.eyJUSU1FX1pPTkUiOiIrMDQ6MDAiLCJVU0VSX0lEIjoyLCJUT0tFTl9JRCI6NDMyNzYyLCJzdWIiOiIwNTUxMTEyMjMxIiwiaWF0IjoxNzI0NTM3NDc1LCJleHAiOjE3MjQ2MjM4NzV9.SZREznh2V8XD6cCgNm4KIhiB5ZLEA6tVWqOfm1cgA2E"
+			"value": "eyJhbGciOiJIUzI1NiJ9.eyJUSU1FX1pPTkUiOiIrMDQ6MDAiLCJVU0VSX0lEIjoyLCJUT0tFTl9JRCI6NDkzNDg5LCJzdWIiOiIwNTUxMTEyMjM2IiwiaWF0IjoxNzI0ODMwMDk4LCJleHAiOjE3MjQ5MTY0OTh9.hLa0dh-USosXyNLrl8yZZQE3Q51s6jXDbbtYgRvffbI"
 		}
 	]
 }
