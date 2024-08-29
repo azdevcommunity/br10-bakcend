@@ -47,7 +47,6 @@ public class SpecialistProfile extends BaseEntity {
     @Column(name = "FACEBOOK", length = 100)
     String facebook;
 
-    @Column(name = "PROFILE_PICTURE", length = 100)
-    String profilePicture;
-
+    @Column(name = "IMAGE_ID")
+    Long imageId;
 }

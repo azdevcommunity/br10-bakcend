@@ -12,7 +12,6 @@ public interface SpecialistProfileMapper {
 
     SpecialistProfile specialistProfileRequestToSpecialistProfile(@MappingTarget SpecialistProfile specialistProfile, CreateSpecialistProfileRequest request);
 
-    @Mapping(target = "profilePicture", ignore = true)
     SpecialistProfile updateSpecialistProfileRequestToSpecialistProfile(@MappingTarget SpecialistProfile specialistProfile, UpdateSpecialistProfileRequest request);
 
     SpecialistProfileReadResponse specialistProfileToSpecialistProfileResponse(SpecialistProfile specialistProfile);
