@@ -63,18 +63,16 @@ security:
     refresh-expiration: ${BR10_JWT_REFRESH_EXPIRATION:86400000}
     jwt-expiration: ${BR10_JWT_EXPIRATION:86400000}
   endpoint-white-list:
-    - /auth/register
-    - /auth/refresh-token
-    - /auth/activate-user-verify-otp
-    - /auth/get-otp
+    - /auth/**
     - /auth/login
-    - /auth/reset-password-verify-otp
-    - /auth/reset-password
     - /ws/**
     - /v3/api-docs/**
     - /swagger-ui.html/**
     - /actuator/**
     - /app/**
+    - /specialities/**
+  endpoint-black-list:
+    - /auth/logout
  
 log-level: info
 logging:
