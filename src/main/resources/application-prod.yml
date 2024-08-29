@@ -44,7 +44,7 @@ spring:
 
 
 file:
-  context-path: ${BR10_CONTEXT_PATH:/api}
+  upload-dir: ${BR10_UPLOAD_DIR:uploads}
 
 management:
   endpoint:

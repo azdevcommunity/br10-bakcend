@@ -99,6 +99,10 @@ public final class Messages {
     public static final String CATEGORY_NAME_REQUIRED= "category.name-required";
 
 
+    //file upload
+
+    public static final String IMAGE_SAVE_EXCEPTION  = "file-upload.image-save-exception";
+
 
     //
     //Product
