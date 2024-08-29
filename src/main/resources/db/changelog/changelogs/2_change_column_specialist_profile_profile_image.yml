@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - changeSet:
+      id: SPECIALIST_SERVICES_DROP_AND_ADD_IMAGE_ID_COLUMN
+      author: YUSIF_HASANOV
+      changes:
+        - dropColumn:
+            tableName: SPECIALIST_PROFILES
+            columnName: PROFILE_PICTURE
+        - addColumn:
+            tableName: SPECIALIST_PROFILES
+            columns:
+              - column:
+                  name: IMAGE_ID
+                  type: BIGINT
+                  constraints:
+                    nullable: true

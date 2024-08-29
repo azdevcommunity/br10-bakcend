@@ -18,6 +18,8 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -36,16 +38,14 @@ public class ImageService {
     public CreateImageResponse create(MultipartFile file) {
         FileUploadResponse response = null;
         try {
-            response = fileService.uploadFile(file, provider.getRequestState()).join();
-
+            response = fileService.uploadFile(file);
             Image image = imageMapper.fileUploadResonseToImage(response);
-
             imageRepository.saveAndFlush(image);
             return imageMapper.imageToCreateImageResponse(image);
         } catch (Exception e) {
             log.error(e);
             if (Objects.nonNull(response)) {
-                fileService.deleteFile(response.getPath());
+                fileService.deleteFile(List.of(response.getName()));
             }
             throw new ImageSaveException();
         }
@@ -57,13 +57,13 @@ public class ImageService {
 
         if (image.isPresent()) {
             imageRepository.delete(image.get());
-            fileService.deleteFile(image.get().getPath());
+            fileService.deleteFile(List.of(image.get().getName()));
         }
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public void delete(String path){
-        fileService.deleteFile(path);
+    public void delete(String name){
+        fileService.deleteFile(List.of(name));
     }
 
     public Image findById(Long id) {
