@@ -14,6 +14,7 @@ import java.util.List;
 public class SecurityEnv {
     private Jwt jwt;
     private List<String> endpointWhiteList;
+    private List<String> endpointBlackList;
     private Encryption encryption;
     private List<String> corsAllowedOrigins;
 

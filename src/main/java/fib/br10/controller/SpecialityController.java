@@ -26,6 +26,7 @@ import java.util.List;
 public class SpecialityController {
     SpecialityService specialityService;
 
+
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Long> create(@RequestBody @Valid CreateSpecialityRequest request) {
