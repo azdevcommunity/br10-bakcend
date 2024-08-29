@@ -29,7 +29,7 @@ public class GalleryImageService {
     RequestContextProvider provider;
     GalleryImageMapper galleryImageMapper;
     ImageService imageService;
-
+    UserService userService;
 
     public List<GalleryImageResponse> createGalleryImages(MultipartFile[] images) {
         List<GalleryImageResponse> responses = new ArrayList<>();
@@ -47,5 +47,14 @@ public class GalleryImageService {
             }
         }
         return responses;
+    }
+
+    public List<GalleryImageResponse> findAllGalleryImages(Long specialistId) {
+        userService.existsByIdAndUserRoleSpecialist(specialistId);
+        return galleryImageRepository.findAllGalleryImages(specialistId);
+    }
+
+    public List<GalleryImageResponse> findAllGalleryImages() {
+        return galleryImageRepository.findAllGalleryImages(provider.getUserId());
     }
 }
