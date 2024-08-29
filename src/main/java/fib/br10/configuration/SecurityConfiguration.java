@@ -86,7 +86,7 @@ public class SecurityConfiguration {
         log.warn("CORS is enabled for frontend-app in prod mode");
 
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://frontend-app"));
+        configuration.setAllowedOrigins(List.of("http://109.199.110.107"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
