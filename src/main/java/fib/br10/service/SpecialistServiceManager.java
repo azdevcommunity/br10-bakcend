@@ -73,7 +73,7 @@ public class SpecialistServiceManager {
             return specialistService.getId();
         } catch (Exception e) {
             if (Objects.nonNull(imageResponse)) {
-                imageService.delete(imageResponse.getPath());
+                imageService.delete(imageResponse.getName());
             }
             throw e;
         }

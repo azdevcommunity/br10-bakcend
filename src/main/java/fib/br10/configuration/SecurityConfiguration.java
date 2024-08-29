@@ -1,11 +1,14 @@
 package fib.br10.configuration;
 
+import fib.br10.core.utility.EnvironmentUtil;
 import fib.br10.entity.user.RoleEnum;
 import fib.br10.middleware.JwtAuthenticationFilter;
 import fib.br10.utility.PrefixUtil;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -23,6 +26,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Log4j2
@@ -36,12 +40,12 @@ public class SecurityConfiguration {
     private final SecurityEnv securityEnv;
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
+    private final EnvironmentUtil environmentUtil;
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
-
-        CorsConfigurationSource corsConfigurationSource = isProd() ?
+        CorsConfigurationSource corsConfigurationSource = environmentUtil.isProd() ?
                 prodCorsConfigurationSource() : devCorsConfigurationSource();
 
         http
@@ -67,12 +71,14 @@ public class SecurityConfiguration {
 
     @Bean
     public RoleHierarchyImpl roleHierarchy() {
-        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-        String hierarchy = PrefixUtil.ROLE + RoleEnum.ADMIN + " > " +
-                PrefixUtil.ROLE + RoleEnum.SPECIALIST + " > " +
-                PrefixUtil.ROLE + RoleEnum.CUSTOMER;
-        roleHierarchy.setHierarchy(hierarchy);
-        return roleHierarchy;
+//        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+//        String hierarchy = PrefixUtil.ROLE + RoleEnum.ADMIN + " > " +
+//                           PrefixUtil.ROLE + RoleEnum.SPECIALIST + " > " +
+//                           PrefixUtil.ROLE + RoleEnum.CUSTOMER;
+//        roleHierarchy.setHierarchy(hierarchy);
+//        return roleHierarchy;
+        String hierarchy = "ROLE_ADMIN > ROLE_SPECIALIST \n ROLE_SPECIALIST > ROLE_CUSTOMER";
+        return RoleHierarchyImpl.fromHierarchy(hierarchy);
     }
 
     CorsConfigurationSource prodCorsConfigurationSource() {
@@ -105,10 +111,6 @@ public class SecurityConfiguration {
         source.registerCorsConfiguration("/**", configuration);
         return source;
 
-    }
-
-    private boolean isProd() {
-        return Objects.equals(System.getenv("BR10_PROFILE"), "prod");
     }
 
 

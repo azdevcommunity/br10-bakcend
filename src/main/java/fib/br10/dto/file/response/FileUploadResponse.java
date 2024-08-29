@@ -1,6 +1,5 @@
 package fib.br10.dto.file.response;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,4 +16,8 @@ public class FileUploadResponse {
     String path;
 
     String extension;
+
+    Integer width;
+
+    Integer height;
 }

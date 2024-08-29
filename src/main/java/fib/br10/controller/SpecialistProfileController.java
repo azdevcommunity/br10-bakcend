@@ -1,6 +1,5 @@
 package fib.br10.controller;
 
-import fib.br10.core.dto.RequestById;
 import fib.br10.core.service.RequestContextProvider;
 import fib.br10.dto.specialist.specialistprofile.request.UpdateSpecialistProfileRequest;
 import fib.br10.dto.specialist.specialistprofile.response.SpecialistProfileReadResponse;
@@ -49,9 +48,13 @@ public class SpecialistProfileController {
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Long> update(
-            @RequestPart("profilePicture") @Nullable MultipartFile profilePicture,
-            @ModelAttribute @Valid UpdateSpecialistProfileRequest request) {
-        return ResponseEntity.ok(specialistProfileService.update(request, profilePicture, get(USER_ID)));
+    public ResponseEntity<Long> update(@RequestBody @Valid UpdateSpecialistProfileRequest request) {
+        return ResponseEntity.ok(specialistProfileService.update(request, get(USER_ID)));
+    }
+
+    @PutMapping("/picture")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Long> update(@RequestPart("profilePicture") @Nullable MultipartFile profilePicture) {
+        return ResponseEntity.ok(specialistProfileService.update(profilePicture, get(USER_ID)));
     }
 }
