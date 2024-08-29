@@ -44,7 +44,7 @@ spring:
 
 
 file:
-  upload-dir: ${BR10_UPLOAD_DIR:./uploads}
+  upload-dir: ${BR10_UPLOAD_DIR:uploads}
 
 management:
   endpoint:

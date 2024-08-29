@@ -1,75 +1,77 @@
 default:
-    error: xəta baş verdi
-    success: əməliyyat uğurla yerinə yetirildi
+  error: xəta baş verdi
+  success: əməliyyat uğurla yerinə yetirildi
 general:
-    encrypt-error: Şifrələmə xətası
-    decrypt-error: Şifrə acma xətası
-    id-required: ID tələb olunur
-    timeZone:
-        not-found: Zaman zonası tapılmadı
+  encrypt-error: Şifrələmə xətası
+  decrypt-error: Şifrə acma xətası
+  id-required: ID tələb olunur
+  timeZone:
+    not-found: Zaman zonası tapılmadı
 auth:
-    jwt:
-        expired: Jwt token expire olub
-        required: Jwt token mandatorydir
-        invalid-claim: Claim invaliddir
-        refresh-token-required: Refresh token laizmdi
-        access-token-required: Access token laizmdi
-        at-black-list: Jwt black listdedi
-    token:
-        not-valid: Token doğru deyil
-        required: Token tələb olunur
-    otp:
-        required: OTP kodu tələb olunur
-        not-found: OTP kodu tapilmadi
-        not-valid: OTP kodu doğru deyil
-        expired: OTP kodu vaxtı bitib
-        not-valid-otp: OTP kodu doğru deyil
-        phoneNumberOrUsername-required: Telefon nömrəsi və ya istifadəçi adı tələb olunur
+  jwt:
+    expired: Jwt token expire olub
+    required: Jwt token mandatorydir
+    invalid-claim: Claim invaliddir
+    refresh-token-required: Refresh token laizmdi
+    access-token-required: Access token laizmdi
+    at-black-list: Jwt black listdedi
+  token:
+    not-valid: Token doğru deyil
+    required: Token tələb olunur
+  otp:
+    required: OTP kodu tələb olunur
+    not-found: OTP kodu tapilmadi
+    not-valid: OTP kodu doğru deyil
+    expired: OTP kodu vaxtı bitib
+    not-valid-otp: OTP kodu doğru deyil
+    phoneNumberOrUsername-required: Telefon nömrəsi və ya istifadəçi adı tələb olunur
 user:
-    id-required: İstifadəçi ID tələb olunur
+  id-required: İstifadəçi ID tələb olunur
+  not-found: İstifadəçi tapılmadı
+  not-active: İstifadəçi aktiv deyil
+  phoneNumberOrUsername:
     not-found: İstifadəçi tapılmadı
-    not-active: İstifadəçi aktiv deyil
-    phoneNumberOrUsername:
-        not-found: İstifadəçi tapılmadı
-    confirm-password:
-        not-match: Şifrələr uyğun gəlmir
-    username-required: İstifadəçi adı tələb olunur
-    email-required: Email tələb olunur
-    password-required: Şifrə tələb olunur
-    phoneNumber-required: Telefon nömrəsi tələb olunur
-    userType-required: İstifadəçi növü tələb olunur
-    exists-same-phoneNumber: Bu nomre ile istifadeci movcuddur
-    exists-same-username: Bu username ile istifadeci movcuddur
+  confirm-password:
+    not-match: Şifrələr uyğun gəlmir
+  username-required: İstifadəçi adı tələb olunur
+  email-required: Email tələb olunur
+  password-required: Şifrə tələb olunur
+  phoneNumber-required: Telefon nömrəsi tələb olunur
+  userType-required: İstifadəçi növü tələb olunur
+  exists-same-phoneNumber: Bu nomre ile istifadeci movcuddur
+  exists-same-username: Bu username ile istifadeci movcuddur
 specialist-profile:
-    not-found: İxtisas profili tapılmadı
-    already-exists: İxtisas profili artıq mövcuddur
-    specialist-required: İxtisas tələb olunur
-    blocked-customer-not-found: Bloklanmis musteri movcud deyil
+  not-found: İxtisas profili tapılmadı
+  already-exists: İxtisas profili artıq mövcuddur
+  specialist-required: İxtisas tələb olunur
+  blocked-customer-not-found: Bloklanmis musteri movcud deyil
 specialist-service:
-    name-required: İxtisas xidməti adı tələb olunur
-    price-required: İxtisas xidməti qiyməti tələb olunur
-    not-found: İxtisas xidməti tapılmadı
-    already-exists: İxtisas xidməti artıq mövcuddur
-    already-used-on-any-reservation: İxtisas xidməti artıq rezervasiyada istifadə olunub
+  name-required: İxtisas xidməti adı tələb olunur
+  price-required: İxtisas xidməti qiyməti tələb olunur
+  not-found: İxtisas xidməti tapılmadı
+  already-exists: İxtisas xidməti artıq mövcuddur
+  already-used-on-any-reservation: İxtisas xidməti artıq rezervasiyada istifadə olunub
 reservation:
-    date-required: Rezervasiya tarixi tələb olunur
-    specialistUserId-required: İxtisasçı istifadəçi ID tələb olunur
-    customerUserId-required: Müştəri istifadəçi ID tələb olunur
-    specialistServiceId-required: İxtisas xidməti ID tələb olunur
-    source-required: Mənbə tələb olunur
-    customerUserId-not-match: Müştəri istifadəçi ID uyğun gəlmir
-    specialistUserId-not-match: İxtisasçı istifadəçi ID uyğun gəlmir
-    conflict: Rezervasiya çətinlikləri var
-    not-found: Rezervasiya tapılmadı
-    id-required: Rezervasiya ID tələb olunur
+  date-required: Rezervasiya tarixi tələb olunur
+  specialistUserId-required: İxtisasçı istifadəçi ID tələb olunur
+  customerUserId-required: Müştəri istifadəçi ID tələb olunur
+  specialistServiceId-required: İxtisas xidməti ID tələb olunur
+  source-required: Mənbə tələb olunur
+  customerUserId-not-match: Müştəri istifadəçi ID uyğun gəlmir
+  specialistUserId-not-match: İxtisasçı istifadəçi ID uyğun gəlmir
+  conflict: Rezervasiya çətinlikləri var
+  not-found: Rezervasiya tapılmadı
+  id-required: Rezervasiya ID tələb olunur
 appointment:
-    not-found: Təyinat tapılmadı
-    not-available: Təyinat mövcud deyil
-    date-required: Təyinat tarixi tələb olunur
+  not-found: Təyinat tapılmadı
+  not-available: Təyinat mövcud deyil
+  date-required: Təyinat tarixi tələb olunur
 customer:
-    already-blocked: Müştəri artıq bloklanmışdır
-    blocked-by-specialist: Müştəri ixtisasçı tərəfindən bloklanmışdır
+  already-blocked: Müştəri artıq bloklanmışdır
+  blocked-by-specialist: Müştəri ixtisasçı tərəfindən bloklanmışdır
 web-socket:
-    request-can-not-be-null: Socket request null olamaz
-    queue-name-can-not-be-null: Socket kuyruk ismi null olamaz
-    publish-error: Mesaji yayimlayarken xeta bas verdi
+  request-can-not-be-null: Socket request null olamaz
+  queue-name-can-not-be-null: Socket kuyruk ismi null olamaz
+  publish-error: Mesaji yayimlayarken xeta bas verdi
+file-upload:
+  image-save-exception: Sekill yaddasa verilerken xeta bas verdi
