@@ -45,7 +45,7 @@ spring:
     exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
 
 file:
-  upload-dir: ${BR10_UPLOAD_DIR:./uploads}
+  upload-dir: ${BR10_UPLOAD_DIR:uploads}
 
 management:
   endpoint:

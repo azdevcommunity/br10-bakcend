@@ -83,3 +83,5 @@ category:
 product:
   not-found: Mehsul tapilmadi
   exists-same-name: Eyni adli mehsul var
+file-upload:
+  image-save-exception: Sekill yaddasa verilerken xeta bas verdi

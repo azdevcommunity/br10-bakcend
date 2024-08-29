@@ -5,6 +5,7 @@ import fib.br10.core.service.RequestContextProvider;
 import fib.br10.dto.file.response.FileUploadResponse;
 import fib.br10.dto.image.response.CreateImageResponse;
 import fib.br10.entity.Image;
+import fib.br10.exception.fileupload.ImageSaveException;
 import fib.br10.mapper.ImageMapper;
 import fib.br10.repository.ImageRepository;
 import fib.br10.service.abstracts.FileService;
@@ -46,7 +47,7 @@ public class ImageService {
             if (Objects.nonNull(response)) {
                 fileService.deleteFile(response.getPath());
             }
-            throw new BaseException("error occurred");
+            throw new ImageSaveException();
         }
     }
 
