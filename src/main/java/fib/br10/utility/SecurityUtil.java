@@ -15,9 +15,14 @@ public class SecurityUtil {
     private final AntPathMatcher antPathMatcher;
 
     public boolean isWhiteListedEndpoint(String endpoint) {
-        return securityEnv.getEndpointWhiteList()
+        boolean isWhiteListed = securityEnv.getEndpointWhiteList()
                 .stream()
                 .anyMatch(url -> antPathMatcher.match(url, endpoint));
 
+        boolean isBlackListed = securityEnv.getEndpointBlackList()
+                .stream()
+                .anyMatch(url -> antPathMatcher.match(url, endpoint));
+
+        return isWhiteListed && !isBlackListed;
     }
 }

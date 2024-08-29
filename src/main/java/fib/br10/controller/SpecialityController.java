@@ -22,22 +22,23 @@ import java.util.List;
 @RequestMapping("/specialities")
 @RequiredArgsConstructor
 @Validated
-@PreAuthorize("hasRole('ADMIN')")
 public class SpecialityController {
     SpecialityService specialityService;
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Long> create(@RequestBody @Valid CreateSpecialityRequest request) {
         return ResponseEntity.ok(specialityService.create(request));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Long> delete(@RequestBody @Valid RequestById request) {
         return ResponseEntity.ok(specialityService.delete(request));
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Long> update(@RequestBody @Valid UpdateSpecialityRequest request) {
