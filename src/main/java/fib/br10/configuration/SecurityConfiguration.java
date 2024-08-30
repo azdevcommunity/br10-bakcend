@@ -3,6 +3,7 @@ package fib.br10.configuration;
 import fib.br10.core.utility.EnvironmentUtil;
 import fib.br10.entity.user.RoleEnum;
 import fib.br10.middleware.JwtAuthenticationFilter;
+import fib.br10.utility.Messages;
 import fib.br10.utility.PrefixUtil;
 
 import java.util.Arrays;
@@ -104,7 +105,7 @@ public class SecurityConfiguration {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowedHeaders(List.of("ACTIVITY_ID","Accept-Language","TIME_ZONE"));
         configuration.setAllowCredentials(false);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
