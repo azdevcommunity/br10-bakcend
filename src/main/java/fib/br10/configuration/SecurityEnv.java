@@ -23,5 +23,4 @@ public class SecurityEnv {
 
     public record Encryption(String secret,String algorithm,int keySize) {
     }
-
 }
