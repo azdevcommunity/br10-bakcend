@@ -1,18 +1,21 @@
 package fib.br10.configuration;
 
+import fib.br10.core.utility.EnvironmentUtil;
 import fib.br10.entity.user.RoleEnum;
 import fib.br10.middleware.JwtAuthenticationFilter;
 import fib.br10.utility.PrefixUtil;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchyUtils;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -24,13 +27,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
+@Log4j2
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -41,13 +40,17 @@ public class SecurityConfiguration {
     private final SecurityEnv securityEnv;
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
+    private final EnvironmentUtil environmentUtil;
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        CorsConfigurationSource corsConfigurationSource = environmentUtil.isProd() ?
+                prodCorsConfigurationSource() : devCorsConfigurationSource();
 
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
                 .authorizeHttpRequests(req ->
                         req.requestMatchers(securityEnv.getEndpointWhiteList().toArray(new String[0]))
                                 .permitAll()
@@ -68,19 +71,19 @@ public class SecurityConfiguration {
 
     @Bean
     public RoleHierarchyImpl roleHierarchy() {
-        //TODO: Dont delete this code.
 //        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
 //        String hierarchy = PrefixUtil.ROLE + RoleEnum.ADMIN + " > " +
-//        PrefixUtil.ROLE + RoleEnum.SPECIALIST + " > " +
-//        PrefixUtil.ROLE + RoleEnum.CUSTOMER;
+//                           PrefixUtil.ROLE + RoleEnum.SPECIALIST + " > " +
+//                           PrefixUtil.ROLE + RoleEnum.CUSTOMER;
 //        roleHierarchy.setHierarchy(hierarchy);
 //        return roleHierarchy;
         String hierarchy = "ROLE_ADMIN > ROLE_SPECIALIST \n ROLE_SPECIALIST > ROLE_CUSTOMER";
         return RoleHierarchyImpl.fromHierarchy(hierarchy);
     }
 
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    CorsConfigurationSource prodCorsConfigurationSource() {
+
+        log.warn("CORS is enabled for frontend-app in prod mode");
 
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://frontend-app"));
@@ -91,5 +94,24 @@ public class SecurityConfiguration {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
+
     }
+
+    CorsConfigurationSource devCorsConfigurationSource() {
+
+        log.warn("CORS is enabled for all origins in dev mode");
+
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(List.of("*"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(false);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+
+    }
+
+
 }
