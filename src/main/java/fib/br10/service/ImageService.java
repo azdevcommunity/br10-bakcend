@@ -52,7 +52,7 @@ public class ImageService {
     }
 
     @Transactional
-    public void delete(Long id){
+    public void delete(Long id) {
         Optional<Image> image = imageRepository.findById(id);
 
         if (image.isPresent()) {
@@ -62,7 +62,7 @@ public class ImageService {
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public void delete(String name){
+    public void delete(String name) {
         fileService.deleteFile(List.of(name));
     }
 
