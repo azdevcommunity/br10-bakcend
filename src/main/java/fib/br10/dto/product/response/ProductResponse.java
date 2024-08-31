@@ -26,4 +26,6 @@ public class ProductResponse {
     Long categoryId;
 
     String categoryName;
+
+    String image;
 }

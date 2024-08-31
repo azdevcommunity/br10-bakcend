@@ -20,9 +20,10 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Queryds
 
     @Query("""
             select new fib.br10.dto.product.response.ProductResponse(
-            p.id,p.name,p.description,p.price,p.specialistUserId,p.categoryId,c.name)
+            p.id,p.name,p.description,p.price,p.specialistUserId,p.categoryId,c.name,i.path)
             from Product p
             left join Category c on p.categoryId = c.id
+            left join Image  i on p.imageId = i.id
             where p.specialistUserId =:id
             order by p.createdDate desc
             """)
