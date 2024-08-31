@@ -85,3 +85,5 @@ product:
   exists-same-name: Eyni adli mehsul var
 file-upload:
   image-save-exception: Sekill yaddasa verilerken xeta bas verdi
+gallery-image:
+  not-found: Galereya sekili tapilmadi

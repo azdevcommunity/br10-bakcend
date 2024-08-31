@@ -12,12 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -48,5 +43,18 @@ public class GalleryController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<GalleryImageResponse>> getAll() {
         return ResponseEntity.ok(galleryImageService.findAllGalleryImages());
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Void> delete(@PathVariable("id") @Valid Long id) {
+        galleryImageService.delete(id);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<GalleryImageResponse> update(@PathVariable("id") @Valid Long id, @RequestPart("image") @Nonnull MultipartFile image) {
+        return ResponseEntity.ok(galleryImageService.update(id, image));
     }
 }
