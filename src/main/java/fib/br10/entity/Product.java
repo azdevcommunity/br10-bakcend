@@ -46,4 +46,7 @@ public class Product extends BaseEntity {
 
     @Column(name = "CATEGORY_ID")
     Long categoryId;
+
+    @Column(name = "IMAGE_ID")
+    Long imageId;
 }
