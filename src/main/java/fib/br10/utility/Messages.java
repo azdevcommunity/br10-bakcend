@@ -102,7 +102,7 @@ public final class Messages {
     //file upload
 
     public static final String IMAGE_SAVE_EXCEPTION  = "file-upload.image-save-exception";
-
+    public static final String GALLERY_IMAGE_NOT_FOUND = "gallery-image.not-found";
 
     //
     //Product

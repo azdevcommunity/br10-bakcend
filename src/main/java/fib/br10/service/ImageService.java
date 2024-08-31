@@ -60,7 +60,6 @@ public class ImageService {
             fileService.deleteFile(List.of(image.get().getName()));
         }
     }
-
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void delete(String name) {
         fileService.deleteFile(List.of(name));
