@@ -4,7 +4,7 @@ import fib.br10.core.dto.RequestById;
 import fib.br10.core.service.RequestContextProvider;
 import fib.br10.dto.specialist.specialistservice.request.CreateSpecialistServiceRequest;
 import fib.br10.dto.specialist.specialistservice.request.UpdateSpecialistServiceRequest;
-import fib.br10.dto.specialist.specialistservice.response.ReadSpecialistServiceResponse;
+import fib.br10.dto.specialist.specialistservice.response.SpecialistServiceResponse;
 import fib.br10.service.SpecialistServiceManager;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
@@ -33,7 +33,7 @@ public class SpecialistServiceController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Long> create(@RequestPart("image") @Nullable MultipartFile image,
+    public ResponseEntity<SpecialistServiceResponse> create(@RequestPart("image") @Nullable MultipartFile image,
                                        @ModelAttribute @Valid CreateSpecialistServiceRequest request) {
         request.setImage(image);
         return ResponseEntity.ok(specialistServiceManager.create(request, provider.getUserId()));
@@ -41,7 +41,7 @@ public class SpecialistServiceController {
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Long> update(@RequestPart("image") @Nullable MultipartFile image,
+    public ResponseEntity<SpecialistServiceResponse> update(@RequestPart("image") @Nullable MultipartFile image,
                                        @ModelAttribute @Valid UpdateSpecialistServiceRequest request) {
         request.setImage(image);
         return ResponseEntity.ok(specialistServiceManager.update(request, provider.getUserId()));
@@ -56,21 +56,21 @@ public class SpecialistServiceController {
     @PreAuthorize("permitAll()")
     @GetMapping("/specialist/{specialistId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<ReadSpecialistServiceResponse>> getAllById(@PathVariable("specialistId") @Valid Long specialistId) {
+    public ResponseEntity<List<SpecialistServiceResponse>> getAllById(@PathVariable("specialistId") @Valid Long specialistId) {
         return ResponseEntity.ok(specialistServiceManager.findAllSpecialistServices(specialistId));
     }
 
     @PreAuthorize("permitAll()")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<ReadSpecialistServiceResponse>> getAll() {
+    public ResponseEntity<List<SpecialistServiceResponse>> getAll() {
         return ResponseEntity.ok(specialistServiceManager.findAllSpecialistServices(provider.getUserId()));
     }
 
     @PreAuthorize("permitAll()")
     @GetMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<ReadSpecialistServiceResponse> getById(@PathVariable("id") @Valid Long id) {
+    public ResponseEntity<SpecialistServiceResponse> getById(@PathVariable("id") @Valid Long id) {
         return ResponseEntity.ok(specialistServiceManager.findServiceById(id));
     }
 }

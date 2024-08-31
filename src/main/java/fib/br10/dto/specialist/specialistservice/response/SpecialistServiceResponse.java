@@ -1,6 +1,5 @@
 package fib.br10.dto.specialist.specialistservice.response;
 
-import jakarta.persistence.Column;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +12,7 @@ import java.math.BigDecimal;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor
 @NoArgsConstructor
-public class ReadSpecialistServiceResponse{
+public class SpecialistServiceResponse {
     Long id;
 
     Long specialistUserId;

@@ -29,12 +29,12 @@ public class CategoryController {
     RequestContextProvider provider;
 
     @PostMapping
-    public ResponseEntity<Long> create(@RequestBody @Valid CreateCategoryRequest request) {
+    public ResponseEntity<CategoryResponse> create(@RequestBody @Valid CreateCategoryRequest request) {
         return ResponseEntity.ok(categoryService.create(request, provider.getUserId()));
     }
 
     @PutMapping
-    public ResponseEntity<Long> update(@RequestBody @Valid UpdateCategoryRequest request) {
+    public ResponseEntity<CategoryResponse> update(@RequestBody @Valid UpdateCategoryRequest request) {
         return ResponseEntity.ok(categoryService.update(request, provider.getUserId()));
     }
 

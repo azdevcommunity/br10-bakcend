@@ -83,7 +83,7 @@ public class SpecialityService {
     @Cacheable(value = SPECIALITIES, key = SPECIALITIES_KEY)
     public List<SpecialityResponse> findAll() {
        return specialityRepository
-                .findByStatus(EntityStatus.ACTIVE.getValue())
+                .findByStatusOrderByCreatedDateDesc(EntityStatus.ACTIVE.getValue())
                 .stream()
                 .map(specialityMapper::toSpecialityResponse)
                 .collect(Collectors.toCollection(ArrayList::new));

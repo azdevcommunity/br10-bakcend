@@ -1,10 +1,8 @@
 package fib.br10.controller;
 
 import fib.br10.dto.gallery.response.GalleryImageResponse;
-import fib.br10.dto.specialist.specialistservice.response.ReadSpecialistServiceResponse;
 import fib.br10.service.GalleryImageService;
 import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
