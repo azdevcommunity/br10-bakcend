@@ -21,9 +21,10 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Queryds
     @Query("""
             select new fib.br10.dto.product.response.ProductResponse(
             p.id,p.name,p.description,p.price,p.specialistUserId,p.categoryId,c.name)
-            from Product p 
+            from Product p
             left join Category c on p.categoryId = c.id
             where p.specialistUserId =:id
+            order by p.createdDate desc
             """)
     List<ProductResponse> findAllProducts(Long id);
 
