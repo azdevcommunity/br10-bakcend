@@ -8,11 +8,13 @@ import org.mapstruct.*;
 
 @Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface ProductMapper {
-    Product createProductToProduct(@MappingTarget Product product, CreateProductRequest request);
+    Product createProductToProduct( CreateProductRequest request);
 
     Product updateProductToProduct(@MappingTarget Product product, UpdateProductRequest request);
 
-    ProductResponse productToProductResponse(Product product);
+    @Mapping(target = "categoryName", source = "categoryName")
+    @Mapping(target = "image", source = "image")
+    ProductResponse productToProductResponse(Product product, String categoryName, String image);
 
     @Mapping(target = "categoryName", source = "categoryName")
     ProductResponse productToProductResponse(Product product, String categoryName);

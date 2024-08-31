@@ -6,6 +6,7 @@ import fib.br10.dto.product.request.CreateProductRequest;
 import fib.br10.dto.product.request.UpdateProductRequest;
 import fib.br10.dto.product.response.ProductResponse;
 import fib.br10.service.ProductService;
+import jakarta.annotation.Nonnull;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -28,13 +30,21 @@ public class ProductController {
     RequestContextProvider provider;
 
     @PostMapping
-    public ResponseEntity<ProductResponse> create(@RequestBody @Valid CreateProductRequest request) {
+    public ResponseEntity<ProductResponse> create(@RequestPart("image") @Nonnull MultipartFile image,
+                                                  @ModelAttribute @Valid CreateProductRequest request) {
+        request.setImage(image);
         return ResponseEntity.ok(productService.create(request, provider.getUserId()));
     }
 
     @PutMapping
     public ResponseEntity<ProductResponse> update(@RequestBody @Valid UpdateProductRequest request) {
         return ResponseEntity.ok(productService.update(request, provider.getUserId()));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ProductResponse> update(@RequestPart("image") @Nonnull MultipartFile image,
+                                                  @PathVariable("id") @Valid Long id) {
+        return ResponseEntity.ok(productService.updateImage(image,id, provider.getUserId()));
     }
 
     @DeleteMapping
