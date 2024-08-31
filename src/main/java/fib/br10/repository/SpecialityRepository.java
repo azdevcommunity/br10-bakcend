@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface SpecialityRepository extends JpaRepository<Speciality, Long>,
         QuerydslPredicateExecutor<Speciality> {
-    List<Speciality> findByStatus(Integer status);
+    List<Speciality> findByStatusOrderByCreatedDateDesc(Integer status);
 
     boolean existsByNameAndStatus(String name,Integer status);
     boolean existsByNameAndStatusAndIdNot(String name,Integer status,Long id);

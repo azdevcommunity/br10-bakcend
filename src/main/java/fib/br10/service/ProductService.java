@@ -6,6 +6,7 @@ import fib.br10.core.exception.BaseException;
 import fib.br10.dto.product.request.CreateProductRequest;
 import fib.br10.dto.product.request.UpdateProductRequest;
 import fib.br10.dto.product.response.ProductResponse;
+import fib.br10.entity.Category;
 import fib.br10.entity.Product;
 import fib.br10.exception.category.CategoryHaveProductException;
 import fib.br10.exception.product.ProductExistsSameNameException;
@@ -37,12 +38,13 @@ public class ProductService {
     CategoryService categoryService;
 
     @CacheEvict(value = PRODUCTS, key = "#userId")
-    public Long create(CreateProductRequest request, Long userId) {
+    public ProductResponse create(CreateProductRequest request, Long userId) {
         if (productRepository.existsByName(request.getName())) {
             throw new BaseException("product exists same name");
         }
 
-        categoryService.validateCategoryExists(request.getCategoryId());
+        Category category = categoryService.findById(request.getCategoryId());
+
         userService.existsByIdAndUserRoleSpecialist(userId);
 
         Product product = new Product();
@@ -51,20 +53,16 @@ public class ProductService {
 
         productRepository.save(product);
 
-        return product.getId();
+        return productMapper.productToProductResponse(product, category.getName());
     }
 
     @CacheEvict(value = PRODUCTS, key = "#userId")
-    public Long update(UpdateProductRequest request, Long userId) {
+    public ProductResponse update(UpdateProductRequest request, Long userId) {
         if (productRepository.existsByNameAndIdNot(request.getName(), request.getId())) {
             throw new ProductExistsSameNameException();
         }
 
-        userService.existsByIdAndUserRoleSpecialist(userId);
-
-        //dont need this i add PREAUTHORIES to Controller
-//        categoryService.validateCategoryExists(request.getCategoryId());
-
+        Category category = categoryService.findById(request.getCategoryId());
         Product product = findById(request.getId());
 
         userService.validateSpecialist(product.getSpecialistUserId(), userId);
@@ -73,15 +71,11 @@ public class ProductService {
 
         productRepository.save(product);
 
-        return product.getId();
+        return productMapper.productToProductResponse(product, category.getName());
     }
 
     @CacheEvict(value = PRODUCTS, key = "#userId")
     public Long delete(RequestById request, Long userId) {
-        if (productRepository.existsById(request.getId())) {
-            throw new CategoryHaveProductException();
-        }
-
         Product product = findById(request.getId());
 
         userService.validateSpecialist(product.getSpecialistUserId(), userId);

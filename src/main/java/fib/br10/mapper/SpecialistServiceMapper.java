@@ -2,7 +2,7 @@ package fib.br10.mapper;
 
 import fib.br10.dto.specialist.specialistservice.request.CreateSpecialistServiceRequest;
 import fib.br10.dto.specialist.specialistservice.request.UpdateSpecialistServiceRequest;
-import fib.br10.dto.specialist.specialistservice.response.ReadSpecialistServiceResponse;
+import fib.br10.dto.specialist.specialistservice.response.SpecialistServiceResponse;
 import fib.br10.entity.specialist.SpecialistService;
 import org.mapstruct.*;
 
@@ -15,7 +15,7 @@ public interface SpecialistServiceMapper {
     SpecialistService createSpecialistServiceRequestToSpecialistService( CreateSpecialistServiceRequest request, Long specialistUserId, Long imageId);
     SpecialistService updateSpecialistServiceRequestToSpecialistService(@MappingTarget SpecialistService specialistService, UpdateSpecialistServiceRequest request);
 
-    ReadSpecialistServiceResponse specialistServiceToSpecialistServiceResponse(SpecialistService specialistService);
+    SpecialistServiceResponse specialistServiceToSpecialistServiceResponse(SpecialistService specialistService);
 }
     
     

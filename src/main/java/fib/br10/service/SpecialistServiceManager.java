@@ -6,10 +6,8 @@ import fib.br10.core.dto.RequestById;
 import fib.br10.core.service.RequestContextProvider;
 import fib.br10.dto.image.response.CreateImageResponse;
 import fib.br10.dto.specialist.specialistservice.request.CreateSpecialistServiceRequest;
-import fib.br10.dto.specialist.specialistservice.request.GetSpecialistServicesRequest;
 import fib.br10.dto.specialist.specialistservice.request.UpdateSpecialistServiceRequest;
-import fib.br10.dto.specialist.specialistservice.response.ReadSpecialistServiceResponse;
-import fib.br10.entity.Image;
+import fib.br10.dto.specialist.specialistservice.response.SpecialistServiceResponse;
 import fib.br10.entity.QImage;
 import fib.br10.entity.reservation.ReservationStatus;
 import fib.br10.entity.specialist.QSpecialistService;
@@ -29,10 +27,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import static fib.br10.utility.CacheKeys.SPECIALIST_SERVICES;
 
@@ -52,7 +48,7 @@ public class SpecialistServiceManager {
 
     @CacheEvict(value = SPECIALIST_SERVICES, key = "#userId")
     @Transactional
-    public Long create(CreateSpecialistServiceRequest request, Long userId) {
+    public SpecialistServiceResponse create(CreateSpecialistServiceRequest request, Long userId) {
         userService.existsByIdAndUserRoleSpecialist(userId);
 
         if (specialistServicesRepository.existsByName(request.getName())) {
@@ -70,7 +66,13 @@ public class SpecialistServiceManager {
 
             SpecialistService specialistService = specialistServicesMapper.createSpecialistServiceRequestToSpecialistService(request, userId, imageId);
             specialistServicesRepository.save(specialistService);
-            return specialistService.getId();
+
+            SpecialistServiceResponse response = specialistServicesMapper.specialistServiceToSpecialistServiceResponse(specialistService);
+            if (Objects.nonNull(imageResponse)) {
+                response.setImage(imageResponse.getPath());
+            }
+            return response;
+
         } catch (Exception e) {
             if (Objects.nonNull(imageResponse)) {
                 imageService.delete(imageResponse.getName());
@@ -81,7 +83,7 @@ public class SpecialistServiceManager {
 
     @CacheEvict(value = SPECIALIST_SERVICES, key = "#userId")
     @Transactional
-    public Long update(UpdateSpecialistServiceRequest request, Long userId) {
+    public SpecialistServiceResponse update(UpdateSpecialistServiceRequest request, Long userId) {
         userService.existsByIdAndUserRoleSpecialist(userId);
 
         if (specialistServicesRepository.existsByNameAndIdNot(request.getName(), request.getId())) {
@@ -91,18 +93,25 @@ public class SpecialistServiceManager {
         SpecialistService specialistService = specialistServicesRepository.findById(request.getId())
                 .orElseThrow(SpecialistServiceNotFoundException::new);
 
+        CreateImageResponse createImageResponse = null;
+
         if (Objects.isNull(request.getImage()) && Objects.nonNull(specialistService.getImageId())) {
             imageService.delete(specialistService.getImageId());
             specialistService.setImageId(null);
         } else {
-            CreateImageResponse response = imageService.create(request.getImage());
-            specialistService.setImageId(response.getId());
+            createImageResponse = imageService.create(request.getImage());
+            specialistService.setImageId(createImageResponse.getId());
         }
 
         specialistService = specialistServicesMapper.updateSpecialistServiceRequestToSpecialistService(specialistService, request);
 
         specialistServicesRepository.save(specialistService);
-        return specialistService.getId();
+
+        SpecialistServiceResponse response = specialistServicesMapper.specialistServiceToSpecialistServiceResponse(specialistService);
+        if (Objects.nonNull(createImageResponse)) {
+            response.setImage(createImageResponse.getPath());
+        }
+        return response;
     }
 
     @CacheEvict(value = SPECIALIST_SERVICES, key = "#userId")
@@ -126,12 +135,12 @@ public class SpecialistServiceManager {
     }
 
     @Cacheable(value = SPECIALIST_SERVICES, key = "#specialistId")
-    public List<ReadSpecialistServiceResponse> findAllSpecialistServices(Long specialistId) {
+    public List<SpecialistServiceResponse> findAllSpecialistServices(Long specialistId) {
         QSpecialistService table = QSpecialistService.specialistService;
         QImage image = QImage.image;
 
-        List<ReadSpecialistServiceResponse> specialistServices = jpaQuery
-                .select(Projections.constructor(ReadSpecialistServiceResponse.class,
+        List<SpecialistServiceResponse> specialistServices = jpaQuery
+                .select(Projections.constructor(SpecialistServiceResponse.class,
                         table.id,
                         table.specialistUserId,
                         table.duration,
@@ -143,17 +152,19 @@ public class SpecialistServiceManager {
                 .leftJoin(image)
                 .on(table.imageId.eq(image.id))
                 .where(table.specialistUserId.eq(specialistId))
+                .orderBy(table.id.desc())
                 .fetch();
 
         return specialistServices;
     }
 
-    public ReadSpecialistServiceResponse findServiceById(Long id) {
-        ReadSpecialistServiceResponse specialistService =  specialistServicesRepository.findSpecialist(id)
+    public SpecialistServiceResponse findServiceById(Long id) {
+        SpecialistServiceResponse specialistService = specialistServicesRepository.findSpecialist(id)
                 .orElseThrow(SpecialistServiceNotFoundException::new);
 
         return specialistService;
     }
+
     public SpecialistService findById(Long id) {
         return specialistServicesRepository.findById(id)
                 .orElseThrow(SpecialistServiceNotFoundException::new);

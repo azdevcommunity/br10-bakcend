@@ -18,6 +18,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> ,
              c.id,c.name,c.description,c.specialistUserId
               ) from Category c 
             where c.specialistUserId=:specialistUserId
+            order by c.createdDate desc
             """)
     List<CategoryResponse> findAllSpecialistCategories(Long specialistUserId);
 }

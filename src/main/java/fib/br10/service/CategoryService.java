@@ -35,7 +35,7 @@ public class CategoryService {
     ProductRepository productRepository;
 
     @CacheEvict(value = CATEGORIES, key = "#userId")
-    public Long create(CreateCategoryRequest request, Long userId) {
+    public CategoryResponse create(CreateCategoryRequest request, Long userId) {
         if (categoryRepository.existsByName(request.getName())) {
             throw new CategoryExistsSameNameException();
         }
@@ -48,11 +48,11 @@ public class CategoryService {
 
         categoryRepository.save(category);
 
-        return category.getId();
+        return categoryMapper.categoryToCategoryResponse(category);
     }
 
     @CacheEvict(value = CATEGORIES, key = "#userId")
-    public Long update(UpdateCategoryRequest request, Long userId) {
+    public CategoryResponse update(UpdateCategoryRequest request, Long userId) {
         if (categoryRepository.existsByNameAndIdNot(request.getName(), request.getId())) {
             throw new CategoryExistsSameNameException();
         }
@@ -67,7 +67,7 @@ public class CategoryService {
 
         categoryRepository.save(category);
 
-        return category.getId();
+        return categoryMapper.categoryToCategoryResponse(category);
     }
 
     @CacheEvict(value = CATEGORIES, key = "#userId")

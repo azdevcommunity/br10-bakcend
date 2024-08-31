@@ -15,6 +15,7 @@ public interface GalleryImageRepository extends JpaRepository<GalleryImage, Long
             from GalleryImage gi
                      left join Image i on gi.imageId = i.id
             where gi.specialistId = :specialistId
+            order by gi.createdDate desc
             """)
     List<GalleryImageResponse> findAllGalleryImages(Long specialistId);
 

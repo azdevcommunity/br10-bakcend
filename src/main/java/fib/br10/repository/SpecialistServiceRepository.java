@@ -1,6 +1,6 @@
 package fib.br10.repository;
 
-import fib.br10.dto.specialist.specialistservice.response.ReadSpecialistServiceResponse;
+import fib.br10.dto.specialist.specialistservice.response.SpecialistServiceResponse;
 import fib.br10.entity.specialist.SpecialistService;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,13 +20,13 @@ public interface SpecialistServiceRepository extends JpaRepository<SpecialistSer
     Optional<SpecialistService> findByIdAndSpecialistUserId(Long id, Long specialistUserId);
 
     @Query("""
-                SELECT new fib.br10.dto.specialist.specialistservice.response.ReadSpecialistServiceResponse(
+                SELECT new fib.br10.dto.specialist.specialistservice.response.SpecialistServiceResponse(
                  ss.id, ss.specialistUserId, ss.duration, ss.name, ss.price, ss.description, i.path)
-                 FROM SpecialistService ss 
-                 LEFT JOIN Image i ON ss.imageId = i.id 
+                 FROM SpecialistService ss
+                 LEFT JOIN Image i ON ss.imageId = i.id
                  WHERE ss.id = :id
             """)
 
-    Optional<ReadSpecialistServiceResponse> findSpecialist(Long id);
+    Optional<SpecialistServiceResponse> findSpecialist(Long id);
 
 }

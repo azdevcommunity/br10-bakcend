@@ -28,12 +28,12 @@ public class ProductController {
     RequestContextProvider provider;
 
     @PostMapping
-    public ResponseEntity<Long> create(@RequestBody @Valid CreateProductRequest request) {
+    public ResponseEntity<ProductResponse> create(@RequestBody @Valid CreateProductRequest request) {
         return ResponseEntity.ok(productService.create(request, provider.getUserId()));
     }
 
     @PutMapping
-    public ResponseEntity<Long> update(@RequestBody @Valid UpdateProductRequest request) {
+    public ResponseEntity<ProductResponse> update(@RequestBody @Valid UpdateProductRequest request) {
         return ResponseEntity.ok(productService.update(request, provider.getUserId()));
     }
 
