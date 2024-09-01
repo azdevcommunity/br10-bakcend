@@ -10,6 +10,7 @@ import fib.br10.dto.auth.response.RegisterResponse;
 import fib.br10.dto.cache.CacheOtp;
 import fib.br10.dto.specialist.specialistprofile.request.CreateSpecialistProfileRequest;
 import fib.br10.entity.user.User;
+import fib.br10.enumeration.RegisterType;
 import fib.br10.exception.auth.ConfirmPasswordNotMatchException;
 import fib.br10.exception.token.DecryptException;
 import fib.br10.exception.token.EncryptException;
@@ -51,6 +52,7 @@ public class AuthService {
         //specialistdise xeta at
         //username varsa phone numberde eynidise problem deyl amma ferqlidise xeta at
 
+
         User user = userService.checkUserAlreadyExists(request.getUsername(),
                 request.getPhoneNumber()
         ).orElse(null);
@@ -58,26 +60,27 @@ public class AuthService {
         if (!request.getPassword().equals(request.getConfirmPassword())) {
             throw new ConfirmPasswordNotMatchException();
         }
-        specialityService.checkSpecialityExists(request.getSpecialityId());
 
-//        if (request.getUserType().equals(UserRoleEnum.SPECIALIST.getValue()) && Objects.isNull(request.getSpeciality())) {
-//            throw new BaseException(Messages.SPECIALITY_REQUIRED);
-//        }
+        boolean isSpecialist = request.getRegisterType().equals(RegisterType.SPECIALIST);
+        if (isSpecialist) {
+            specialityService.checkSpecialityExists(request.getSpecialityId());
+        }
+
         if (Objects.isNull(user)) {
             user = userService.create(request);
         }
 
         CacheOtp cacheOtp = otpService.add(user.getId());
 
-        registerSpecialist(request, user);
-
+        if (isSpecialist) {
+            registerSpecialist(request, user);
+        }
 
         //TODO: send otp to phone number from sms
 
         RegisterResponse response = userMapper.userToRegisterResponse(new RegisterResponse(), user);
         response.setOtp(cacheOtp.getOtp());
         response.setOtpExpireDate(cacheOtp.getOtpExpireDate());
-
         return response;
     }
 

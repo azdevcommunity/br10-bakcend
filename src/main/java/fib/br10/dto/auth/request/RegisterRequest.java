@@ -1,5 +1,6 @@
 package fib.br10.dto.auth.request;
 
+import fib.br10.enumeration.RegisterType;
 import fib.br10.utility.Messages;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -27,7 +28,8 @@ public class RegisterRequest {
 //    @NotNull(message =  Messages.USER_TYPE_REQUIRED)
 //    Integer userType;
 
-    @NotNull
+//    @NotNull
     Long specialityId;
 
+    RegisterType registerType = RegisterType.CLIENT;
 }
