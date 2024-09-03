@@ -67,7 +67,7 @@ public class ProductService {
         Product product = findById(request.getId());
         userService.validateSpecialist(product.getSpecialistUserId(), userId);
         product = productMapper.updateProductToProduct(product, request);
-        productRepository.save(product);
+        product = productRepository.save(product);
         Image image = imageService.findById(product.getImageId());
         ProductResponse response =  productMapper.productToProductResponse(product, category.getName());
        if(Objects.nonNull(image)){
