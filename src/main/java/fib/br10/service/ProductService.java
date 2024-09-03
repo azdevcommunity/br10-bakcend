@@ -68,7 +68,10 @@ public class ProductService {
         userService.validateSpecialist(product.getSpecialistUserId(), userId);
         product = productMapper.updateProductToProduct(product, request);
         productRepository.save(product);
-        return productMapper.productToProductResponse(product, category.getName());
+        Image image = imageService.findById(product.getImageId());
+        ProductResponse response =  productMapper.productToProductResponse(product, category.getName());
+        response.setImage(image.getPath());
+        return response;
     }
 
     @CacheEvict(value = PRODUCTS, key = "#userId")
