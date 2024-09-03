@@ -404,6 +404,52 @@
 					"response": []
 				},
 				{
+					"name": "update profile image",
+					"protocolProfileBehavior": {
+						"strictSSL": false
+					},
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "profilePicture",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/specialist-profile",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"specialist-profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "read",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
