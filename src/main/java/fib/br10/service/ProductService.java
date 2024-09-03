@@ -70,7 +70,9 @@ public class ProductService {
         productRepository.save(product);
         Image image = imageService.findById(product.getImageId());
         ProductResponse response =  productMapper.productToProductResponse(product, category.getName());
-        response.setImage(image.getPath());
+       if(Objects.nonNull(image)){
+           response.setImage(image.getPath());
+       }
         return response;
     }
 
