@@ -52,7 +52,7 @@ public class SpecialistProfileController {
         return ResponseEntity.ok(specialistProfileService.update(request, get(USER_ID)));
     }
 
-    @PutMapping("/picture")
+    @PatchMapping
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Long> update(@RequestPart("profilePicture") @Nullable MultipartFile profilePicture) {
         return ResponseEntity.ok(specialistProfileService.update(profilePicture, get(USER_ID)));
