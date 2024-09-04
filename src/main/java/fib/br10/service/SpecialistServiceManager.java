@@ -8,6 +8,7 @@ import fib.br10.dto.image.response.CreateImageResponse;
 import fib.br10.dto.specialist.specialistservice.request.CreateSpecialistServiceRequest;
 import fib.br10.dto.specialist.specialistservice.request.UpdateSpecialistServiceRequest;
 import fib.br10.dto.specialist.specialistservice.response.SpecialistServiceResponse;
+import fib.br10.entity.Image;
 import fib.br10.entity.QImage;
 import fib.br10.entity.reservation.ReservationStatus;
 import fib.br10.entity.specialist.QSpecialistService;
@@ -26,6 +27,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
@@ -93,24 +95,18 @@ public class SpecialistServiceManager {
         SpecialistService specialistService = specialistServicesRepository.findById(request.getId())
                 .orElseThrow(SpecialistServiceNotFoundException::new);
 
-        CreateImageResponse createImageResponse = null;
-
-        if (Objects.isNull(request.getImage()) && Objects.nonNull(specialistService.getImageId())) {
-            imageService.delete(specialistService.getImageId());
-            specialistService.setImageId(null);
-        } else {
-            createImageResponse = imageService.create(request.getImage());
-            specialistService.setImageId(createImageResponse.getId());
-        }
-
         specialistService = specialistServicesMapper.updateSpecialistServiceRequestToSpecialistService(specialistService, request);
 
         specialistServicesRepository.save(specialistService);
 
         SpecialistServiceResponse response = specialistServicesMapper.specialistServiceToSpecialistServiceResponse(specialistService);
-        if (Objects.nonNull(createImageResponse)) {
-            response.setImage(createImageResponse.getPath());
+
+        Image image = imageService.findById(specialistService.getImageId());
+
+        if(Objects.nonNull(image)){
+            response.setImage(image.getPath());
         }
+
         return response;
     }
 
@@ -132,6 +128,25 @@ public class SpecialistServiceManager {
         }
 
         return specialistService.getId();
+    }
+
+    @CacheEvict(value = SPECIALIST_SERVICES, key = "#userId")
+    @Transactional
+    public SpecialistServiceResponse update(MultipartFile image, Long id, Long userId) {
+        SpecialistService specialistService = findById(id);
+        Long oldId  = specialistService.getImageId();
+
+        CreateImageResponse createImageResponse = imageService.create(image);
+
+        specialistService.setImageId(createImageResponse.getId());
+        specialistServicesRepository.save(specialistService);
+
+        if(Objects.nonNull(oldId)){
+            imageService.delete(oldId);
+        }
+        SpecialistServiceResponse response = specialistServicesMapper.specialistServiceToSpecialistServiceResponse(specialistService);
+        response.setImage(createImageResponse.getPath());
+        return response;
     }
 
     @Cacheable(value = SPECIALIST_SERVICES, key = "#specialistId")

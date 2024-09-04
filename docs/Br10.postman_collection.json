@@ -631,34 +631,13 @@
 							}
 						],
 						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "id",
-									"value": "2",
-									"type": "text"
-								},
-								{
-									"key": "duration",
-									"value": "12",
-									"type": "text"
-								},
-								{
-									"key": "name",
-									"value": "pipi5",
-									"type": "text"
-								},
-								{
-									"key": "price",
-									"value": "10.00",
-									"type": "text"
-								},
-								{
-									"key": "image",
-									"type": "file",
-									"src": "/C:/Users/Yusif/Desktop/a.png"
+							"mode": "raw",
+							"raw": "{\n  \"id\": 0,\n  \"duration\": 0,\n  \"name\": \"name_79506d742d61\",\n  \"price\": 0.00,\n  \"description\": \"description_e79cd2e0ed0f\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
 							"raw": "{{base_url}}/specialist-service",
@@ -667,6 +646,50 @@
 							],
 							"path": [
 								"specialist-service"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update image",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{jwt}}",
+								"type": "text"
+							},
+							{
+								"key": "TIME_ZONE",
+								"value": "+04:00",
+								"type": "text"
+							},
+							{
+								"key": "lang",
+								"value": "az",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/C:/Users/Yusif/Desktop/a.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/specialist-service/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"specialist-service",
+								"1"
 							]
 						}
 					},

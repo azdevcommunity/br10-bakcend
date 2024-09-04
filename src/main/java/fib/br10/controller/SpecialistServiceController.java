@@ -41,10 +41,15 @@ public class SpecialistServiceController {
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<SpecialistServiceResponse> update(@RequestPart("image") @Nullable MultipartFile image,
-                                       @ModelAttribute @Valid UpdateSpecialistServiceRequest request) {
-        request.setImage(image);
+    public ResponseEntity<SpecialistServiceResponse> update(@RequestBody @Valid UpdateSpecialistServiceRequest request) {
         return ResponseEntity.ok(specialistServiceManager.update(request, provider.getUserId()));
+    }
+
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<SpecialistServiceResponse> update(@RequestPart("image") @Nullable MultipartFile image,
+                                                            @PathVariable("id") @Valid Long id) {
+        return ResponseEntity.ok(specialistServiceManager.update(image, id, provider.getUserId()));
     }
 
     @DeleteMapping
