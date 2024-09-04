@@ -66,6 +66,9 @@ public class ImageService {
     }
 
     public Image findById(Long id) {
+        if(Objects.isNull(id)) {
+            return null;
+        }
         return imageRepository.findById(id).orElse(null);
     }
 }
