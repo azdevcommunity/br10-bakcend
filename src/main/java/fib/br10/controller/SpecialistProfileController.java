@@ -48,7 +48,7 @@ public class SpecialistProfileController {
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Long> update(@RequestBody @Valid UpdateSpecialistProfileRequest request) {
+    public ResponseEntity<SpecialistProfileReadResponse> update(@RequestBody @Valid UpdateSpecialistProfileRequest request) {
         return ResponseEntity.ok(specialistProfileService.update(request, get(USER_ID)));
     }
 
