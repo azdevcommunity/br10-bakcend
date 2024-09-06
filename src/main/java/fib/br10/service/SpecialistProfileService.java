@@ -80,7 +80,7 @@ public class SpecialistProfileService {
     }
 
     @CacheEvict(value = SPECIALIST_PROFILE, key = "#userId")
-    public Long update(MultipartFile file, Long userId) {
+    public SpecialistProfileReadResponse update(MultipartFile file, Long userId) {
         SpecialistProfile specialistProfile = findBySpecialistUserId(userId);
 
         if (Objects.nonNull(specialistProfile.getImageId())) {
@@ -88,9 +88,12 @@ public class SpecialistProfileService {
             if (Objects.nonNull(image))
                 imageService.delete(image.getId());
         }
-        CreateImageResponse response = imageService.create(file);
-        specialistProfile.setImageId(response.getId());
+        CreateImageResponse imageResponse = imageService.create(file);
+        specialistProfile.setImageId(imageResponse.getId());
         specialistProfileRepository.save(specialistProfile);
-        return specialistProfile.getId();
+        SpecialistProfileReadResponse response =  specialistProfileMapper.specialistProfileToSpecialistProfileResponse(specialistProfile);
+        response.setProfilePicture(imageResponse.getPath());
+
+        return response;
     }
 }
