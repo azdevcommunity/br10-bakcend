@@ -1,5 +1,6 @@
 package fib.br10.core.utility;
 
+import fib.br10.core.exception.BaseException;
 import fib.br10.utility.Messages;
 
 import java.util.Objects;
@@ -16,7 +17,8 @@ public enum RequestContextEnum {
     IS_WHITE_LISTED_ENDPOINT("IS_WHITE_LISTED_ENDPOINT"),
     TOKEN_ID("TOKEN_ID"),
     JWT_EXPIRATION("JWT_EXPIRATION"),
-    AUTHORIZATION_HEADER("AUTHORIZATION_HEADER");
+    AUTHORIZATION_HEADER("AUTHORIZATION_HEADER"),
+    CLIENT_TYPE("CLIENT_TYPE");
 
     private final String value;
 
@@ -34,19 +36,6 @@ public enum RequestContextEnum {
                 return status;
             }
         }
-        throw new IllegalArgumentException("Unknown value: " + value);
+        throw new BaseException("Unknown value: " + value);
     }
-
-//    public final static  String ACTIVITY_ID = "ACTIVITY_ID";
-//    public final static  String LANG = "Accept-Language";
-//    public final static  String SUCCESS_MESSAGE = Messages.SUCCESS;
-//    public final static  String PHONE_NUMBER = "PHONE_NUMBER";
-//    public final static  String CURRENT_USER_ID = "CURRENT_USER_ID";
-//    public final static  String TIME_ZONE = "TIME_ZONE";
-//    public final static  String REQUEST_PATH = "REQUEST_PATH";
-//    public final static  String IS_WHITE_LISTED_ENDPOINT = "IS_WHITE_LISTED_ENDPOINT";
-//    public final static  String TOKEN_ID = "TOKEN_ID";
-//    public final static  String JWT_EXPIRATION= "JWT_EXPIRATION";
-//    public final static  String AUTHORIZATION_HEADER= "Authorization";
-
 }

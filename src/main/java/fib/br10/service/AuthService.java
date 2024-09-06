@@ -3,18 +3,19 @@ package fib.br10.service;
 import fib.br10.core.dto.Token;
 import fib.br10.core.dto.UserDetailModel;
 import fib.br10.core.entity.EntityStatus;
+import fib.br10.core.exception.BaseException;
 import fib.br10.core.utility.*;
 import fib.br10.dto.auth.request.*;
 import fib.br10.dto.auth.response.OtpResponse;
 import fib.br10.dto.auth.response.RegisterResponse;
 import fib.br10.dto.cache.CacheOtp;
 import fib.br10.dto.specialist.specialistprofile.request.CreateSpecialistProfileRequest;
+import fib.br10.dto.userdevice.request.UserDeviceDto;
 import fib.br10.entity.user.User;
 import fib.br10.enumeration.RegisterType;
 import fib.br10.exception.auth.ConfirmPasswordNotMatchException;
 import fib.br10.exception.token.DecryptException;
 import fib.br10.exception.token.EncryptException;
-import fib.br10.exception.token.JwtAtBlackListException;
 import fib.br10.exception.token.TokenNotValidException;
 import fib.br10.exception.user.UserNotActiveException;
 import fib.br10.mapper.UserMapper;
@@ -27,6 +28,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -43,7 +46,7 @@ public class AuthService {
     TokenService tokenService;
     SpecialistAvailabilityService specialistAvailabilityService;
     SpecialityService specialityService;
-
+    UserDeviceService userDeviceService;
 
     @Transactional
     public RegisterResponse register(RegisterRequest request) {
@@ -51,8 +54,6 @@ public class AuthService {
         //bu nomre varmi varsa clientdimi yoxsa specialistdimi
         //specialistdise xeta at
         //username varsa phone numberde eynidise problem deyl amma ferqlidise xeta at
-
-
         User user = userService.checkUserAlreadyExists(request.getUsername(),
                 request.getPhoneNumber()
         ).orElse(null);
@@ -62,6 +63,7 @@ public class AuthService {
         }
 
         boolean isSpecialist = request.getRegisterType().equals(RegisterType.SPECIALIST);
+
         if (isSpecialist) {
             specialityService.checkSpecialityExists(request.getSpecialityId());
         }
@@ -77,28 +79,34 @@ public class AuthService {
         }
 
         //TODO: send otp to phone number from sms
-
         RegisterResponse response = userMapper.userToRegisterResponse(new RegisterResponse(), user);
         response.setOtp(cacheOtp.getOtp());
         response.setOtpExpireDate(cacheOtp.getOtpExpireDate());
         return response;
     }
 
-    public Token activateUserVerifyOtp(VerifyOtpRequest request) {
+    public Token activateUserVerifyOtp(ActivateUserVerifyOtpRequest request) {
         User user = userService.findByPhoneNumberAndStatusNot(request.getPhoneNumber(),
                 EntityStatus.DELETED
         );
 
+        if (EntityStatus.ACTIVE.getValue().equals(user.getStatus())) {
+            throw new BaseException("user already activated");
+        }
+
         otpService.verifyOtp(user.getId(), request.getOtp());
 
         user.setStatus(EntityStatus.ACTIVE.getValue());
-
         userService.save(user);
 
-        return tokenService.get(user);
+        UserDeviceDto deviceDto = userDeviceService.create(request.getUserDeviceDto());
+
+        return tokenService.get(user, deviceDto);
     }
 
     public OtpResponse getOtp(GetOtpRequest request) {
+        //TODO:add check for otp retry
+
         User user = userService.findByUserNameOrPhoneNumber(request.getPhoneNumberOrUsername());
 
         CacheOtp cacheOtp = otpService.add(user.getId());
@@ -120,9 +128,9 @@ public class AuthService {
             throw new ConfirmPasswordNotMatchException();
         }
 
-        Token token = tokenService.get(user);
+        UserDeviceDto userDeviceDto = userDeviceService.update(request.getUserDeviceDto());
 
-        return token;
+        return tokenService.get(user, userDeviceDto);
     }
 
     public String resetPasswordVerifyOtp(VerifyOtpRequest request) {
@@ -185,6 +193,7 @@ public class AuthService {
         tokenService.addTokenToBlackList();
     }
 
+    @Transactional
     protected void registerSpecialist(RegisterRequest request, User user) {
         specialistProfileService.create(CreateSpecialistProfileRequest.builder()
                 .specialistUserId(user.getId())
@@ -192,5 +201,4 @@ public class AuthService {
                 .build());
         specialistAvailabilityService.addWeekendAvailability(user.getId());
     }
-
 }

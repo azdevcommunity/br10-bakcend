@@ -4,19 +4,18 @@ import fib.br10.core.exception.BaseException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@Getter
 @AllArgsConstructor
-public enum RoleEnum {
-    CUSTOMER(1),
-    SPECIALIST(2),
-    ADMIN(3);
+@Getter
+public enum ClientType {
+    MOBILE(1),
+    WEB(2);
 
     private final int value;
 
-    public static RoleEnum fromValue(int value) {
-        for (RoleEnum status : RoleEnum.values()) {
-            if (status.value == value) {
-                return status;
+    public static ClientType fromValue(int value) {
+        for (ClientType clientType : ClientType.values()) {
+            if (clientType.value == value) {
+                return clientType;
             }
         }
         throw new BaseException("Unknown value: " + value);

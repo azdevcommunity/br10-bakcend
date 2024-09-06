@@ -34,7 +34,7 @@ public class AuthController{
     }
 
     @PostMapping("/activate-user-verify-otp")
-    public ResponseEntity<Token> activateUserVerifyOtp(@RequestBody @Valid VerifyOtpRequest request) {
+    public ResponseEntity<Token> activateUserVerifyOtp(@RequestBody @Valid ActivateUserVerifyOtpRequest request) {
         return ResponseEntity.ok(authService.activateUserVerifyOtp(request));
     }
 
