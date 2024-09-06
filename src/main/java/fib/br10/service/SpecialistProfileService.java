@@ -91,9 +91,10 @@ public class SpecialistProfileService {
         CreateImageResponse imageResponse = imageService.create(file);
         specialistProfile.setImageId(imageResponse.getId());
         specialistProfileRepository.save(specialistProfile);
+
         SpecialistProfileReadResponse response =  specialistProfileMapper.specialistProfileToSpecialistProfileResponse(specialistProfile);
         response.setProfilePicture(imageResponse.getPath());
-
+        response.setSpeciality(specialityService.findSpecialistyName(response.getSpecialityId()));
         return response;
     }
 }
