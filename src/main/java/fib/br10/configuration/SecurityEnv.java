@@ -17,10 +17,14 @@ public class SecurityEnv {
     private List<String> endpointBlackList;
     private Encryption encryption;
     private List<String> corsAllowedOrigins;
+    private OtpConfig otpConfig;
 
     public  record Jwt( String secret,int jwtExpiration,int refreshExpiration) {
     }
 
     public record Encryption(String secret,String algorithm,int keySize) {
     }
+
+    public record OtpConfig(Integer otpExpirationTime, Integer otpTryLimit)
+    {}
 }

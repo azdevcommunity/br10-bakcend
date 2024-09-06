@@ -28,8 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -50,9 +48,6 @@ public class AuthService {
 
     @Transactional
     public RegisterResponse register(RegisterRequest request) {
-        //bu api sirf speciailst oaraq register elemek ucundu
-        //bu nomre varmi varsa clientdimi yoxsa specialistdimi
-        //specialistdise xeta at
         //username varsa phone numberde eynidise problem deyl amma ferqlidise xeta at
         User user = userService.checkUserAlreadyExists(request.getUsername(),
                 request.getPhoneNumber()
@@ -72,7 +67,7 @@ public class AuthService {
             user = userService.create(request);
         }
 
-        CacheOtp cacheOtp = otpService.add(user.getId());
+        CacheOtp cacheOtp = otpService.create(user.getId());
 
         if (isSpecialist) {
             registerSpecialist(request, user);
@@ -94,25 +89,16 @@ public class AuthService {
             throw new BaseException("user already activated");
         }
 
-        otpService.verifyOtp(user.getId(), request.getOtp());
-
+        otpService.verify(user.getId(), request.getOtp());
         user.setStatus(EntityStatus.ACTIVE.getValue());
         userService.save(user);
-
         UserDeviceDto deviceDto = userDeviceService.create(request.getUserDeviceDto());
-
         return tokenService.get(user, deviceDto);
     }
 
     public OtpResponse getOtp(GetOtpRequest request) {
-        //TODO:add check for otp retry
-
         User user = userService.findByUserNameOrPhoneNumber(request.getPhoneNumberOrUsername());
-
-        CacheOtp cacheOtp = otpService.add(user.getId());
-
-//        userService.save(user);
-
+        CacheOtp cacheOtp = otpService.create(user.getId());
         return new OtpResponse(cacheOtp.getOtp(), cacheOtp.getOtpExpireDate());
     }
 
@@ -130,13 +116,15 @@ public class AuthService {
 
         UserDeviceDto userDeviceDto = userDeviceService.update(request.getUserDeviceDto());
 
+        //send notification to all user devices with  CompletableFuture.runAsync
+
         return tokenService.get(user, userDeviceDto);
     }
 
     public String resetPasswordVerifyOtp(VerifyOtpRequest request) {
         User user = userService.findByPhoneNumberAndStatusNot(request.getPhoneNumber(), EntityStatus.DELETED);
 
-        otpService.verifyOtp(user.getId(), request.getOtp());
+        otpService.verify(user.getId(), request.getOtp());
 
         String payload = user.getId() + "*" + DateUtil.getCurrentDateTime().plusMinutes(5);
 
@@ -186,7 +174,11 @@ public class AuthService {
 
         tokenService.addTokenToBlackList(request.getRefreshToken());
 
-        return tokenService.get(user);
+        Long deviceId = jwtService.extractClaim(request.getRefreshToken(), ClaimTypes.TOKEN_ID);
+
+        UserDeviceDto userDeviceDto = userDeviceService.getUserDevice(deviceId);
+
+        return tokenService.get(user, userDeviceDto);
     }
 
     public void logout() {

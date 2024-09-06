@@ -11,78 +11,15 @@ spring:
     url: ${BR10_DB_URL:jdbc:postgresql://localhost:5433/br10db}
     username: ${BR10_DB_USERNAME:postgres}
     password: ${BR10_DB_PASSWORD:123456789}
-  jpa:
-    hibernate:
-      ddl-auto: none
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: false
-    generate-ddl: false
-    open-in-view: false
-  application:
-    name: br10
   data:
     redis:
       host: ${BR10_REDIS_HOST:localhost}
       port: ${BR10_REDIS_PORT:6379}
-  jackson:
-    serialization:
-      write-dates-as-timestamps: false
-  liquibase:
-    change-log: classpath:db/changelog/db.changelog-master.yml
-    enabled: true
-    drop-first: false
-    default-schema: public
-  messages:
-    basename: messages
-    encoding: utf-8
-  thymeleaf:
-    encoding: utf-8
-  autoconfigure:
-    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
-
-
 file:
   upload-dir: ${BR10_UPLOAD_DIR:uploads}
-
-management:
-  endpoint:
-    health:
-      show-details: always
-
-
 security:
   cors-allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:5173/}
-  encryption:
-    secret: 123456789
-    algorithm: AES
-    key-size: 128
   jwt:
     secret: ${BR10_JWT_SECRET:MZl1GC5OHL+km2NKuTrUNH7PcnqMyvbUBzeUVsPGAlqY7BqAGjFcEJgAZTd4ziYB}
     refresh-expiration: ${BR10_JWT_REFRESH_EXPIRATION:86400000}
     jwt-expiration: ${BR10_JWT_EXPIRATION:86400000}
-  endpoint-white-list:
-    - /auth/**
-    - /auth/login
-    - /ws/**
-    - /v3/api-docs/**
-    - /swagger-ui.html/**
-    - /actuator/**
-    - /app/**
-    - /specialities/**
-  endpoint-black-list:
-    - /auth/logout
-
-log-level: info
-logging:
-  level:
-    org:
-      springframework:
-        security: ${log-level}
-        web: ${log-level}
-        data: ${log-level}
-        hibernate: ${log-level}
-        jpa: ${log-level}
-        thymeleaf: ${log-level}
-        springdoc: ${log-level}

@@ -15,7 +15,7 @@ import java.time.OffsetDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
 public class CacheOtp {
-    Long userId;
+//    Long userId;
 
     Integer otp;
 
