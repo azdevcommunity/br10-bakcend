@@ -11,6 +11,7 @@ import fib.br10.exception.speciality.SpecialityNotFoundException;
 import fib.br10.mapper.SpecialityMapper;
 import fib.br10.repository.SpecialistProfileRepository;
 import fib.br10.repository.SpecialityRepository;
+import fib.br10.utility.SpecialityUtil;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -82,7 +83,7 @@ public class SpecialityService {
 
     @Cacheable(value = SPECIALITIES, key = SPECIALITIES_KEY)
     public List<SpecialityResponse> findAll() {
-       return specialityRepository
+        return specialityRepository
                 .findByStatusOrderByCreatedDateDesc(EntityStatus.ACTIVE.getValue())
                 .stream()
                 .map(specialityMapper::toSpecialityResponse)
@@ -99,5 +100,9 @@ public class SpecialityService {
         if (!exists) {
             throw new SpecialityNotFoundException();
         }
+    }
+
+    public String findSpecialistyName(Long id) {
+        return SpecialityUtil.getSpecialityName(findById(id));
     }
 }

@@ -54,12 +54,19 @@ public class SpecialistProfileService {
     }
 
     @CacheEvict(value = SPECIALIST_PROFILE, key = "#userId")
-    public Long update(UpdateSpecialistProfileRequest request, Long userId) {
+    public SpecialistProfileReadResponse update(UpdateSpecialistProfileRequest request, Long userId) {
         SpecialistProfile specialistProfile = findBySpecialistUserId(userId);
         specialityService.checkSpecialityExists(request.getSpecialityId());
         specialistProfile = specialistProfileMapper.updateSpecialistProfileRequestToSpecialistProfile(specialistProfile, request);
         specialistProfileRepository.save(specialistProfile);
-        return specialistProfile.getId();
+
+        SpecialistProfileReadResponse response  = specialistProfileMapper.specialistProfileToSpecialistProfileResponse(specialistProfile);
+        response.setSpeciality(specialityService.findSpecialistyName(response.getSpecialityId()));
+        Image image = imageService.findById(specialistProfile.getImageId());
+        if(Objects.nonNull(image)){
+            response.setProfilePicture(image.getPath());
+        }
+        return response;
     }
 
     public Long create(CreateSpecialistProfileRequest request) {
@@ -91,9 +98,10 @@ public class SpecialistProfileService {
         CreateImageResponse imageResponse = imageService.create(file);
         specialistProfile.setImageId(imageResponse.getId());
         specialistProfileRepository.save(specialistProfile);
+
         SpecialistProfileReadResponse response =  specialistProfileMapper.specialistProfileToSpecialistProfileResponse(specialistProfile);
         response.setProfilePicture(imageResponse.getPath());
-
+        response.setSpeciality(specialityService.findSpecialistyName(response.getSpecialityId()));
         return response;
     }
 }
