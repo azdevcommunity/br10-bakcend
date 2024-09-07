@@ -54,9 +54,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) {
         try {
-            securityUtil.validateEndpointExists(request);
             String path = request.getServletPath();
             boolean isPublicEndpoint = securityUtil.isPublicEndpoint(path);
+            securityUtil.validateEndpointExists(request, isPublicEndpoint);
             provider.setRequestPath(path);
             provider.setIsPublicEnpoint(isPublicEndpoint);
 
