@@ -45,7 +45,7 @@ public class RequestContextConfiguration {
 
 
     private void configureTimeZone(String timeZone, String jwt) {
-        boolean isWhiteListed = provider.getIsWhiteListedEndpoint();
+        boolean isWhiteListed = provider.getIsPublicEndpoint();
 
         if (isWhiteListed && Objects.isNull(timeZone) && !environmentUtil.isDevelopment()) {
             throw new TimeZoneRequiredException();
@@ -75,7 +75,7 @@ public class RequestContextConfiguration {
     }
 
     private void configureAuth(Authentication authentication, String jwt) {
-        if (Objects.isNull(authentication) || (authentication.getPrincipal().equals("anonymousUser") && provider.getIsWhiteListedEndpoint())) {
+        if (Objects.isNull(authentication) || (authentication.getPrincipal().equals("anonymousUser") && provider.getIsPublicEndpoint())) {
             return;
         }
 

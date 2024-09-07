@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 
 import static fib.br10.core.utility.RequestContextEnum.ACTIVITY_ID;
-import static fib.br10.core.utility.RequestContextEnum.IS_WHITE_LISTED_ENDPOINT;
+import static fib.br10.core.utility.RequestContextEnum.IS_PUBLIC_ENDPOINT;
 import static fib.br10.core.utility.RequestContextEnum.JWT_EXPIRATION;
 import static fib.br10.core.utility.RequestContextEnum.LANG;
 import static fib.br10.core.utility.RequestContextEnum.PHONE_NUMBER;
@@ -58,8 +58,8 @@ public class RequestContextProviderImpl implements RequestContextProvider {
     }
 
     @Override
-    public Boolean getIsWhiteListedEndpoint() {
-        return RequestContext.get(IS_WHITE_LISTED_ENDPOINT,Boolean.class);
+    public Boolean getIsPublicEndpoint() {
+        return RequestContext.get(IS_PUBLIC_ENDPOINT,Boolean.class);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class RequestContextProviderImpl implements RequestContextProvider {
     }
 
     @Override
-    public void setIsWhiteListedEndpoint(Boolean isWhiteListedEndpoint) {
-        RequestContext.set(IS_WHITE_LISTED_ENDPOINT,isWhiteListedEndpoint);
+    public void setIsPublicEnpoint(Boolean isPublicEnpoint) {
+        RequestContext.set(IS_PUBLIC_ENDPOINT,isPublicEnpoint);
     }
 }

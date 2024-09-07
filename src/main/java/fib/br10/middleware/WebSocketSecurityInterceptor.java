@@ -101,7 +101,7 @@ public class WebSocketSecurityInterceptor implements ChannelInterceptor {
 
         accessor.setUser(authToken);
 
-        RequestContext.set(RequestContextEnum.IS_WHITE_LISTED_ENDPOINT, securityUtil.isWhiteListedEndpoint(accessor.getDestination()));
+        RequestContext.set(RequestContextEnum.IS_PUBLIC_ENDPOINT, securityUtil.isPublicEndpoint(accessor.getDestination()));
 
         requestContextConfiguration.configure(
                 multiValueMap.getFirst(ACTIVITY_ID.getValue()),
