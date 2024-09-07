@@ -3,6 +3,7 @@ package fib.br10.middleware;
 
 import com.fasterxml.jackson.core.JsonEncoding;
 import fib.br10.core.dto.ResponseWrapper;
+import fib.br10.core.exception.NotFoundException;
 import fib.br10.core.service.RequestContextProvider;
 import fib.br10.core.utility.JsonSerializer;
 import fib.br10.exception.token.InvalidJWTClaimException;
@@ -53,49 +54,41 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain
     ) {
         try {
+            securityUtil.validateEndpointExists(request);
             String path = request.getServletPath();
-
-            boolean isWhiteListed = securityUtil.isWhiteListedEndpoint(path);
-
+            boolean isPublicEndpoint = securityUtil.isPublicEndpoint(path);
             provider.setRequestPath(path);
-            provider.setIsWhiteListedEndpoint(isWhiteListed);
+            provider.setIsPublicEnpoint(isPublicEndpoint);
 
-            if (isWhiteListed) {
+            if (isPublicEndpoint) {
                 filterChain.doFilter(request, response);
                 return;
             }
-
             final String jwt = jwtService.extractJwtFromRequest(request);
 
             if (Objects.isNull(jwt)) {
                 throw new JWTRequiredException();
             }
-
             tokenService.validateTokenExistsOnBlackList(jwt);
-
             final String phoneNumber = jwtService.extractUsername(jwt);
-
             var authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (Objects.isNull(authentication) || authentication.getPrincipal().equals("anonymousUser")) {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(phoneNumber);
-
                 jwtService.validateToken(jwt, userDetails);
-
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities()
                 );
-
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
-
             filterChain.doFilter(request, response);
-
         } catch (IOException | ServletException e) {
             log.error(e);
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        } catch (NotFoundException e) {
+            log.error(e);
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         } catch (ExpiredJwtException | JWTRequiredException | InvalidJWTClaimException e) {
            log.error(e);
             modifyResponseBody(request.getLocale(), response, e.getMessage());
