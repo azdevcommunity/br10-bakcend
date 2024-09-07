@@ -23,6 +23,7 @@ public class SecurityUtil {
     private final SecurityEnv securityEnv;
     private final AntPathMatcher antPathMatcher;
     private final RequestMappingHandlerMapping requestMappingHandlerMapping;
+    private final RequestMappingHandlerMapping controllerEndpointHandlerMapping;
 
     public boolean isPublicEndpoint(String endpoint) {
         boolean isWhiteListed = securityEnv.getEndpointWhiteList()
@@ -36,15 +37,20 @@ public class SecurityUtil {
         return isWhiteListed && !isBlackListed;
     }
 
-    public void validateEndpointExists(HttpServletRequest request) {
+    public void validateEndpointExists(HttpServletRequest request, boolean isPublicEndpoint) {
         try {
+            if(isPublicEndpoint) {
+                return;
+            }
             HandlerExecutionChain handlerExecutionChain = requestMappingHandlerMapping.getHandler(request);
+            if (Objects.isNull(handlerExecutionChain)) {
+                handlerExecutionChain = controllerEndpointHandlerMapping.getHandler(request);
+            }
             if (Objects.isNull(handlerExecutionChain)) {
                 throw new NotFoundException(request.getRequestURI());
             }
-            handlerExecutionChain.getHandler();
         } catch (Exception e) {
-            throw new NotFoundException();
+            throw new NotFoundException(request.getRequestURI());
         }
     }
 }
