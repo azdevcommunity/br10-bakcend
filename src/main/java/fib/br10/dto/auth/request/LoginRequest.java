@@ -23,7 +23,7 @@ public class LoginRequest {
     @NotBlank(message = Messages.PASSWORD_REQUIRED)
     String password;
 
-    @NotNull
+    @NotNull(message = Messages.DEVICE_INFO_REQUIRED)
     @JsonProperty(value = "deviceInfo")
     UserDeviceDto userDeviceDto;
 }
