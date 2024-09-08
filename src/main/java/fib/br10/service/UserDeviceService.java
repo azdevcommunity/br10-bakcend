@@ -36,7 +36,7 @@ public class UserDeviceService {
     @Transactional
     public UserDeviceDto update(UserDeviceDto userDeviceDto) {
         userService.validateUserExists(userDeviceDto.getUserId());
-        UserDevice userDevice = userDeviceRepository.findByDeviceId(userDeviceDto.getDeviceId())
+        UserDevice userDevice = userDeviceRepository.findByDeviceIdAndUserId(userDeviceDto.getDeviceId(), userDeviceDto.getUserId())
                 .orElseGet(UserDevice::new);
 
         userDevice = userDeviceMapper.userDeviceDtoToUserDevice(userDevice, userDeviceDto);
