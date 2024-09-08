@@ -21,7 +21,7 @@ public interface RequestContextProvider {
 
      String getTimeZone();
 
-     Boolean getIsWhiteListedEndpoint();
+     Boolean getIsPublicEndpoint();
 
      void setLang(String lang);
 
@@ -33,5 +33,5 @@ public interface RequestContextProvider {
 
      void setRequestPath(String path);
 
-     void setIsWhiteListedEndpoint(Boolean isWhiteListedEndpoint);
+     void setIsPublicEnpoint(Boolean isWhiteListedEndpoint);
 }
