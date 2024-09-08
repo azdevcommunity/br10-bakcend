@@ -114,15 +114,16 @@ public class TokenService {
     }
 
     public Token get(User user, UserDeviceDto deviceDto) {
-        return get(user, Map.ofEntries(
-                        Map.entry(ClaimTypes.DEVICE_ID, deviceDto.getId()),
-                        Map.entry(ClaimTypes.CLIENT_TYPE, deviceDto.getClientType().getValue())
-                )
-        );
+        Map<String, Object> claims = new HashMap<>();
+        claims.put(ClaimTypes.USER_ID, user.getId());
+        claims.put(ClaimTypes.DEVICE_ID, deviceDto.getId());
+        return get(user, claims);
     }
 
     public Token get(User user, String key, Object value) {
-        return get(user, Map.ofEntries(Map.entry(key, value)));
+        Map<String, Object> claims = new HashMap<>();
+        claims.put(key, value);
+        return get(user, claims);
     }
 
     public void validateToken(String token, UserDetails userDetails) {

@@ -57,7 +57,7 @@ public class AuthService {
             throw new ConfirmPasswordNotMatchException();
         }
 
-        boolean isSpecialist = request.getRegisterType().equals(RegisterType.SPECIALIST);
+        boolean isSpecialist = RegisterType.SPECIALIST.equals(RegisterType.fromValue(request.getRegisterType()));
 
         if (isSpecialist) {
             specialityService.checkSpecialityExists(request.getSpecialityId());
@@ -80,6 +80,7 @@ public class AuthService {
         return response;
     }
 
+    @Transactional
     public Token activateUserVerifyOtp(ActivateUserVerifyOtpRequest request) {
         User user = userService.findByPhoneNumberAndStatusNot(request.getPhoneNumber(),
                 EntityStatus.DELETED
@@ -92,7 +93,9 @@ public class AuthService {
         otpService.verify(user.getId(), request.getOtp());
         user.setStatus(EntityStatus.ACTIVE.getValue());
         userService.save(user);
-        UserDeviceDto deviceDto = userDeviceService.create(request.getUserDeviceDto());
+        UserDeviceDto deviceDto = request.getUserDeviceDto();
+        deviceDto.setUserId(user.getId());
+        deviceDto = userDeviceService.create(deviceDto);
         return tokenService.get(user, deviceDto);
     }
 
@@ -114,7 +117,9 @@ public class AuthService {
             throw new ConfirmPasswordNotMatchException();
         }
 
-        UserDeviceDto userDeviceDto = userDeviceService.update(request.getUserDeviceDto());
+        UserDeviceDto userDeviceDto = request.getUserDeviceDto();
+        userDeviceDto.setUserId(user.getId());
+        userDeviceDto = userDeviceService.update(userDeviceDto);
 
         //send notification to all user devices with  CompletableFuture.runAsync
 

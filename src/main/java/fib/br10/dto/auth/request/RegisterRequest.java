@@ -33,5 +33,5 @@ public class RegisterRequest {
 //    @NotNull
     Long specialityId;
 
-    RegisterType registerType = RegisterType.CLIENT;
+    Integer registerType;
 }

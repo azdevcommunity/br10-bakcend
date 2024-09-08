@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -30,13 +31,31 @@ public class OtpService {
     SecurityEnv securityEnv;
 
     public CacheOtp create(Long userId) {
-        String otpCountKey = PrefixUtil.OTP_COUNT + userId;
+        final String otpCountKey = PrefixUtil.OTP_COUNT + userId;
+        final String lastOtpRequestTimeKey = PrefixUtil.LAST_OTP_REQUEST_TIME + userId;
+        final String dailyOtpCountKey = PrefixUtil.DAILY_OTP_COUNT + userId;
 
-        String otpCountStr = (String) cacheService.get(otpCountKey);
-        int otpCount = otpCountStr == null ? 0 : Integer.parseInt(otpCountStr);
+        // Check Last Otp Send Date
+        Object lastRequestStr = cacheService.get(lastOtpRequestTimeKey);
+        if (Objects.nonNull(lastRequestStr)) {
+            OffsetDateTime lastRequestTime = DateUtil.getOffsetDateTime(String.valueOf(lastRequestStr));
+            if (DateUtil.getCurrentDateTime().isBefore(lastRequestTime.plusMinutes(1))) {
+                throw new BaseException("You can only request a new OTP after 1 minute.");
+            }
+        }
 
+        // Check Daily otp generation limit for user
+        Object dailyOtpCountStr =  cacheService.get(dailyOtpCountKey);
+        int dailyOtpCount = dailyOtpCountStr == null ? 0 : Integer.parseInt(String.valueOf(dailyOtpCountStr));
+        if (dailyOtpCount >= securityEnv.getOtpConfig().otpDailyLimit()) {
+            throw new BaseException("You have reached the daily limit of 6 OTP requests.");
+        }
+
+        // Check Hour Limit for user
+        Object hourOtpCountStr = cacheService.get(otpCountKey);
+        int otpCount = hourOtpCountStr == null ? 0 : Integer.parseInt(String.valueOf(hourOtpCountStr));
         if (otpCount >= securityEnv.getOtpConfig().otpTryLimit()) {
-            throw new BaseException("Too many OTP requests. Please try again later.");
+            throw new BaseException("Too many OTP requests in the last hour. Please try again later.");
         }
 
         Integer otp = RandomUtil.randomInt(1000, 9999);
@@ -48,13 +67,23 @@ public class OtpService {
 
         cacheService.put(PrefixUtil.OTP + userId, cacheOtp, securityEnv.getOtpConfig().otpExpirationTime(), TimeUnit.SECONDS);
 
-        if (Objects.isNull(otpCountStr)) {
+        cacheService.put(lastOtpRequestTimeKey, DateUtil.getCurrentDateTime().toString(), 1, TimeUnit.MINUTES);
+
+        if (Objects.isNull(hourOtpCountStr)) {
             cacheService.put(otpCountKey, 1, 1, TimeUnit.HOURS);
         } else {
             cacheService.increment(otpCountKey);
         }
+
+        if (Objects.isNull(dailyOtpCountStr)) {
+            cacheService.put(dailyOtpCountKey, 1, 1, TimeUnit.DAYS);
+        } else {
+            cacheService.increment(dailyOtpCountKey);
+        }
+
         return cacheOtp;
     }
+
 
     public CacheOtp find(Long userId) {
         CacheOtp cacheOtp = (CacheOtp) cacheService.get(PrefixUtil.OTP + userId);

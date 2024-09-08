@@ -25,6 +25,6 @@ public class SecurityEnv {
     public record Encryption(String secret,String algorithm,int keySize) {
     }
 
-    public record OtpConfig(Integer otpExpirationTime, Integer otpTryLimit)
+    public record OtpConfig(Integer otpExpirationTime, Integer otpTryLimit, Integer  otpDailyLimit)
     {}
 }

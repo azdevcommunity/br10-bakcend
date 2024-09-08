@@ -34,11 +34,10 @@ import java.util.UUID;
 public class UserDevice extends BaseEntity {
 
     @Column(name = "DEVICE_ID", nullable = false)
-    private UUID deviceId;
+    private String deviceId;
 
     @Column(name = "CLIENT_TYPE", nullable = false)
-    @Enumerated(value = EnumType.ORDINAL)
-    private ClientType clientType;
+    private Integer clientType;
 
     @Column(name = "USER_ID", nullable = false)
     private Long userId;

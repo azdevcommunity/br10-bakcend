@@ -28,6 +28,9 @@ public final class DateUtil {
         ZoneOffset offset = getZoneOffset();
         return OffsetDateTime.now(offset);
     }
+    public static OffsetDateTime getOffsetDateTime(String offsetDateTime) {
+        return OffsetDateTime.parse(offsetDateTime);
+    }
 
     public static Date getCurrentDate() {
         return Date.from(getCurrentDateTime().toInstant());

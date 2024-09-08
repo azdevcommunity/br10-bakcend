@@ -2,6 +2,7 @@ package fib.br10.service;
 
 import fib.br10.core.exception.BaseException;
 import fib.br10.dto.userdevice.request.UserDeviceDto;
+import fib.br10.entity.user.ClientType;
 import fib.br10.entity.user.UserDevice;
 import fib.br10.mapper.UserDeviceMapper;
 import fib.br10.repository.UserDeviceRepository;
@@ -23,6 +24,7 @@ public class UserDeviceService {
         userService.validateUserExists(userDeviceDto.getUserId());
 
         UserDevice userDevice = userDeviceMapper.userDeviceDtoToUserDevice(userDeviceDto);
+        ClientType.fromValue(userDevice.getClientType());
         userDeviceRepository.save(userDevice);
 
         userDeviceDto.setId(userDevice.getId());
@@ -31,10 +33,11 @@ public class UserDeviceService {
 
     public UserDeviceDto update(UserDeviceDto userDeviceDto) {
         userService.validateUserExists(userDeviceDto.getUserId());
-        UserDevice userDevice = userDeviceRepository.findById(userDeviceDto.getId())
+        UserDevice userDevice = userDeviceRepository.findByDeviceId(userDeviceDto.getDeviceId())
                 .orElseGet(UserDevice::new);
 
         userDevice = userDeviceMapper.userDeviceDtoToUserDevice(userDevice, userDeviceDto);
+        ClientType.fromValue(userDevice.getClientType());
         userDeviceRepository.save(userDevice);
 
         userDeviceDto.setId(userDevice.getId());
