@@ -105,6 +105,7 @@ public class AuthService {
         return new OtpResponse(cacheOtp.getOtp(), cacheOtp.getOtpExpireDate());
     }
 
+    @Transactional
     public Token login(LoginRequest request) {
         User user = userService.findByUserNameOrPhoneNumber(request.getPhoneNumberOrUsername());
 
