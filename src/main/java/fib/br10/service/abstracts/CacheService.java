@@ -12,4 +12,6 @@ public interface CacheService<K, V> {
     void put(K key, V value, long timeout, TimeUnit unit);
     void delete(K key);
     Long remove(K key, V value);
+    void increment(K key);
+    void expire(K key, long timeout, TimeUnit unit);
 }

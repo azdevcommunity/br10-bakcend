@@ -5,6 +5,7 @@ import fib.br10.core.dto.UserDetailModel;
 import fib.br10.core.service.RequestContextProvider;
 import fib.br10.core.utility.ClaimTypes;
 import fib.br10.core.utility.DateUtil;
+import fib.br10.dto.userdevice.request.UserDeviceDto;
 import fib.br10.exception.token.InvalidJWTClaimException;
 import fib.br10.exception.token.JWTExpiredException;
 import fib.br10.utility.JwtService;
@@ -51,7 +52,7 @@ public class TokenService {
 
         long expiration = DateUtil.getDifferenceAsLong(jwtService.extractClaim(token, Claims::getExpiration));
 
-        addTokenToBlackList(Long.valueOf(userIdInt), tokenId, expiration );
+        addTokenToBlackList(Long.valueOf(userIdInt), tokenId, expiration);
     }
 
     public void addTokenToBlackList() {
@@ -110,6 +111,19 @@ public class TokenService {
 
     public Token get(User user) {
         return get(user, new HashMap<>());
+    }
+
+    public Token get(User user, UserDeviceDto deviceDto) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put(ClaimTypes.USER_ID, user.getId());
+        claims.put(ClaimTypes.DEVICE_ID, deviceDto.getId());
+        return get(user, claims);
+    }
+
+    public Token get(User user, String key, Object value) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put(key, value);
+        return get(user, claims);
     }
 
     public void validateToken(String token, UserDetails userDetails) {

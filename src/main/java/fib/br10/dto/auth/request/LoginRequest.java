@@ -1,5 +1,7 @@
 package fib.br10.dto.auth.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import fib.br10.dto.userdevice.request.UserDeviceDto;
 import fib.br10.utility.Messages;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -21,4 +23,7 @@ public class LoginRequest {
     @NotBlank(message = Messages.PASSWORD_REQUIRED)
     String password;
 
+    @NotNull
+    @JsonProperty(value = "deviceInfo")
+    UserDeviceDto userDeviceDto;
 }

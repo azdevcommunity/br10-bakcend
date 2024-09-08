@@ -13,6 +13,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -56,6 +57,7 @@ public class SpecialistAvailabilityService {
         return specialistAvailability.getId();
     }
 
+    @Transactional
     public void addWeekendAvailability(Long specialistUserId) {
         SpecialistAvailability specialistAvailability = SpecialistAvailability.builder()
                 .specialistUserId(specialistUserId)

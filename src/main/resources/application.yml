@@ -57,6 +57,10 @@ management:
       show-details: always
 
 security:
+  otp-config:
+    otp-expiration-time: ${BR10_OTP_EXPIRATION_TIME:300}
+    otp-try-limit: ${BR10_OTP_LIMIT:3}
+    otp-daily-limit: ${BR10_OTP_DAILY_LIMIT:6}
   cors-allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:5173/}
   encryption:
     secret: 123456789
