@@ -6,7 +6,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -17,8 +16,6 @@ import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
-import java.time.OffsetDateTime;
-
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true)
@@ -28,24 +25,16 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
+@Table(name = "FCM_TOKENS")
 @EntityListeners(BaseEntityListener.class)
-@Table(name = "OTP", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"USER_ID", "CODE"})
-})
-public class Otp extends BaseEntity {
+public class FcmToken extends BaseEntity {
 
-    @Column(name = "USER_ID",nullable = false)
+    @Column(nullable = false, name = "DEVICE_ID")
+    Long deviceId;
+
+    @Column(nullable = false, name = "USER_ID")
     Long userId;
 
-    @Column(name = "CODE",nullable = false)
-    Integer code;
-
-    @Column(name = "EXPIRE_DATE",nullable = false)
-    OffsetDateTime expireDate;
-
-    @Column(name = "COUNT")
-    Integer count;
-
-    @Column(name = "VERIFIED")
-    Boolean verified;
+    @Column(nullable = false, unique = true,name = "TOKEN")
+    String token;
 }

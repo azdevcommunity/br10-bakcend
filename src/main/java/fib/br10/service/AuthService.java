@@ -3,18 +3,19 @@ package fib.br10.service;
 import fib.br10.core.dto.Token;
 import fib.br10.core.dto.UserDetailModel;
 import fib.br10.core.entity.EntityStatus;
+import fib.br10.core.exception.BaseException;
 import fib.br10.core.utility.*;
 import fib.br10.dto.auth.request.*;
 import fib.br10.dto.auth.response.OtpResponse;
 import fib.br10.dto.auth.response.RegisterResponse;
 import fib.br10.dto.cache.CacheOtp;
 import fib.br10.dto.specialist.specialistprofile.request.CreateSpecialistProfileRequest;
+import fib.br10.dto.userdevice.request.UserDeviceDto;
 import fib.br10.entity.user.User;
 import fib.br10.enumeration.RegisterType;
 import fib.br10.exception.auth.ConfirmPasswordNotMatchException;
 import fib.br10.exception.token.DecryptException;
 import fib.br10.exception.token.EncryptException;
-import fib.br10.exception.token.JwtAtBlackListException;
 import fib.br10.exception.token.TokenNotValidException;
 import fib.br10.exception.user.UserNotActiveException;
 import fib.br10.mapper.UserMapper;
@@ -43,16 +44,11 @@ public class AuthService {
     TokenService tokenService;
     SpecialistAvailabilityService specialistAvailabilityService;
     SpecialityService specialityService;
-
+    UserDeviceService userDeviceService;
 
     @Transactional
     public RegisterResponse register(RegisterRequest request) {
-        //bu api sirf speciailst oaraq register elemek ucundu
-        //bu nomre varmi varsa clientdimi yoxsa specialistdimi
-        //specialistdise xeta at
         //username varsa phone numberde eynidise problem deyl amma ferqlidise xeta at
-
-
         User user = userService.checkUserAlreadyExists(request.getUsername(),
                 request.getPhoneNumber()
         ).orElse(null);
@@ -61,7 +57,8 @@ public class AuthService {
             throw new ConfirmPasswordNotMatchException();
         }
 
-        boolean isSpecialist = request.getRegisterType().equals(RegisterType.SPECIALIST);
+        boolean isSpecialist = RegisterType.SPECIALIST.equals(RegisterType.fromValue(request.getRegisterType()));
+
         if (isSpecialist) {
             specialityService.checkSpecialityExists(request.getSpecialityId());
         }
@@ -70,41 +67,41 @@ public class AuthService {
             user = userService.create(request);
         }
 
-        CacheOtp cacheOtp = otpService.add(user.getId());
+        CacheOtp cacheOtp = otpService.create(user.getId());
 
         if (isSpecialist) {
             registerSpecialist(request, user);
         }
 
         //TODO: send otp to phone number from sms
-
         RegisterResponse response = userMapper.userToRegisterResponse(new RegisterResponse(), user);
         response.setOtp(cacheOtp.getOtp());
         response.setOtpExpireDate(cacheOtp.getOtpExpireDate());
         return response;
     }
 
-    public Token activateUserVerifyOtp(VerifyOtpRequest request) {
+    @Transactional
+    public Token activateUserVerifyOtp(ActivateUserVerifyOtpRequest request) {
         User user = userService.findByPhoneNumberAndStatusNot(request.getPhoneNumber(),
                 EntityStatus.DELETED
         );
 
-        otpService.verifyOtp(user.getId(), request.getOtp());
+        if (EntityStatus.ACTIVE.getValue().equals(user.getStatus())) {
+            throw new BaseException("user already activated");
+        }
 
+        otpService.verify(user.getId(), request.getOtp());
         user.setStatus(EntityStatus.ACTIVE.getValue());
-
         userService.save(user);
-
-        return tokenService.get(user);
+        UserDeviceDto deviceDto = request.getUserDeviceDto();
+        deviceDto.setUserId(user.getId());
+        deviceDto = userDeviceService.create(deviceDto);
+        return tokenService.get(user, deviceDto);
     }
 
     public OtpResponse getOtp(GetOtpRequest request) {
         User user = userService.findByUserNameOrPhoneNumber(request.getPhoneNumberOrUsername());
-
-        CacheOtp cacheOtp = otpService.add(user.getId());
-
-//        userService.save(user);
-
+        CacheOtp cacheOtp = otpService.create(user.getId());
         return new OtpResponse(cacheOtp.getOtp(), cacheOtp.getOtpExpireDate());
     }
 
@@ -120,15 +117,19 @@ public class AuthService {
             throw new ConfirmPasswordNotMatchException();
         }
 
-        Token token = tokenService.get(user);
+        UserDeviceDto userDeviceDto = request.getUserDeviceDto();
+        userDeviceDto.setUserId(user.getId());
+        userDeviceDto = userDeviceService.update(userDeviceDto);
 
-        return token;
+        //send notification to all user devices with  CompletableFuture.runAsync
+
+        return tokenService.get(user, userDeviceDto);
     }
 
     public String resetPasswordVerifyOtp(VerifyOtpRequest request) {
         User user = userService.findByPhoneNumberAndStatusNot(request.getPhoneNumber(), EntityStatus.DELETED);
 
-        otpService.verifyOtp(user.getId(), request.getOtp());
+        otpService.verify(user.getId(), request.getOtp());
 
         String payload = user.getId() + "*" + DateUtil.getCurrentDateTime().plusMinutes(5);
 
@@ -178,13 +179,18 @@ public class AuthService {
 
         tokenService.addTokenToBlackList(request.getRefreshToken());
 
-        return tokenService.get(user);
+        Long deviceId = jwtService.extractClaim(request.getRefreshToken(), ClaimTypes.TOKEN_ID);
+
+        UserDeviceDto userDeviceDto = userDeviceService.getUserDevice(deviceId);
+
+        return tokenService.get(user, userDeviceDto);
     }
 
     public void logout() {
         tokenService.addTokenToBlackList();
     }
 
+    @Transactional
     protected void registerSpecialist(RegisterRequest request, User user) {
         specialistProfileService.create(CreateSpecialistProfileRequest.builder()
                 .specialistUserId(user.getId())
@@ -192,5 +198,4 @@ public class AuthService {
                 .build());
         specialistAvailabilityService.addWeekendAvailability(user.getId());
     }
-
 }

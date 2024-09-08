@@ -1,5 +1,7 @@
 package fib.br10.dto.auth.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import fib.br10.dto.userdevice.request.UserDeviceDto;
 import fib.br10.enumeration.RegisterType;
 import fib.br10.utility.Messages;
 import jakarta.validation.constraints.NotBlank;
@@ -31,5 +33,5 @@ public class RegisterRequest {
 //    @NotNull
     Long specialityId;
 
-    RegisterType registerType = RegisterType.CLIENT;
+    Integer registerType;
 }

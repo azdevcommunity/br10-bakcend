@@ -19,6 +19,7 @@ public class RedisCacheService<K, V> implements CacheService<K, V> {
     public V get(K key) {
         return redisTemplate.opsForValue().get(key);
     }
+
     @Override
     public V getAndDelete(K key) {
         return redisTemplate.opsForValue().getAndDelete(key);
@@ -51,5 +52,15 @@ public class RedisCacheService<K, V> implements CacheService<K, V> {
     @Override
     public Long remove(K key, V value) {
         return redisTemplate.opsForSet().remove(key, value);
+    }
+
+    @Override
+    public void increment(K key) {
+        redisTemplate.opsForValue().increment(key);
+    }
+
+    @Override
+    public void expire(K key, long timeout, TimeUnit unit) {
+        redisTemplate.expire(key, timeout, unit);
     }
 }

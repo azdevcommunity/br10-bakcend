@@ -1,4 +1,4 @@
-package fib.br10.enumeration;
+package fib.br10.entity.user;
 
 import fib.br10.core.exception.BaseException;
 import lombok.AllArgsConstructor;
@@ -6,14 +6,14 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum RegisterType {
-    CLIENT(1),
-    SPECIALIST(2);
+public enum ClientType {
+    MOBILE(1),
+    WEB(2);
 
-    private final Integer value;
+    private final int value;
 
-    public static RegisterType fromValue(int value) {
-        for (RegisterType clientType : RegisterType.values()) {
+    public static ClientType fromValue(int value) {
+        for (ClientType clientType : ClientType.values()) {
             if (clientType.value == value) {
                 return clientType;
             }

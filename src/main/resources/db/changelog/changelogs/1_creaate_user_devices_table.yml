@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: OTP
+      id: USER_DEVICES
       author: YUSIF_HASANOV
       changes:
         - createTable:
-            tableName: OTP
+            tableName: USER_DEVICES
             columns:
               - column:
                   name: ID
@@ -41,28 +41,32 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: DEVICE_ID
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: CLIENT_TYPE
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
                   name: USER_ID
                   type: BIGINT
                   constraints:
                     nullable: false
               - column:
-                  name: CODE
-                  type: INTEGER
-                  constraints:
-                    nullable: false
+                  name: OPERATING_SYSTEM
+                  type: VARCHAR(50)
               - column:
-                  name: EXPIRE_DATE
-                  type: TIMESTAMP WITH TIME ZONE
-                  constraints:
-                    nullable: false
+                  name: OS_VERSION
+                  type: VARCHAR(50)
               - column:
-                  name: COUNT
-                  type: INTEGER
+                  name: APP_VERSION
+                  type: VARCHAR(50)
               - column:
-                  name: VERIFIED
-                  type: BOOLEAN
-
-        - addUniqueConstraint:
-            columnNames: USER_ID, CODE
-            constraintName: otp_uq_user_code
-            tableName: OTP
+                  name: BRAND
+                  type: VARCHAR(50)
+              - column:
+                  name: MODEL
+                  type: VARCHAR(50)

@@ -5,13 +5,13 @@ public enum EntityStatus {
     DE_ACTIVE(2),
     DELETED(3);
 
-    private final int value;
+    private final Integer value;
 
-    EntityStatus(int value) {
+    EntityStatus(Integer value) {
         this.value = value;
     }
 
-    public int getValue() {
+    public Integer getValue() {
         return value;
     }
 
