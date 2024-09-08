@@ -7,7 +7,9 @@ general:
   id-required: ID tələb olunur
   timeZone:
     not-found: Zaman zonası tapılmadı
+  record-not-found: Record tapilmadi
 auth:
+  device-info-required: Cihaz melumatlari mandatorydir
   jwt:
     expired: Jwt token expire olub
     required: Jwt token mandatorydir
@@ -73,6 +75,15 @@ web-socket:
   request-can-not-be-null: Socket request null olamaz
   queue-name-can-not-be-null: Socket kuyruk ismi null olamaz
   publish-error: Mesaji yayimlayarken xeta bas verdi
+category:
+  exists-same-name: Eyni adli kateogriya var
+  not-found: Kateogriya movcud deyil
+  not-belong-to-user: Kategoriya bu usere aid deyil
+  have-product: Bu kategoriyaya aid mehsul var
+  name-required: Kategory adi mandatorydir
+product:
+  not-found: Mehsul tapilmadi
+  exists-same-name: Eyni adli mehsul var
 file-upload:
   image-save-exception: Sekill yaddasa verilerken xeta bas verdi
 gallery-image:

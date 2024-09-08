@@ -9,6 +9,7 @@ general:
     not-found: Zaman zonası tapılmadı
   record-not-found: Record tapilmadi
 auth:
+  device-info-required: Cihaz melumatlari mandatorydir
   jwt:
     expired: Jwt token expire olub
     required: Jwt token mandatorydir

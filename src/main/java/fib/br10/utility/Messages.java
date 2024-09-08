@@ -37,6 +37,7 @@ public final class Messages {
     public static final String REFRESH_TOKEN_REQUIRED = "auth.jwt.refresh-token-required";
     public static final String ACCESS_TOKEN_REQUIRED = "auth.jwt.accesss-token-required";
     public static final String JWT_AT_BLACKLIST = "auth.jwt.at-black-list";
+    public static final String DEVICE_INFO_REQUIRED = "auth.device-info-required";
 
 
     //otp
