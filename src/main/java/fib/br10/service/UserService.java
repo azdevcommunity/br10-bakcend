@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -70,6 +71,11 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(UserNotFoundException::new);
     }
 
+    public User findUser(String phoneNumber, UUID activityId, EntityStatus status) {
+        return userRepository.findByPhoneNumberAndActivityIdAndStatus(phoneNumber,activityId, status.getValue())
+                .orElseThrow(UserNotFoundException::new);
+    }
+
     public User create(RegisterRequest request) {
         User user = new User();
         user.setStatus(EntityStatus.DE_ACTIVE.getValue());
@@ -94,13 +100,13 @@ public class UserService implements UserDetailsService {
     }
 
     public Optional<User> checkUserAlreadyExists(String username, String phoneNumber) {
-        Optional<User> user = userRepository.findByPhoneNumber(phoneNumber);
+        Optional<User> user = userRepository.findByPhoneNumberAndStatus(phoneNumber, EntityStatus.ACTIVE.getValue());
 
         if (user.isPresent() && userRoleService.isUserSpecialist(user.get().getId())) {
             throw new UserExistSamePhoneNumberException();
         }
 
-        if (userRepository.existsByUsername(username)) {
+        if (userRepository.existsByUsernameAndStatus(username,EntityStatus.ACTIVE.getValue())) {
             throw new UserExistsWithSameUserNameException();
         }
 
