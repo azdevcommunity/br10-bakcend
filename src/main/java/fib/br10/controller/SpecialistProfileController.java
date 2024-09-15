@@ -1,6 +1,7 @@
 package fib.br10.controller;
 
 import fib.br10.core.service.RequestContextProvider;
+import fib.br10.dto.specialist.specialistprofile.request.ReadByPhoneNumbersRequest;
 import fib.br10.dto.specialist.specialistprofile.request.UpdateSpecialistProfileRequest;
 import fib.br10.dto.specialist.specialistprofile.response.SpecialistProfileReadResponse;
 import fib.br10.service.SpecialistProfileService;
@@ -17,6 +18,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+
+import java.util.List;
 
 import static fib.br10.core.utility.RequestContext.get;
 import static fib.br10.core.utility.RequestContextEnum.USER_ID;
@@ -45,6 +48,19 @@ public class SpecialistProfileController {
         return ResponseEntity.ok(specialistProfileService.read(id));
     }
 
+    @PreAuthorize("permitAll()")
+    @PostMapping("/by-numbers")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<SpecialistProfileReadResponse>> read(@RequestBody @Valid  ReadByPhoneNumbersRequest request) {
+        return ResponseEntity.ok(specialistProfileService.read(request));
+    }
+
+    @PreAuthorize("permitAll()")
+    @PostMapping("/by-number/{phoneNumber}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<SpecialistProfileReadResponse> read(@PathVariable("phoneNumber") @NotNull  String phoneNumber) {
+        return ResponseEntity.ok(specialistProfileService.read(phoneNumber));
+    }
 
     @PutMapping
     @ResponseStatus(HttpStatus.OK)

@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -20,6 +21,7 @@ public class UserDeviceService {
     UserDeviceMapper userDeviceMapper;
     UserService userService;
 
+    @Transactional
     public UserDeviceDto create(UserDeviceDto userDeviceDto) {
         userService.validateUserExists(userDeviceDto.getUserId());
 
@@ -31,9 +33,10 @@ public class UserDeviceService {
         return userDeviceDto;
     }
 
+    @Transactional
     public UserDeviceDto update(UserDeviceDto userDeviceDto) {
         userService.validateUserExists(userDeviceDto.getUserId());
-        UserDevice userDevice = userDeviceRepository.findByDeviceId(userDeviceDto.getDeviceId())
+        UserDevice userDevice = userDeviceRepository.findByDeviceIdAndUserId(userDeviceDto.getDeviceId(), userDeviceDto.getUserId())
                 .orElseGet(UserDevice::new);
 
         userDevice = userDeviceMapper.userDeviceDtoToUserDevice(userDevice, userDeviceDto);

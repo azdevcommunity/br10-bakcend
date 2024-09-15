@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -13,9 +14,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByPhoneNumberAndStatusNot(String phoneNumber, Integer status);
 
+    Optional<User> findByPhoneNumberAndActivityIdAndStatus(String phoneNumber, UUID activityId, Integer status);
+
+    Optional<User> findByPhoneNumberAndStatus(String phoneNumber, Integer status);
+
     Boolean existsByPhoneNumber(String phoneNumber);
 
-    Boolean existsByUsername(String userName);
+    Boolean existsByUsernameAndStatus(String userName,Integer status);
 
     Optional<User> findByUsername(String username);
 

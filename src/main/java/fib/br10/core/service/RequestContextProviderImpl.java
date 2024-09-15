@@ -63,6 +63,11 @@ public class RequestContextProviderImpl implements RequestContextProvider {
     }
 
     @Override
+    public String getLang() {
+        return RequestContext.get(LANG, String.class);
+    }
+
+    @Override
     public void setLang(String lang) {
         RequestContext.set(LANG,lang);
     }
