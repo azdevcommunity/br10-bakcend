@@ -4,6 +4,7 @@ import fib.br10.core.dto.Token;
 import fib.br10.core.dto.UserDetailModel;
 import fib.br10.core.entity.EntityStatus;
 import fib.br10.core.exception.BaseException;
+import fib.br10.core.service.RequestContextProvider;
 import fib.br10.core.utility.*;
 import fib.br10.dto.auth.request.*;
 import fib.br10.dto.auth.response.OtpResponse;
@@ -29,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -45,10 +47,12 @@ public class AuthService {
     SpecialistAvailabilityService specialistAvailabilityService;
     SpecialityService specialityService;
     UserDeviceService userDeviceService;
+    RequestContextProvider provider;
 
     @Transactional
     public RegisterResponse register(RegisterRequest request) {
         //username varsa phone numberde eynidise problem deyl amma ferqlidise xeta at
+        //user insert edirem deactive;
         User user = userService.checkUserAlreadyExists(request.getUsername(),
                 request.getPhoneNumber()
         ).orElse(null);
@@ -82,8 +86,8 @@ public class AuthService {
 
     @Transactional
     public Token activateUserVerifyOtp(ActivateUserVerifyOtpRequest request) {
-        User user = userService.findByPhoneNumberAndStatusNot(request.getPhoneNumber(),
-                EntityStatus.DELETED
+        User user = userService.findUser(request.getPhoneNumber(), UUID.fromString(provider.getActivityId()),
+                EntityStatus.DE_ACTIVE
         );
 
         if (EntityStatus.ACTIVE.getValue().equals(user.getStatus())) {
@@ -105,6 +109,7 @@ public class AuthService {
         return new OtpResponse(cacheOtp.getOtp(), cacheOtp.getOtpExpireDate());
     }
 
+    @Transactional
     public Token login(LoginRequest request) {
         User user = userService.findByUserNameOrPhoneNumber(request.getPhoneNumberOrUsername());
 

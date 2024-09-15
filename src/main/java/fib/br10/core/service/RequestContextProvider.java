@@ -23,6 +23,8 @@ public interface RequestContextProvider {
 
      Boolean getIsPublicEndpoint();
 
+     String getLang();
+
      void setLang(String lang);
 
      void setUserId(Long userId);

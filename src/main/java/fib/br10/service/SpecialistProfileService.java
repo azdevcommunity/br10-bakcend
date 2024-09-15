@@ -1,7 +1,11 @@
 package fib.br10.service;
 
+import fib.br10.core.entity.EntityStatus;
+import fib.br10.core.exception.BaseException;
+import fib.br10.core.service.RequestContextProvider;
 import fib.br10.dto.image.response.CreateImageResponse;
 import fib.br10.dto.specialist.specialistprofile.request.CreateSpecialistProfileRequest;
+import fib.br10.dto.specialist.specialistprofile.request.ReadByPhoneNumbersRequest;
 import fib.br10.dto.specialist.specialistprofile.request.UpdateSpecialistProfileRequest;
 import fib.br10.dto.specialist.specialistprofile.response.SpecialistProfileReadResponse;
 import fib.br10.entity.Image;
@@ -11,6 +15,7 @@ import fib.br10.exception.specialist.specialistprofile.SpecialistProfileAlreadyE
 import fib.br10.exception.specialist.specialistprofile.SpecialistProfileNotFoundException;
 import fib.br10.mapper.SpecialistProfileMapper;
 import fib.br10.repository.SpecialistProfileRepository;
+import fib.br10.utility.LangEnum;
 import fib.br10.utility.SpecialityUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +25,12 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.text.html.parser.Entity;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import static fib.br10.utility.CacheKeys.SPECIALIST_PROFILE;
@@ -37,6 +46,7 @@ public class SpecialistProfileService {
     SpecialistProfileMapper specialistProfileMapper;
     SpecialityService specialityService;
     ImageService imageService;
+    RequestContextProvider provider;
 
     @Cacheable(value = SPECIALIST_PROFILE, key = "#id")
     public SpecialistProfileReadResponse read(Long id) {
@@ -61,10 +71,10 @@ public class SpecialistProfileService {
         specialistProfile = specialistProfileMapper.updateSpecialistProfileRequestToSpecialistProfile(specialistProfile, request);
         specialistProfileRepository.save(specialistProfile);
 
-        SpecialistProfileReadResponse response  = specialistProfileMapper.specialistProfileToSpecialistProfileResponse(specialistProfile);
+        SpecialistProfileReadResponse response = specialistProfileMapper.specialistProfileToSpecialistProfileResponse(specialistProfile);
         response.setSpeciality(specialityService.findSpecialistyName(response.getSpecialityId()));
         Image image = imageService.findById(specialistProfile.getImageId());
-        if(Objects.nonNull(image)){
+        if (Objects.nonNull(image)) {
             response.setProfilePicture(image.getPath());
         }
         return response;
@@ -101,9 +111,33 @@ public class SpecialistProfileService {
         specialistProfile.setImageId(imageResponse.getId());
         specialistProfileRepository.save(specialistProfile);
 
-        SpecialistProfileReadResponse response =  specialistProfileMapper.specialistProfileToSpecialistProfileResponse(specialistProfile);
+        SpecialistProfileReadResponse response = specialistProfileMapper.specialistProfileToSpecialistProfileResponse(specialistProfile);
         response.setProfilePicture(imageResponse.getPath());
         response.setSpeciality(specialityService.findSpecialistyName(response.getSpecialityId()));
         return response;
+    }
+
+    public List<SpecialistProfileReadResponse> read(ReadByPhoneNumbersRequest request) {
+        if (ObjectUtils.isEmpty(request.getPhoneNumbers())) {
+            return Collections.emptyList();
+        }
+
+        return specialistProfileRepository.findAllByPhoneNumbers(
+                request.getPhoneNumbers(),
+                EntityStatus.ACTIVE.getValue(),
+                LangEnum.fromValue(provider.getLang()).getCode()
+        );
+    }
+
+    public SpecialistProfileReadResponse read(String phoneNumber) {
+        if (Objects.isNull(phoneNumber)) {
+            throw new BaseException("Nomre bos ola bilmez");
+        }
+
+        return specialistProfileRepository.findByPhoneNumber(
+                phoneNumber,
+                EntityStatus.ACTIVE.getValue(),
+                LangEnum.fromValue(provider.getLang()).getCode()
+        );
     }
 }
