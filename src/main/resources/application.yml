@@ -57,6 +57,13 @@ management:
       show-details: always
 
 security:
+  auth-rate-limit:
+    register:
+      max-allowed-attemps: 5
+      block-time: 60
+    login:
+      max-allowed-attemps: 5
+      block-time: 60
   otp-config:
     otp-expiration-time: ${BR10_OTP_EXPIRATION_TIME:300}
     otp-try-limit: ${BR10_OTP_LIMIT:3}
@@ -81,6 +88,10 @@ security:
     - /specialities/**
   endpoint-black-list:
     - /auth/logout
+
+firebase:
+
+
 
 log-level: info
 logging:

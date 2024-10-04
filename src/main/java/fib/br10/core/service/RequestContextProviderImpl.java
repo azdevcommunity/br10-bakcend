@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 
 import static fib.br10.core.utility.RequestContextEnum.ACTIVITY_ID;
+import static fib.br10.core.utility.RequestContextEnum.CLIENT_IP;
 import static fib.br10.core.utility.RequestContextEnum.IS_PUBLIC_ENDPOINT;
 import static fib.br10.core.utility.RequestContextEnum.JWT_EXPIRATION;
 import static fib.br10.core.utility.RequestContextEnum.LANG;
@@ -65,6 +66,16 @@ public class RequestContextProviderImpl implements RequestContextProvider {
     @Override
     public String getLang() {
         return RequestContext.get(LANG, String.class);
+    }
+
+    @Override
+    public String getIpAddress() {
+        return RequestContext.get(CLIENT_IP, String.class);
+    }
+
+    @Override
+    public void setIpAddress(String ipAddress) {
+         RequestContext.set(CLIENT_IP, String.class);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package fib.br10.service;
 
+import fib.br10.configuration.SecurityEnv;
 import fib.br10.core.dto.Token;
 import fib.br10.core.dto.UserDetailModel;
 import fib.br10.core.entity.EntityStatus;
@@ -20,6 +21,8 @@ import fib.br10.exception.token.EncryptException;
 import fib.br10.exception.token.TokenNotValidException;
 import fib.br10.exception.user.UserNotActiveException;
 import fib.br10.mapper.UserMapper;
+import fib.br10.service.abstracts.CacheService;
+import fib.br10.utility.CacheKeys;
 import fib.br10.utility.JwtService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -31,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @AllArgsConstructor
@@ -48,11 +52,16 @@ public class AuthService {
     SpecialityService specialityService;
     UserDeviceService userDeviceService;
     RequestContextProvider provider;
+    CacheService<String, Integer> cacheService;
+    SecurityEnv securityEnv;
 
     @Transactional
     public RegisterResponse register(RegisterRequest request) {
         //username varsa phone numberde eynidise problem deyl amma ferqlidise xeta at
         //user insert edirem deactive;
+        validateUserNotBlocked(provider.getIpAddress());
+        validateRateLimit(securityEnv.getAuthRateLimit().register(), CacheKeys.REGISTER_TRY_COUNT + provider.getIpAddress());
+
         User user = userService.checkUserAlreadyExists(request.getUsername(),
                 request.getPhoneNumber()
         ).orElse(null);
@@ -78,10 +87,7 @@ public class AuthService {
         }
 
         //TODO: send otp to phone number from sms
-        RegisterResponse response = userMapper.userToRegisterResponse(new RegisterResponse(), user);
-        response.setOtp(cacheOtp.getOtp());
-        response.setOtpExpireDate(cacheOtp.getOtpExpireDate());
-        return response;
+        return userMapper.userToRegisterResponse(new RegisterResponse(), user, cacheOtp.getOtp(), cacheOtp.getOtpExpireDate());
     }
 
     @Transactional
@@ -111,6 +117,9 @@ public class AuthService {
 
     @Transactional
     public Token login(LoginRequest request) {
+        validateUserNotBlocked(provider.getIpAddress());
+        validateRateLimit(securityEnv.getAuthRateLimit().login(), CacheKeys.LOGIN_TRY_COUNT + provider.getIpAddress());
+
         User user = userService.findByUserNameOrPhoneNumber(request.getPhoneNumberOrUsername());
 
         if (!user.getStatus().equals(EntityStatus.ACTIVE.getValue())) {
@@ -127,7 +136,6 @@ public class AuthService {
         userDeviceDto = userDeviceService.update(userDeviceDto);
 
         //send notification to all user devices with  CompletableFuture.runAsync
-
         return tokenService.get(user, userDeviceDto);
     }
 
@@ -202,5 +210,21 @@ public class AuthService {
                 .specialityId(request.getSpecialityId())
                 .build());
         specialistAvailabilityService.addWeekendAvailability(user.getId());
+    }
+
+    private void validateUserNotBlocked(String ipAddress){
+        Integer userBlocked = cacheService.get(CacheKeys.TEMPORARY_BLOCKED_USERS + ipAddress);
+        if(Objects.nonNull(userBlocked)){
+            throw new BaseException("user uje blocklanib");
+        }
+    }
+
+    private void validateRateLimit(SecurityEnv.Limitation limitation, String key) {
+        Integer loginCount = cacheService.get(key);
+        if (limitation.maxAllowedAttemps().equals(loginCount)) {
+            throw new BaseException("qaqa besdi dahaa poxunu cixartma");
+        }
+        //TODO: null olanda artirirmi baxmaq lazimdi
+        cacheService.increment(key);
     }
 }

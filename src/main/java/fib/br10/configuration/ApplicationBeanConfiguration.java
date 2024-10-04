@@ -3,6 +3,10 @@ package fib.br10.configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.messaging.FirebaseMessaging;
 import fib.br10.core.service.RequestContextProvider;
 import fib.br10.core.utility.RandomUtil;
 import fib.br10.entity.specialist.Speciality;
@@ -17,8 +21,10 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -67,4 +73,17 @@ public class ApplicationBeanConfiguration {
 
         return mapper;
     }
+
+    @Bean
+    public FirebaseMessaging firebaseMessaging() throws IOException {
+        GoogleCredentials googleCredentials = GoogleCredentials.fromStream(
+                new ClassPathResource("br10-firebase-adminsdk.json").getInputStream()
+        );
+
+        FirebaseOptions firebaseOptions = FirebaseOptions.builder().setCredentials(googleCredentials).build();
+        FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions, "br10");
+        return FirebaseMessaging.getInstance(app);
+    }
+
+
 }

@@ -32,17 +32,24 @@ public class RequestContextConfiguration {
                 request.getHeader(LANG.getValue()),
                 SecurityContextHolder.getContext().getAuthentication(),
                 jwtService.extractJwtFromRequest(request),
-                request.getHeader(TIME_ZONE.getValue())
+                request.getHeader(TIME_ZONE.getValue()),
+                request.getRemoteAddr()
         );
     }
 
-    public void configure(String activityId, String lang, Authentication auth, String jwt, String timeZone) {
+    public void configure(String activityId, String lang, Authentication auth, String jwt, String timeZone,String ipAdress) {
         configureActivityId(activityId);
         configureLocalization(lang);
         configureAuth(auth, jwt);
         configureTimeZone(timeZone, jwt);
+        configureIpAddress(ipAdress);
     }
 
+    private void configureIpAddress(String ipAdress) {
+        if(Objects.nonNull(ipAdress)){
+            provider.setIpAddress(ipAdress);
+        }
+    }
 
     private void configureTimeZone(String timeZone, String jwt) {
         boolean isWhiteListed = provider.getIsPublicEndpoint();

@@ -29,12 +29,12 @@ import lombok.experimental.SuperBuilder;
 @EntityListeners(BaseEntityListener.class)
 public class FcmToken extends BaseEntity {
 
-    @Column(nullable = false, name = "DEVICE_ID")
+    @Column(name = "DEVICE_ID", nullable = false)
     Long deviceId;
 
     @Column(nullable = false, name = "USER_ID")
     Long userId;
 
-    @Column(nullable = false, unique = true,name = "TOKEN")
+    @Column(nullable = false, unique = true, name = "TOKEN")
     String token;
 }
