@@ -12,7 +12,7 @@ FROM openjdk:17-jdk
  
 WORKDIR /app 
 
-COPY --from=build /app/build/libs/*.jar app.jar
+COPY --from=build /app/build/libs/*.jar /app/app.jar
 
 VOLUME /app/uploads
 
