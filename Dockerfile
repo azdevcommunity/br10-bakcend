@@ -6,13 +6,15 @@ COPY build.gradle settings.gradle /app/
 COPY gradlew* /app/ 
 COPY src /app/src
 
-RUN gradle build --no-daemon
+RUN gradle build --no-daemon && ls -l /app/build/libs
 
 FROM openjdk:17-jdk
  
-WORKDIR /app 
+WORKDIR /app
 
-COPY --from=build /app/build/libs/*.jar /app/app.jar
+RUN ls -l /app/build/libs/
+
+COPY --from=build /app/build/libs/*.jar app.jar
 
 VOLUME /app/uploads
 
