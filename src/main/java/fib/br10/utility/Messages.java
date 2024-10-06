@@ -109,6 +109,11 @@ public final class Messages {
     //Product
     public static final String PRODUCT_NOT_FOUND = "product.not-found";
     public static final String PRODUCT_EXISTS_SAME_NAME = "product.exists-same-name";
+
+    //Notification
+    public static final String ERROR_OCCURRED_WHILE_SEND_NOTIFICATION = "notification.error-occurred";
+
+
     //    --------------------------------------------------------
     //    //general
     public static final String ID_REQUIRED = "error.general.id-required";

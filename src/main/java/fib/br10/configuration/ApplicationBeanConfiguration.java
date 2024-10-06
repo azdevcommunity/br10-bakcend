@@ -22,6 +22,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 
 import java.io.IOException;
@@ -31,6 +32,7 @@ import java.util.List;
 @Configuration
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
+@EnableAsync
 public class ApplicationBeanConfiguration {
 
     SpecialityRepository specialityRepository;
@@ -84,6 +86,4 @@ public class ApplicationBeanConfiguration {
         FirebaseApp app = FirebaseApp.initializeApp(firebaseOptions, "br10");
         return FirebaseMessaging.getInstance(app);
     }
-
-
 }

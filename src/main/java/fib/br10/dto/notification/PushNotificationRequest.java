@@ -12,6 +12,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PushNotificationRequest {
 
+    private Long userId;
+
     private String targetToken;
 
     private String title;
