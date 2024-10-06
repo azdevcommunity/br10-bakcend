@@ -59,8 +59,8 @@ public class AuthService {
     public RegisterResponse register(RegisterRequest request) {
         //username varsa phone numberde eynidise problem deyl amma ferqlidise xeta at
         //user insert edirem deactive;
-        validateUserNotBlocked(provider.getIpAddress());
-        validateRateLimit(securityEnv.getAuthRateLimit().register(), CacheKeys.REGISTER_TRY_COUNT + provider.getIpAddress());
+//        validateUserNotBlocked(provider.getIpAddress());
+//        validateRateLimit(securityEnv.getAuthRateLimit().register(), CacheKeys.REGISTER_TRY_COUNT + provider.getIpAddress());
 
         User user = userService.checkUserAlreadyExists(request.getUsername(),
                 request.getPhoneNumber()
@@ -117,8 +117,8 @@ public class AuthService {
 
     @Transactional
     public Token login(LoginRequest request) {
-        validateUserNotBlocked(provider.getIpAddress());
-        validateRateLimit(securityEnv.getAuthRateLimit().login(), CacheKeys.LOGIN_TRY_COUNT + provider.getIpAddress());
+//        validateUserNotBlocked(provider.getIpAddress());
+//        validateRateLimit(securityEnv.getAuthRateLimit().login(), CacheKeys.LOGIN_TRY_COUNT + provider.getIpAddress());
 
         User user = userService.findByUserNameOrPhoneNumber(request.getPhoneNumberOrUsername());
 
