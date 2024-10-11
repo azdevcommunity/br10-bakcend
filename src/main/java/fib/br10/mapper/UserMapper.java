@@ -4,6 +4,7 @@ import fib.br10.core.dto.UserDetailModel;
 import fib.br10.dto.auth.request.RegisterRequest;
 import fib.br10.dto.auth.response.RegisterResponse;
 import fib.br10.dto.cache.CacheOtp;
+import fib.br10.dto.cache.CacheUser;
 import fib.br10.entity.user.User;
 import fib.br10.entity.user.RoleEnum;
 import org.mapstruct.*;
@@ -34,6 +35,10 @@ public interface UserMapper {
     default RoleEnum mapIntToUserType(Integer userType) {
         return RoleEnum.fromValue(userType);
     }
+
+    CacheUser registerRequestToCacheUser(RegisterRequest request);
+
+    User cacheUserToEntity(CacheUser cacheUser);
 }
     
     
