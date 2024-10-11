@@ -140,4 +140,16 @@ public class SpecialistProfileService {
                 LangEnum.fromValue(provider.getLang()).getCode()
         );
     }
+
+    @Cacheable(value = SPECIALIST_PROFILE, key = "#search")
+    public List<SpecialistProfileReadResponse> readBySearch(String search) {
+        if (Objects.isNull(search)) {
+            throw new BaseException("Search bos ola bilmez");
+        }
+        return specialistProfileRepository.findBySearch(
+                search,
+                EntityStatus.ACTIVE.getValue(),
+                LangEnum.fromValue(provider.getLang()).getCode()
+        );
+    }
 }
