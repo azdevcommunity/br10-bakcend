@@ -15,6 +15,7 @@ import fib.br10.utility.PrefixUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
@@ -23,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
+@Log4j2
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 public class OtpService {
 
@@ -35,8 +37,12 @@ public class OtpService {
         final String lastOtpRequestTimeKey = PrefixUtil.LAST_OTP_REQUEST_TIME + userId;
         final String dailyOtpCountKey = PrefixUtil.DAILY_OTP_COUNT + userId;
 
+
         // Check Last Otp Send Date
         Object lastRequestStr = cacheService.get(lastOtpRequestTimeKey);
+
+        log.info(String.format("Last otp request key : %s, lastRequestTime: %s", lastOtpRequestTimeKey, lastRequestStr));
+
         if (Objects.nonNull(lastRequestStr)) {
             OffsetDateTime lastRequestTime = DateUtil.getOffsetDateTime(String.valueOf(lastRequestStr));
             if (DateUtil.getCurrentDateTime().isBefore(lastRequestTime.plusMinutes(1))) {
@@ -45,7 +51,7 @@ public class OtpService {
         }
 
         // Check Daily otp generation limit for user
-        Object dailyOtpCountStr =  cacheService.get(dailyOtpCountKey);
+        Object dailyOtpCountStr = cacheService.get(dailyOtpCountKey);
         int dailyOtpCount = dailyOtpCountStr == null ? 0 : Integer.parseInt(String.valueOf(dailyOtpCountStr));
         if (dailyOtpCount >= securityEnv.getOtpConfig().otpDailyLimit()) {
             throw new BaseException("You have reached the daily limit of 6 OTP requests.");
