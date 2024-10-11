@@ -27,6 +27,7 @@ public final class Messages {
     public static final String PHONE_NUMBER_REQUIRED = "user.phoneNumber-required";
     public static final String USER_TYPE_REQUIRED = "user.userType-required";
 
+
     //Auth
     //token
     public static final String TOKEN_NOT_VALID = "auth.token.not-valid";
@@ -38,6 +39,8 @@ public final class Messages {
     public static final String ACCESS_TOKEN_REQUIRED = "auth.jwt.accesss-token-required";
     public static final String JWT_AT_BLACKLIST = "auth.jwt.at-black-list";
     public static final String DEVICE_INFO_REQUIRED = "auth.device-info-required";
+
+    public static final String REGISTER_TYPE_REQUIRED = "auth.register-type-required";
 
 
     //otp

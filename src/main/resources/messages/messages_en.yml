@@ -9,6 +9,7 @@ general:
     not-found: Zaman zonası tapılmadı
   record-not-found: Record tapilmadi
 auth:
+  register-type-required: Register novu qeyd olunsun cindir maqsud
   device-info-required: Cihaz melumatlari mandatorydir
   jwt:
     expired: Jwt token expire olub
