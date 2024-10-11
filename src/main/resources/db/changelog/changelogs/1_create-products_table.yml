@@ -59,3 +59,8 @@ databaseChangeLog:
               - column:
                   name: "CATEGORY_ID"
                   type: BIGINT
+              - column:
+                  name: IMAGE_ID
+                  type: BIGINT
+                  constraints:
+                    nullable: true

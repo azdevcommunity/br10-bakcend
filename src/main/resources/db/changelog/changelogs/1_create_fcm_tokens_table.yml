@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: SPECIALIST_SERVICES
+      id: FCM_TOKENS
       author: YUSIF_HASANOV
       changes:
         - createTable:
-            tableName: SPECIALIST_SERVICES
+            tableName: FCM_TOKENS
             columns:
               - column:
                   name: ID
@@ -41,30 +41,18 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: SPECIALIST_USER_ID
+                  name: DEVICE_ID
                   type: BIGINT
                   constraints:
                     nullable: false
               - column:
-                  name: IMAGE_ID
+                  name: USER_ID
                   type: BIGINT
-              - column:
-                  name: DURATION
-                  type: INTEGER
                   constraints:
                     nullable: false
               - column:
-                  name: NAME
-                  type: VARCHAR(100)
+                  name: TOKEN
+                  type: VARCHAR(255)
                   constraints:
                     nullable: false
-              - column:
-                  name: PRICE
-                  type: NUMERIC(19, 2)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: DESCRIPTION
-                  type: VARCHAR(500)
-                  constraints:
-                    nullable: true
+                    unique: true

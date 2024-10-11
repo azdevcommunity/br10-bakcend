@@ -18,6 +18,7 @@ public class SecurityEnv {
     private Encryption encryption;
     private List<String> corsAllowedOrigins;
     private OtpConfig otpConfig;
+    private AuthRateLimit authRateLimit;
 
     public  record Jwt( String secret,int jwtExpiration,int refreshExpiration) {
     }
@@ -27,4 +28,9 @@ public class SecurityEnv {
 
     public record OtpConfig(Integer otpExpirationTime, Integer otpTryLimit, Integer  otpDailyLimit)
     {}
+
+    public record AuthRateLimit(Limitation register, Limitation login)
+    {}
+
+    public record Limitation(Integer blockTime, Integer maxAllowedAttemps){}
 }

@@ -25,6 +25,10 @@ public interface RequestContextProvider {
 
      String getLang();
 
+     String getIpAddress();
+
+     void setIpAddress(String ipAddress);
+
      void setLang(String lang);
 
      void setUserId(Long userId);
