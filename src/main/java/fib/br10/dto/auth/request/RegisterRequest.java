@@ -33,5 +33,6 @@ public class RegisterRequest {
 //    @NotNull
     Long specialityId;
 
+    @NotNull
     Integer registerType;
 }
