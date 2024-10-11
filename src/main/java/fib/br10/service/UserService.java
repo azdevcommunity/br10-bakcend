@@ -83,7 +83,7 @@ public class UserService implements UserDetailsService {
         return cacheService.get(CacheKeys.REGISTER_USER + phoneNumber);
     }
 
-    public User addUserToCache(RegisterRequest request) {
+    public CacheUser addUserToCache(RegisterRequest request) {
         CacheUser cacheUser = userMapper.registerRequestToCacheUser(request);
 //        User user = new User();
 //        user.setStatus(EntityStatus.DE_ACTIVE.getValue());
@@ -93,7 +93,7 @@ public class UserService implements UserDetailsService {
         cacheService.put(CacheKeys.REGISTER_USER + request.getPhoneNumber(), cacheUser, 15, TimeUnit.MINUTES);
 
 //        return user;
-        return null;
+        return cacheUser;
     }
 
     public User save(User user) {
