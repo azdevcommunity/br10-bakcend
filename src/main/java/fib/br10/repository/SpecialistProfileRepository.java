@@ -64,5 +64,5 @@ public interface SpecialistProfileRepository extends JpaRepository<SpecialistPro
                     join Speciality s on sp.specialityId = s.id
                     where u.status = :status and (u.username = :search or u.phoneNumber = :search)
             """)
-    List<SpecialistProfileReadResponse> findBySearch(String search, Integer value, Integer code);
+    List<SpecialistProfileReadResponse> findBySearch(String search, Integer status, Integer lang);
 }
