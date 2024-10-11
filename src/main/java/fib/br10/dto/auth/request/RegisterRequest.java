@@ -33,6 +33,6 @@ public class RegisterRequest {
 //    @NotNull
     Long specialityId;
 
-    @NotNull
+    @NotNull(message = Messages.REGISTER_TYPE_REQUIRED)
     Integer registerType;
 }
