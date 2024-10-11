@@ -67,5 +67,7 @@ databaseChangeLog:
                   name: FACEBOOK
                   type: VARCHAR(100)
               - column:
-                  name: PROFILE_PICTURE
-                  type: VARCHAR(100)
+                  name: IMAGE_ID
+                  type: BIGINT
+                  constraints:
+                    nullable: true

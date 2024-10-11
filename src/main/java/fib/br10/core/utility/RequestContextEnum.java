@@ -18,7 +18,8 @@ public enum RequestContextEnum {
     TOKEN_ID("TOKEN_ID"),
     JWT_EXPIRATION("JWT_EXPIRATION"),
     AUTHORIZATION_HEADER("AUTHORIZATION_HEADER"),
-    CLIENT_TYPE("CLIENT_TYPE");
+    CLIENT_TYPE("CLIENT_TYPE"),
+    CLIENT_IP("CLIENT_IP");
 
     private final String value;
 

@@ -72,12 +72,6 @@ public class SecurityConfiguration {
 
     @Bean
     public RoleHierarchyImpl roleHierarchy() {
-//        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
-//        String hierarchy = PrefixUtil.ROLE + RoleEnum.ADMIN + " > " +
-//                           PrefixUtil.ROLE + RoleEnum.SPECIALIST + " > " +
-//                           PrefixUtil.ROLE + RoleEnum.CUSTOMER;
-//        roleHierarchy.setHierarchy(hierarchy);
-//        return roleHierarchy;
         String hierarchy = "ROLE_ADMIN > ROLE_SPECIALIST \n ROLE_SPECIALIST > ROLE_CUSTOMER";
         return RoleHierarchyImpl.fromHierarchy(hierarchy);
     }
@@ -95,7 +89,6 @@ public class SecurityConfiguration {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-
     }
 
     CorsConfigurationSource devCorsConfigurationSource() {
@@ -111,7 +104,6 @@ public class SecurityConfiguration {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-
     }
 }
 

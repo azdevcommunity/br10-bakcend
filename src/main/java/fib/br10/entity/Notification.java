@@ -6,13 +6,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
@@ -25,16 +19,16 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-@Table(name = "FCM_TOKENS")
+@Table(name = "NOTIFICATION")
 @EntityListeners(BaseEntityListener.class)
-public class FcmToken extends BaseEntity {
+public class Notification extends BaseEntity {
 
-    @Column(name = "DEVICE_ID", nullable = false)
-    Long deviceId;
+    @Column(name = "TITLE")
+    String title;
 
-    @Column(nullable = false, name = "USER_ID")
+    @Column(name = "BODY")
+    String body;
+
+    @Column(name = "USER_ID", nullable = false)
     Long userId;
-
-    @Column(nullable = false, unique = true, name = "TOKEN")
-    String token;
 }

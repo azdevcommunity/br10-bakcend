@@ -108,7 +108,8 @@ public class WebSocketSecurityInterceptor implements ChannelInterceptor {
                 multiValueMap.getFirst(LANG.getValue()),
                 authToken,
                 jwt,
-                multiValueMap.getFirst(TIME_ZONE.getValue())
+                multiValueMap.getFirst(TIME_ZONE.getValue()),
+                null
         );
     }
 }

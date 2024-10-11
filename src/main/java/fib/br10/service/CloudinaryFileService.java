@@ -8,7 +8,6 @@ import fib.br10.dto.file.response.FileUploadResponse;
 import fib.br10.service.abstracts.FileService;
 import fib.br10.utility.CloudinaryKeys;
 import fib.br10.utility.FileUtil;
-import io.jsonwebtoken.lang.Objects;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -19,10 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 import static fib.br10.utility.CloudinaryKeys.PUBLIC_ID;
 import static fib.br10.utility.CloudinaryKeys.RESOURCE_TYPE;
