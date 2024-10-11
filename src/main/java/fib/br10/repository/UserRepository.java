@@ -13,14 +13,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByPhoneNumber(String phoneNumber);
 
-    @Query("""
-                select  u from User u where
-                u.status = :status
-                 and (u.phoneNumber =:phoneNumberOrUsername or u.username = :phoneNumberOrUsername)
-            """)
-    Optional<User> findByPhoneNumberOrUsernameAndStatus(String phoneNumberOrUsername, Integer status);
 
-    Optional<User> findByPhoneNumberAndActivityIdAndStatus(String phoneNumber, UUID activityId, Integer status);
+    Optional<User> findByPhoneNumberAndStatusNot(String phoneNumberOrUsername, Integer status);
+
+    Optional<User> findByPhoneNumberAndAndStatus(String phoneNumber , Integer status);
 
     Optional<User> findByPhoneNumberAndStatus(String phoneNumber, Integer status);
 

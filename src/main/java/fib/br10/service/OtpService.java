@@ -32,10 +32,10 @@ public class OtpService {
     RequestContextProvider provider;
     SecurityEnv securityEnv;
 
-    public CacheOtp create(Long userId) {
-        final String otpCountKey = PrefixUtil.OTP_COUNT + userId;
-        final String lastOtpRequestTimeKey = PrefixUtil.LAST_OTP_REQUEST_TIME + userId;
-        final String dailyOtpCountKey = PrefixUtil.DAILY_OTP_COUNT + userId;
+    public CacheOtp create(String key) {
+        final String otpCountKey = PrefixUtil.OTP_COUNT + key;
+        final String lastOtpRequestTimeKey = PrefixUtil.LAST_OTP_REQUEST_TIME + key;
+        final String dailyOtpCountKey = PrefixUtil.DAILY_OTP_COUNT + key;
 
 
         // Check Last Otp Send Date
@@ -71,7 +71,7 @@ public class OtpService {
                 .otpExpireDate(DateUtil.getCurrentDateTime().plusSeconds(securityEnv.getOtpConfig().otpExpirationTime()))
                 .build();
 
-        cacheService.put(PrefixUtil.OTP + userId, cacheOtp, securityEnv.getOtpConfig().otpExpirationTime(), TimeUnit.SECONDS);
+        cacheService.put(PrefixUtil.OTP + key, cacheOtp, securityEnv.getOtpConfig().otpExpirationTime(), TimeUnit.SECONDS);
 
         cacheService.put(lastOtpRequestTimeKey, DateUtil.getCurrentDateTime().toString(), 1, TimeUnit.MINUTES);
 
@@ -91,7 +91,7 @@ public class OtpService {
     }
 
 
-    public CacheOtp find(Long userId) {
+    public CacheOtp find(String userId) {
         CacheOtp cacheOtp = (CacheOtp) cacheService.get(PrefixUtil.OTP + userId);
 
         if (Objects.isNull(cacheOtp)) {
@@ -100,8 +100,8 @@ public class OtpService {
         return cacheOtp;
     }
 
-    public void verify(Long userId, Integer requestOtp) {
-        CacheOtp cacheOtp = find(userId);
+    public void verify(String key, Integer requestOtp) {
+        CacheOtp cacheOtp = find(key);
 
         if (Objects.isNull(cacheOtp)) {
             throw new OtpNotFoundException();
