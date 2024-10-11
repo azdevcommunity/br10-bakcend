@@ -63,7 +63,7 @@ public class SpecialistProfileController {
     }
 
     @PreAuthorize("permitAll()")
-    @PostMapping("/search/{search}")
+    @GetMapping("/search/{search}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<SpecialistProfileReadResponse>> readBySearch(@PathVariable("search") @NotNull  String search) {
         return ResponseEntity.ok(specialistProfileService.readBySearch(search));

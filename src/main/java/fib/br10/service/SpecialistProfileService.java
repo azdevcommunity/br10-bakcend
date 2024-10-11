@@ -1,5 +1,6 @@
 package fib.br10.service;
 
+
 import fib.br10.core.entity.EntityStatus;
 import fib.br10.core.exception.BaseException;
 import fib.br10.core.service.RequestContextProvider;
@@ -28,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.text.html.parser.Entity;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -141,11 +141,13 @@ public class SpecialistProfileService {
         );
     }
 
+
     @Cacheable(value = SPECIALIST_PROFILE, key = "#search")
     public List<SpecialistProfileReadResponse> readBySearch(String search) {
         if (Objects.isNull(search)) {
             throw new BaseException("Search bos ola bilmez");
         }
+
         return specialistProfileRepository.findBySearch(
                 search,
                 EntityStatus.ACTIVE.getValue(),

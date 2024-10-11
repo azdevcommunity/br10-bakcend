@@ -11,5 +11,6 @@ public final  class CacheKeys {
     public static final String REGISTER_TRY_COUNT = "registerTryCount:";
     public static final String LOGIN_TRY_COUNT = "loginTryCount:";
     public static final String TEMPORARY_BLOCKED_USERS = "temporaryBlockedUsers:";
+    public static final String REGISTER_USER = "registerUser:";
 
 }

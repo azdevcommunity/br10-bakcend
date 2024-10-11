@@ -52,7 +52,7 @@ public interface SpecialistProfileRepository extends JpaRepository<SpecialistPro
 
     @Query("""
                     select new fib.br10.dto.specialist.specialistprofile.response.SpecialistProfileReadResponse(
-                    sp.id,u.id,
+                   sp.id,u.id,
                      case when :lang = 2 then s.name_en
                               when :lang = 3 then s.name_ru
                               else s.name end,
@@ -60,9 +60,9 @@ public interface SpecialistProfileRepository extends JpaRepository<SpecialistPro
                    )
                     from User u
                     join SpecialistProfile sp on sp.specialistUserId = u.id
-                    join Image img on img.id = sp.imageId
                     join Speciality s on sp.specialityId = s.id
-                    where u.status = :status and (u.username = :search or u.phoneNumber = :search)
+                    left join Image img on img.id = sp.imageId
+                    where u.status = :status and ( u.phoneNumber = :search or u.username = :search)
             """)
     List<SpecialistProfileReadResponse> findBySearch(String search, Integer status, Integer lang);
 }
