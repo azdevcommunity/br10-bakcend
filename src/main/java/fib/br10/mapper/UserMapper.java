@@ -23,7 +23,7 @@ public interface UserMapper {
 //    @Mapping(target="otpExpireDate",source = "otpExpireDate",dateFormat = "yyyy-MM-dd HH:mm:ss")
     @Mapping(target = "response.otp", source = "cacheOtp")
     @Mapping(target = "response.otpExpireDate", source = "otpExpireDate")
-    RegisterResponse  userToRegisterResponse(@MappingTarget RegisterResponse response, User user, Integer cacheOtp, OffsetDateTime otpExpireDate);
+    RegisterResponse  userToRegisterResponse(@MappingTarget RegisterResponse response, CacheUser user, Integer cacheOtp, OffsetDateTime otpExpireDate);
 
 
     @Named("mapUserTypeToInt")

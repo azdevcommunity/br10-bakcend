@@ -77,7 +77,7 @@ public class AuthService {
 
         if (Objects.isNull(user)) {
             //add cache
-            user = userService.addUserToCache(request);
+           CacheUser cacheUser = userService.addUserToCache(request);
         }
 
         CacheOtp cacheOtp = otpService.create(request.getPhoneNumber());
@@ -87,7 +87,7 @@ public class AuthService {
 //        }
 
         //TODO: send otp to phone number from sms
-        return userMapper.userToRegisterResponse(new RegisterResponse(), user, cacheOtp.getOtp(), cacheOtp.getOtpExpireDate());
+        return userMapper.userToRegisterResponse(new RegisterResponse(), CacheUser, cacheOtp.getOtp(), cacheOtp.getOtpExpireDate());
     }
 
     @Transactional
