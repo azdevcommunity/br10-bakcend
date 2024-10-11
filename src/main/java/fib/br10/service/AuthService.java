@@ -140,7 +140,7 @@ public class AuthService {
     }
 
     public String resetPasswordVerifyOtp(VerifyOtpRequest request) {
-        User user = userService.findByPhoneNumberAndStatusNot(request.getPhoneNumber(), EntityStatus.DELETED);
+        User user = userService.findByPhoneNumberOrUsernameAndStatus(request.getPhoneNumber(), EntityStatus.ACTIVE);
 
         otpService.verify(user.getId(), request.getOtp());
 

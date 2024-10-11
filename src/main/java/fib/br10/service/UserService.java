@@ -66,8 +66,8 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(UserNotFoundException::new);
     }
 
-    public User findByPhoneNumberAndStatusNot(String phoneNumber, EntityStatus status) {
-        return userRepository.findByPhoneNumberAndStatusNot(phoneNumber, status.getValue())
+    public User findByPhoneNumberOrUsernameAndStatus(String phoneNumber, EntityStatus status) {
+        return userRepository.findByPhoneNumberOrUsernameAndStatus(phoneNumber, status.getValue())
                 .orElseThrow(UserNotFoundException::new);
     }
 
