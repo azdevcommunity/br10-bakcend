@@ -45,7 +45,7 @@ public class OtpService {
 
         if (Objects.nonNull(lastRequestStr)) {
             OffsetDateTime lastRequestTime = DateUtil.getOffsetDateTime(String.valueOf(lastRequestStr));
-            if (DateUtil.getCurrentDateTime().isBefore(lastRequestTime.plusMinutes(1))) {
+            if (DateUtil.getCurrentDateTime().isBefore(lastRequestTime.plusSeconds(5))) {
                 throw new BaseException("You can only request a new OTP after 1 minute.");
             }
         }

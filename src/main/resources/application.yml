@@ -90,6 +90,7 @@ security:
     - /auth/logout
 
 log-level: info
+
 logging:
   level:
     org:
