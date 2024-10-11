@@ -61,9 +61,9 @@ public class AuthService {
 //        validateUserNotBlocked(provider.getIpAddress());
 //        validateRateLimit(securityEnv.getAuthRateLimit().register(), CacheKeys.REGISTER_TRY_COUNT + provider.getIpAddress());
 
-        User user = userService.checkUserAlreadyExists(request.getUsername(),
+        userService.checkUserAlreadyExists(request.getUsername(),
                 request.getPhoneNumber()
-        ).orElse(null);
+        );
 
         if (!request.getPassword().equals(request.getConfirmPassword())) {
             throw new ConfirmPasswordNotMatchException();
@@ -75,10 +75,10 @@ public class AuthService {
             specialityService.checkSpecialityExists(request.getSpecialityId());
         }
 
-        if (Objects.isNull(user)) {
-            //add cache
+//        if (Objects.isNull(user)) {
+//            //add cache
            CacheUser cacheUser = userService.addUserToCache(request);
-        }
+//        }
 
         CacheOtp cacheOtp = otpService.create(request.getPhoneNumber());
 
@@ -87,7 +87,7 @@ public class AuthService {
 //        }
 
         //TODO: send otp to phone number from sms
-        return userMapper.userToRegisterResponse(new RegisterResponse(), CacheUser, cacheOtp.getOtp(), cacheOtp.getOtpExpireDate());
+        return userMapper.userToRegisterResponse(new RegisterResponse(), cacheUser, cacheOtp.getOtp(), cacheOtp.getOtpExpireDate());
     }
 
     @Transactional
