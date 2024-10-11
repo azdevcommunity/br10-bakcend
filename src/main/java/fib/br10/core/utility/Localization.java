@@ -1,5 +1,6 @@
 package fib.br10.core.utility;
 
+import fib.br10.utility.Messages;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.MessageSource;
@@ -17,7 +18,6 @@ public class Localization {
         try {
             return messageSource.getMessage(code, null, locale);
         } catch (Exception e) {
-                log.error(e);
             return null;
         }
     }
@@ -25,5 +25,12 @@ public class Localization {
     public String getMessageOrCode(String code, Locale locale) {
         String message = getMessage(code, locale);
         return message == null ? code : message;
+    }
+
+    public String getMessageOrDefault(String code, Locale locale) {
+        String message = getMessage(code, locale);
+        return message == null ?
+                getMessage(Messages.ERROR, locale)
+                : message;
     }
 }
