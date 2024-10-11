@@ -11,6 +11,7 @@ import fib.br10.dto.auth.request.*;
 import fib.br10.dto.auth.response.OtpResponse;
 import fib.br10.dto.auth.response.RegisterResponse;
 import fib.br10.dto.cache.CacheOtp;
+import fib.br10.dto.cache.CacheUser;
 import fib.br10.dto.specialist.specialistprofile.request.CreateSpecialistProfileRequest;
 import fib.br10.dto.userdevice.request.UserDeviceDto;
 import fib.br10.entity.user.User;
@@ -33,8 +34,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @AllArgsConstructor
@@ -77,14 +76,15 @@ public class AuthService {
         }
 
         if (Objects.isNull(user)) {
-            user = userService.create(request);
+            //add cache
+            user = userService.addUserToCache(request);
         }
 
-        CacheOtp cacheOtp = otpService.create(user.getId());
+        CacheOtp cacheOtp = otpService.create(request.getPhoneNumber());
 
-        if (isSpecialist) {
-            registerSpecialist(request, user);
-        }
+//        if (isSpecialist) {
+//            registerSpecialist(request, user);
+//        }
 
         //TODO: send otp to phone number from sms
         return userMapper.userToRegisterResponse(new RegisterResponse(), user, cacheOtp.getOtp(), cacheOtp.getOtpExpireDate());
@@ -92,17 +92,22 @@ public class AuthService {
 
     @Transactional
     public Token activateUserVerifyOtp(ActivateUserVerifyOtpRequest request) {
-        User user = userService.findUser(request.getPhoneNumber(), UUID.fromString(provider.getActivityId()),
-                EntityStatus.DE_ACTIVE
-        );
+        CacheUser cacheUser = userService.findUserFromCache(request.getPhoneNumber());
 
-        if (EntityStatus.ACTIVE.getValue().equals(user.getStatus())) {
-            throw new BaseException("user already activated");
+//        if (EntityStatus.ACTIVE.getValue().equals(user.getStatus())) {
+//            throw new BaseException("user already activated");
+//        }
+
+        otpService.verify(cacheUser.getPhoneNumber(), request.getOtp());
+        User user = userMapper.cacheUserToEntity(cacheUser);
+        user.setStatus(EntityStatus.ACTIVE.getValue());
+        user = userService.save(user);
+
+        boolean isSpecialist = RegisterType.SPECIALIST.equals(RegisterType.fromValue(cacheUser.getRegisterType()));
+        if (isSpecialist) {
+            registerSpecialist(cacheUser.getSpecialityId(), user);
         }
 
-        otpService.verify(user.getId(), request.getOtp());
-        user.setStatus(EntityStatus.ACTIVE.getValue());
-        userService.save(user);
         UserDeviceDto deviceDto = request.getUserDeviceDto();
         deviceDto.setUserId(user.getId());
         deviceDto = userDeviceService.create(deviceDto);
@@ -110,8 +115,8 @@ public class AuthService {
     }
 
     public OtpResponse getOtp(GetOtpRequest request) {
-        User user = userService.findByUserNameOrPhoneNumber(request.getPhoneNumberOrUsername());
-        CacheOtp cacheOtp = otpService.create(user.getId());
+//        User user = userService.findByUserNameOrPhoneNumber(request.getPhoneNumberOrUsername());
+        CacheOtp cacheOtp = otpService.create(request.getPhoneNumber());
         return new OtpResponse(cacheOtp.getOtp(), cacheOtp.getOtpExpireDate());
     }
 
@@ -140,9 +145,9 @@ public class AuthService {
     }
 
     public String resetPasswordVerifyOtp(VerifyOtpRequest request) {
-        User user = userService.findByPhoneNumberOrUsernameAndStatus(request.getPhoneNumber(), EntityStatus.ACTIVE);
+        User user = userService.findByPhoneNumberAndStatusNot(request.getPhoneNumber(), EntityStatus.DELETED);
 
-        otpService.verify(user.getId(), request.getOtp());
+        otpService.verify(user.getPhoneNumber(), request.getOtp());
 
         String payload = user.getId() + "*" + DateUtil.getCurrentDateTime().plusMinutes(5);
 
@@ -204,17 +209,17 @@ public class AuthService {
     }
 
     @Transactional
-    protected void registerSpecialist(RegisterRequest request, User user) {
+    protected void registerSpecialist(Long specialistId, User user) {
         specialistProfileService.create(CreateSpecialistProfileRequest.builder()
                 .specialistUserId(user.getId())
-                .specialityId(request.getSpecialityId())
+                .specialityId(specialistId)
                 .build());
         specialistAvailabilityService.addWeekendAvailability(user.getId());
     }
 
-    private void validateUserNotBlocked(String ipAddress){
+    private void validateUserNotBlocked(String ipAddress) {
         Integer userBlocked = cacheService.get(CacheKeys.TEMPORARY_BLOCKED_USERS + ipAddress);
-        if(Objects.nonNull(userBlocked)){
+        if (Objects.nonNull(userBlocked)) {
             throw new BaseException("user uje blocklanib");
         }
     }

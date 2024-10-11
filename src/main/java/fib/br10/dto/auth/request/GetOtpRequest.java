@@ -15,6 +15,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class GetOtpRequest {
 
-    @NotBlank(message = Messages.PHONE_NUMBER_OR_USERNAME_REQUIRED)
-    String phoneNumberOrUsername;
+    @NotBlank(message = Messages.PHONE_NUMBER_REQUIRED)
+    String phoneNumber;
 }
