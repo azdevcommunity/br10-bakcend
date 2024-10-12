@@ -34,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Objects;
 
 
 @Service
@@ -56,13 +57,13 @@ public class ReservationService {
         Integer reservationSource = request.getReservationSource();
 
         if (reservationSource.equals(ReservationSource.APP.getValue())
-                && !userId.equals(request.getCustomerUserId())
+            && !userId.equals(request.getCustomerUserId())
         ) {
             throw new ReservationCustomerUserIdNotMatchException();
         }
 
         if (reservationSource.equals(ReservationSource.MANUAL.getValue())
-                && !userId.equals(request.getSpecialistUserId())
+            && !userId.equals(request.getSpecialistUserId())
         ) {
             throw new ReservationSpecialistUserIdNotMatchException();
         }
@@ -108,6 +109,26 @@ public class ReservationService {
     public ReservationResponse createReservation(CreateReservationRequest request) {
         //add check for availability
         //bu userin baska specialist ucun olsa bele toqqusan reservi varmi
+        boolean isSpecialist = ReservationSource.APP.getValue().equals(request.getReservationSource());
+        if (!isSpecialist && !ReservationSource.MANUAL.getValue().equals(request.getReservationSource())
+        ) {
+            throw new BaseException("ReservationSource duz gonder 1 ya 2");
+        }
+
+        if (isSpecialist) {
+            if (Objects.isNull(request.getCustomerUserId()))
+                throw new BaseException("Customer id null ola bilmez");
+            request.setSpecialistUserId(provider.getUserId());
+        }
+
+        if (!isSpecialist) {
+            if (Objects.isNull(request.getSpecialistServiceId())) {
+                throw new BaseException("Customer id null ola bilmez");
+            }
+            request.setCustomerUserId(provider.getUserId());
+        }
+
+
         validateReservation(
                 request.getReservationSource(),
                 provider.getUserId(),
@@ -232,13 +253,13 @@ public class ReservationService {
                                      Long specialistUserId,
                                      Long cutomerUserId) {
         if (source.equals(ReservationSource.MANUAL.getValue())
-                && !userId.equals(specialistUserId)
+            && !userId.equals(specialistUserId)
         ) {
             throw new ReservationSpecialistUserIdNotMatchException();
         }
 
         if (source.equals(ReservationSource.APP.getValue())
-                && !userId.equals(cutomerUserId)
+            && !userId.equals(cutomerUserId)
         ) {
             throw new ReservationCustomerUserIdNotMatchException();
         }

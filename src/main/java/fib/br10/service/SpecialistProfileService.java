@@ -51,19 +51,6 @@ public class SpecialistProfileService {
 
     @Cacheable(value = SPECIALIST_PROFILE, key = "#id")
     public SpecialistProfileReadResponse read(Long id) {
-        //TODO: refactor this select image with join
-//        SpecialistProfile specialistProfile = findBySpecialistUserId(id);
-//        User user = userService.findById(id);
-//        SpecialistProfileReadResponse response = specialistProfileMapper.specialistProfileToSpecialistProfileResponse(specialistProfile);
-//        response.setUsername(user.getUsername());
-//        if (Objects.nonNull(specialistProfile.getImageId())) {
-//            Image image = imageService.findById(specialistProfile.getImageId());
-//            if (Objects.nonNull(image))
-//                response.setProfilePicture(image.getPath());
-//        }
-//        Speciality speciality = specialityService.findById(response.getSpecialityId());
-//        response.setSpeciality(SpecialityUtil.getSpecialityName(speciality));
-//        return response;
         return specialistProfileRepository.findByUserId(
                 id,
                 EntityStatus.ACTIVE.getValue(),
