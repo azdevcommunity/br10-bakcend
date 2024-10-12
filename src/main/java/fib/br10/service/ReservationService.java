@@ -1,7 +1,6 @@
 package fib.br10.service;
 
 import com.querydsl.core.BooleanBuilder;
-import fib.br10.core.dto.RequestById;
 import fib.br10.core.entity.EntityStatus;
 import fib.br10.core.exception.BaseException;
 import fib.br10.core.service.RequestContextProvider;
@@ -9,6 +8,7 @@ import fib.br10.core.utility.DateUtil;
 import fib.br10.dto.reservation.request.CancelReservationRequest;
 import fib.br10.dto.reservation.request.CreateReservationRequest;
 import fib.br10.dto.reservation.request.UpdateReservationRequest;
+import fib.br10.dto.reservation.response.ReservationListResponse;
 import fib.br10.dto.reservation.response.ReservationResponse;
 import fib.br10.entity.reservation.QReservation;
 import fib.br10.entity.reservation.Reservation;
@@ -33,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -106,7 +107,7 @@ public class ReservationService {
     }
 
     @Transactional
-    public ReservationResponse createReservation(CreateReservationRequest request) {
+    public ReservationListResponse createReservation(CreateReservationRequest request) {
         //add check for availability
         //bu userin baska specialist ucun olsa bele toqqusan reservi varmi
         boolean isSpecialist = ReservationSource.MANUAL.getValue().equals(request.getReservationSource());
@@ -122,7 +123,7 @@ public class ReservationService {
         }
 
         if (!isSpecialist) {
-            if (Objects.isNull(request.getSpecialistServiceId())) {
+            if (Objects.isNull(request.getSpecialistServiceIds())) {
                 throw new BaseException("Customer id null ola bilmez");
             }
             request.setCustomerUserId(provider.getUserId());
@@ -136,39 +137,47 @@ public class ReservationService {
                 request.getCustomerUserId()
         );
 
-        SpecialistService service = specialistServiceManager.findById(request.getSpecialistServiceId());
+        List<SpecialistService> services = specialistServiceManager.findAllByIds(request.getSpecialistServiceIds());
 
-        //TODO: add this to validateReservation mehtod
-        OffsetDateTime start = request.getReservationDate();
-        OffsetDateTime end = start.plusMinutes(service.getDuration());
+        List<ReservationResponse> reservations = new ArrayList<>();
 
-        boolean reservationExist = reservationRepository.reservationExists(
-                request.getSpecialistUserId(),
-                ReservationStatus.PENDING.getValue(),
-                start,
-                end
-        );
+        for (SpecialistService service : services) {
+            //TODO: add this to validateReservation mehtod
+            OffsetDateTime start = request.getReservationDate();
+            OffsetDateTime end = start.plusMinutes(service.getDuration());
 
-        if (reservationExist) {
-            //TODO: change it more readable error
-            throw new BaseException("Bu tarixe reservasiya olunub");
+            boolean reservationExist = reservationRepository.reservationExists(
+                    request.getSpecialistUserId(),
+                    ReservationStatus.PENDING.getValue(),
+                    start,
+                    end
+            );
+
+            if (reservationExist) {
+                //TODO: change it more readable error
+                throw new BaseException("Bu tarixe reservasiya olunub");
+            }
+
+            //TODO:if client have reservatin for same time
+
+            //Create reservation entity
+            Reservation newReservation = new Reservation();
+            newReservation = reservationMapper.createReservationRequestToReservation(newReservation, request);
+            newReservation.setPrice(service.getPrice());
+            newReservation.setReservationStatus(ReservationStatus.PENDING.getValue());
+            newReservation.setDuration(service.getDuration());
+            newReservation = reservationRepository.save(newReservation);
+
+            ReservationResponse response = prepareResponse(
+                    newReservation,
+                    request.getSpecialistUserId(),
+                    request.getCustomerUserId()
+            );
+
+            reservations.add(response);
         }
 
-        //TODO:if client have reservatin for same time
-
-        //Create reservation entity
-        Reservation newReservation = new Reservation();
-        newReservation = reservationMapper.createReservationRequestToReservation(newReservation, request);
-        newReservation.setPrice(service.getPrice());
-        newReservation.setReservationStatus(ReservationStatus.PENDING.getValue());
-        newReservation.setDuration(service.getDuration());
-        newReservation = reservationRepository.save(newReservation);
-
-        ReservationResponse response = prepareResponse(
-                newReservation,
-                request.getSpecialistUserId(),
-                request.getCustomerUserId()
-        );
+        ReservationListResponse response = new ReservationListResponse(reservations);
 
         webSocketHandler.publish(WebSocketQueues.RESERVATION_CREATED, response, provider.getPhoneNumber());
         return response;
@@ -199,7 +208,7 @@ public class ReservationService {
         return reservation.getId();
     }
 
-    public List<ReservationResponse> findAllReservations(RequestById request) {
+    public List<ReservationResponse> findAllReservations() {
 //        Long userId = ThreadContextUtil.get(ThreadContextConstants.CURRENT_USER_ID, Long.class);
 
         //check does user is specialist or not
@@ -219,7 +228,7 @@ public class ReservationService {
         log.info("Start of day: {}", startOfDay);
         log.info("End of day: {}", endOfDay);
 
-        return reservationRepository.findAllPendingReservations(request.getId(),
+        return reservationRepository.findAllPendingReservations(provider.getUserId(),
                 startOfDay, endOfDay, EntityStatus.ACTIVE.getValue(), ReservationStatus.PENDING.getValue()
         );
     }

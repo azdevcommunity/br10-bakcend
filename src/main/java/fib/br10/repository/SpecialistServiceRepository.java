@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -28,5 +29,7 @@ public interface SpecialistServiceRepository extends JpaRepository<SpecialistSer
             """)
 
     Optional<SpecialistServiceResponse> findSpecialist(Long id);
+
+    List<SpecialistService> findAllByIdIn(List<Long> ids);
 
 }

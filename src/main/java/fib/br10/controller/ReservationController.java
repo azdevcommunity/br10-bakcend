@@ -4,6 +4,7 @@ import fib.br10.core.dto.RequestById;
 import fib.br10.dto.reservation.request.CancelReservationRequest;
 import fib.br10.dto.reservation.request.CreateReservationRequest;
 import fib.br10.dto.reservation.request.UpdateReservationRequest;
+import fib.br10.dto.reservation.response.ReservationListResponse;
 import fib.br10.dto.reservation.response.ReservationResponse;
 import jakarta.validation.Valid;
 import fib.br10.service.ReservationService;
@@ -28,13 +29,14 @@ public class ReservationController {
     ReservationService reservationService;
 
     @PostMapping
-    public ResponseEntity<ReservationResponse> create(@RequestBody @Valid CreateReservationRequest request) {
+    public ResponseEntity<ReservationListResponse> create(@RequestBody @Valid CreateReservationRequest request) {
         return ResponseEntity.ok(reservationService.createReservation(request));
     }
 
     @GetMapping
-    public ResponseEntity<List<ReservationResponse>> findAll(@RequestBody @Valid RequestById request) {
-        return ResponseEntity.ok(reservationService.findAllReservations(request));
+    @PreAuthorize("hasRole('SPECIALIST')")
+    public ResponseEntity<List<ReservationResponse>> findAll() {
+        return ResponseEntity.ok(reservationService.findAllReservations());
     }
 
     @PreAuthorize("hasRole('SPECIALIST')")
