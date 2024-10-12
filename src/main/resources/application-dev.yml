@@ -8,7 +8,7 @@ spring:
       max-file-size: ${BR10_MAX_FILE_SIZE:10MB}
       max-request-size: ${BR10_MAX_REQUEST_SIZE:10MB}
   datasource:
-    url: ${BR10_DB_URL:jdbc:postgresql://localhost:5433/br10db}
+    url: ${BR10_DB_URL:jdbc:postgresql://158.220.102.94:5433/br10db}
     username: ${BR10_DB_USERNAME:postgres}
     password: ${BR10_DB_PASSWORD:123456789}
   application:

@@ -49,7 +49,7 @@ public class ReservationResponse {
 
     Integer duration;
 
-    List<ReservationDetail> reservationDetail;
+    List<ReservationDetailResponse> reservationDetail;
 
     public ReservationResponse(Long id, OffsetDateTime createdDate, OffsetDateTime reservationDate, Long specialistUserId, String specialistUsername, Long customerUserId, String customerUsername, String customerUserPhoneNumber, BigDecimal price, Integer reservationSource, Integer reservationStatus, Integer duration) {
         this.id = id;
