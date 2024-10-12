@@ -53,11 +53,12 @@ public class  GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponseWrapper<?>> handleException(Exception ex, WebRequest request) {
+        logError(ex);
         return handleErrorResponse(ex, request, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private ResponseEntity<ResponseWrapper<?>> handleErrorResponse(Exception ex, WebRequest request, HttpStatus status) {
-        logError(ex);
+
         return new ResponseEntity<>(getResponseBody(ex.getMessage(), request.getLocale(), status), status);
     }
 
