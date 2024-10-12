@@ -1,0 +1,8 @@
+databaseChangeLog:
+  - changeSet:
+      id: RESERVATIONS_DROP_SPECIALIST_SERVICE_ID
+      author: YUSIF_HASANOV
+      changes:
+        - dropColumn:
+            tableName: RESERVATIONS
+            columnName: SPECIALIST_SERVICE_ID

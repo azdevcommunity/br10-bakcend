@@ -31,8 +31,8 @@ public class Reservation extends BaseEntity {
     @Column(name = "CUSTOMER_USER_ID")
     Long customerUserId;
 
-    @Column(name = "SPECIALIST_SERVICE_ID", nullable = false)
-    Long specialistServiceId;
+//    @Column(name = "SPECIALIST_SERVICE_ID", nullable = false)
+//    Long specialistServiceId;
 
     @Column(name = "PRICE", nullable = false)
     BigDecimal price;

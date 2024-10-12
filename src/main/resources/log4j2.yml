@@ -1,20 +1,15 @@
 Configuration:
-  status: WARN
+  status: debug
   Appenders:
     JDBC:
       name: DatabaseAppender
       tableName: LOGS
-      ConnectionFactory:
-        class: com.zaxxer.hikari.HikariDataSource
-        Property:
-          - name: jdbcUrl
-            value: "${spring:spring.datasource.url}"
-          - name: username
-            value: "${spring:spring.datasource.username}"
-          - name: password
-            value: "${spring:spring.datasource.password}"
-          - name: driverClassName
-            value: "org.postgresql.Driver"
+      ConnectionSource:
+        DriverManagerConnectionSource:
+          driverClassName: org.postgresql.Driver
+          url: ${spring:spring.datasource.url}
+          user: ${spring:spring.datasource.username}
+          password: ${spring:spring.datasource.password}
       Column:
         - name: LOG_LEVEL
           pattern: "%level"
@@ -28,7 +23,6 @@ Configuration:
           pattern: "%throwable"
         - name: ACTIVITY_ID
           pattern: "%X{ACTIVITY_ID}"
-
 
     Console:
       name: ConsoleAppender

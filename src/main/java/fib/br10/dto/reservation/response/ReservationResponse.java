@@ -37,7 +37,7 @@ public class ReservationResponse {
 
     String customerUserPhoneNumber;
 
-    Long specialistServiceId;
+//    Long specialistServiceId;
 
     BigDecimal price;
 

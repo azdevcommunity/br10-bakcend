@@ -8,18 +8,15 @@ import fib.br10.core.utility.DateUtil;
 import fib.br10.dto.reservation.request.CancelReservationRequest;
 import fib.br10.dto.reservation.request.CreateReservationRequest;
 import fib.br10.dto.reservation.request.UpdateReservationRequest;
-import fib.br10.dto.reservation.response.ReservationListResponse;
 import fib.br10.dto.reservation.response.ReservationResponse;
-import fib.br10.entity.reservation.QReservation;
-import fib.br10.entity.reservation.Reservation;
-import fib.br10.entity.reservation.ReservationSource;
-import fib.br10.entity.reservation.ReservationStatus;
+import fib.br10.entity.reservation.*;
 import fib.br10.entity.specialist.SpecialistService;
 import fib.br10.entity.user.User;
 import fib.br10.exception.reservation.ReservationCustomerUserIdNotMatchException;
 import fib.br10.exception.reservation.ReservationNotFoundException;
 import fib.br10.exception.reservation.ReservationSpecialistUserIdNotMatchException;
 import fib.br10.mapper.ReservationMapper;
+import fib.br10.repository.ReservationDetailRepository;
 import fib.br10.repository.ReservationRepository;
 import fib.br10.utility.Messages;
 import fib.br10.utility.WebSocketQueues;
@@ -31,11 +28,10 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 
 @Service
@@ -51,6 +47,7 @@ public class ReservationService {
     WebSocketHandler webSocketHandler;
     UserService userService;
     RequestContextProvider provider;
+    ReservationDetailRepository reservationDetailRepository;
 
     @Transactional
     public ReservationResponse updateReservation(UpdateReservationRequest request) {
@@ -87,6 +84,8 @@ public class ReservationService {
                 request.getReservationId()
         );
 
+        //add validation servicelerin hepsi varmi yoksa yokmu
+
         if (reservationExist) {
             //TODO: change it more readable error
             throw new BaseException(Messages.RESERVATION_CONFLICT);
@@ -107,7 +106,7 @@ public class ReservationService {
     }
 
     @Transactional
-    public ReservationListResponse createReservation(CreateReservationRequest request) {
+    public ReservationResponse createReservation(CreateReservationRequest request) {
         //add check for availability
         //bu userin baska specialist ucun olsa bele toqqusan reservi varmi
         boolean isSpecialist = ReservationSource.MANUAL.getValue().equals(request.getReservationSource());
@@ -138,8 +137,8 @@ public class ReservationService {
         );
 
         List<SpecialistService> services = specialistServiceManager.findAllByIds(request.getSpecialistServiceIds());
-
-        List<ReservationResponse> reservations = new ArrayList<>();
+        BigDecimal totalPrice = BigDecimal.valueOf(0L);
+        int totalDuration = 0;
 
         for (SpecialistService service : services) {
             //TODO: add this to validateReservation mehtod
@@ -157,27 +156,35 @@ public class ReservationService {
                 //TODO: change it more readable error
                 throw new BaseException("Bu tarixe reservasiya olunub");
             }
-
+            totalPrice = totalPrice.add(service.getPrice());
+            totalDuration = totalDuration + service.getDuration();
             //TODO:if client have reservatin for same time
+        }
+        Reservation newReservation = new Reservation();
+        newReservation = reservationMapper.createReservationRequestToReservation(newReservation, request);
+        newReservation.setPrice(totalPrice);
+        newReservation.setReservationStatus(ReservationStatus.PENDING.getValue());
+        newReservation.setDuration(totalDuration);
+        newReservation = reservationRepository.save(newReservation);
 
-            //Create reservation entity
-            Reservation newReservation = new Reservation();
-            newReservation = reservationMapper.createReservationRequestToReservation(newReservation, request);
-            newReservation.setPrice(service.getPrice());
-            newReservation.setReservationStatus(ReservationStatus.PENDING.getValue());
-            newReservation.setDuration(service.getDuration());
-            newReservation = reservationRepository.save(newReservation);
-
-            ReservationResponse response = prepareResponse(
-                    newReservation,
-                    request.getSpecialistUserId(),
-                    request.getCustomerUserId()
-            );
-
-            reservations.add(response);
+        List<ReservationDetail> reservationDetails = new ArrayList<>();
+        for (SpecialistService service : services) {
+            reservationDetails.add(ReservationDetail.builder()
+                    .reservationId(newReservation.getId())
+                    .serviceId(service.getId())
+                    .price(service.getPrice())
+                    .duration(service.getDuration())
+                    .build());
         }
 
-        ReservationListResponse response = new ReservationListResponse(reservations);
+        reservationDetailRepository.saveAll(reservationDetails);
+
+        ReservationResponse response = prepareResponse(
+                newReservation,
+                request.getSpecialistUserId(),
+                request.getCustomerUserId()
+        );
+
 
         webSocketHandler.publish(WebSocketQueues.RESERVATION_CREATED, response, provider.getPhoneNumber());
         return response;
@@ -208,7 +215,7 @@ public class ReservationService {
         return reservation.getId();
     }
 
-    public List<ReservationResponse> findAllReservations() {
+    public Map<Object, Object> findAllReservations() {
 //        Long userId = ThreadContextUtil.get(ThreadContextConstants.CURRENT_USER_ID, Long.class);
 
         //check does user is specialist or not
@@ -228,9 +235,16 @@ public class ReservationService {
         log.info("Start of day: {}", startOfDay);
         log.info("End of day: {}", endOfDay);
 
-        return reservationRepository.findAllPendingReservations(provider.getUserId(),
+        List<ReservationResponse> reservations = reservationRepository.findAllPendingReservations(provider.getUserId(),
                 startOfDay, endOfDay, EntityStatus.ACTIVE.getValue(), ReservationStatus.PENDING.getValue()
         );
+        Map<Object,Object> map =new HashMap<>();
+        List<ReservationDetail> reservationDetails= new ArrayList<>();
+        for (ReservationResponse reservation : reservations) {
+            List<ReservationDetail> reservationDetail =reservationDetailRepository.findByReservationId(reservation.getId()) ;
+            map.put(reservation,reservationDetail);
+        }
+        return map;
     }
 
     public Reservation findOne(BooleanBuilder predicate) {

@@ -116,10 +116,10 @@ public class SpecialistServiceManager {
         SpecialistService specialistService = specialistServicesRepository
                 .findByIdAndSpecialistUserId(request.getId(), userId)
                 .orElseThrow(SpecialistServiceNotFoundException::new);
-
-        if (reservationRepository.existsBySpecialistServiceIdAndStatusNot(request.getId(), ReservationStatus.CANCELLED.getValue())) {
-            throw new ServiceAlreadyUsedOnAnyReservationException();
-        }
+//
+//        if (reservationRepository.existsBySpecialistServiceIdAndStatusNot(request.getId(), ReservationStatus.CANCELLED.getValue())) {
+//            throw new ServiceAlreadyUsedOnAnyReservationException();
+//        }
 
         specialistServicesRepository.delete(specialistService);
 
