@@ -109,8 +109,8 @@ public class ReservationService {
     public ReservationResponse createReservation(CreateReservationRequest request) {
         //add check for availability
         //bu userin baska specialist ucun olsa bele toqqusan reservi varmi
-        boolean isSpecialist = ReservationSource.APP.getValue().equals(request.getReservationSource());
-        if (!isSpecialist && !ReservationSource.MANUAL.getValue().equals(request.getReservationSource())
+        boolean isSpecialist = ReservationSource.MANUAL.getValue().equals(request.getReservationSource());
+        if (!isSpecialist && !ReservationSource.APP.getValue().equals(request.getReservationSource())
         ) {
             throw new BaseException("ReservationSource duz gonder 1 ya 2");
         }
