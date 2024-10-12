@@ -53,18 +53,19 @@ public class  GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponseWrapper<?>> handleException(Exception ex, WebRequest request) {
+        logError(ex);
         return handleErrorResponse(ex, request, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private ResponseEntity<ResponseWrapper<?>> handleErrorResponse(Exception ex, WebRequest request, HttpStatus status) {
-        logError(ex);
+
         return new ResponseEntity<>(getResponseBody(ex.getMessage(), request.getLocale(), status), status);
     }
 
     private ResponseWrapper<?> getResponseBody(String code, Locale locale, HttpStatus status) {
         return ResponseWrapper.builder()
                 .activityId(RequestContext.get(RequestContextEnum.ACTIVITY_ID))
-                .message(localization.getMessageOrDefault(code, locale))
+                .message(localization.getMessageOrCode(code, locale))
                 .code(status.value())
                 .build();
     }
@@ -72,7 +73,7 @@ public class  GlobalExceptionHandler {
     private ResponseWrapper<?> handleValidationException(MethodArgumentNotValidException ex, WebRequest request) {
         final String message = ex.getBindingResult().getFieldErrors().stream()
                 .filter(fieldError -> Objects.nonNull(localization.getMessageOrCode(fieldError.getDefaultMessage(), request.getLocale())))
-                .map(fieldError -> localization.getMessage(fieldError.getDefaultMessage(), request.getLocale()))
+                .map(fieldError -> localization.getMessageOrCode(fieldError.getDefaultMessage(), request.getLocale()))
                 .filter(Objects::nonNull)
                 .collect(Collectors.joining(", "));
 
