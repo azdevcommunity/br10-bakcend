@@ -18,6 +18,7 @@ public class Localization {
         try {
             return messageSource.getMessage(code, null, locale);
         } catch (Exception e) {
+            log.error(e);
             return null;
         }
     }
