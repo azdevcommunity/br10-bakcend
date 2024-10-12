@@ -11,14 +11,12 @@ import fib.br10.dto.specialist.specialistprofile.request.UpdateSpecialistProfile
 import fib.br10.dto.specialist.specialistprofile.response.SpecialistProfileReadResponse;
 import fib.br10.entity.Image;
 import fib.br10.entity.specialist.SpecialistProfile;
-import fib.br10.entity.specialist.Speciality;
 import fib.br10.entity.user.User;
 import fib.br10.exception.specialist.specialistprofile.SpecialistProfileAlreadyExists;
 import fib.br10.exception.specialist.specialistprofile.SpecialistProfileNotFoundException;
 import fib.br10.mapper.SpecialistProfileMapper;
 import fib.br10.repository.SpecialistProfileRepository;
 import fib.br10.utility.LangEnum;
-import fib.br10.utility.SpecialityUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -65,10 +63,10 @@ public class SpecialistProfileService {
         specialistProfile = specialistProfileMapper.updateSpecialistProfileRequestToSpecialistProfile(specialistProfile, request);
         specialistProfileRepository.save(specialistProfile);
 
-            User user = userService.findById(userId);
-            user.setUsername(request.getSurname());
-            user.setSurname(request.getSurname());
-            userService.save(user);
+        User user = userService.findById(userId);
+        user.setName(request.getName());
+        user.setSurname(request.getSurname());
+        userService.save(user);
 
         SpecialistProfileReadResponse response = specialistProfileMapper.specialistProfileToSpecialistProfileResponse(specialistProfile);
         response.setSpeciality(specialityService.findSpecialistyName(response.getSpecialityId()));
@@ -76,8 +74,9 @@ public class SpecialistProfileService {
         if (Objects.nonNull(image)) {
             response.setProfilePicture(image.getPath());
         }
-        response.setUsername(user.getUsername());
+        response.setName(user.getName());
         response.setSurname(user.getSurname());
+        response.setPhoneNumber(user.getPhoneNumber());
         return response;
     }
 
@@ -117,9 +116,9 @@ public class SpecialistProfileService {
         response.setSpeciality(specialityService.findSpecialistyName(response.getSpecialityId()));
 
         User user = userService.findById(userId);
-        response.setUsername(user.getUsername());
+        response.setName(user.getName());
         response.setSurname(user.getSurname());
-
+        response.setPhoneNumber(user.getPhoneNumber());
         return response;
     }
 
