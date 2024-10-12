@@ -14,6 +14,7 @@ import fib.br10.dto.cache.CacheOtp;
 import fib.br10.dto.cache.CacheUser;
 import fib.br10.dto.specialist.specialistprofile.request.CreateSpecialistProfileRequest;
 import fib.br10.dto.userdevice.request.UserDeviceDto;
+import fib.br10.entity.user.RoleEnum;
 import fib.br10.entity.user.User;
 import fib.br10.enumeration.RegisterType;
 import fib.br10.exception.auth.ConfirmPasswordNotMatchException;
@@ -53,6 +54,7 @@ public class AuthService {
     RequestContextProvider provider;
     CacheService<String, Integer> cacheService;
     SecurityEnv securityEnv;
+    UserRoleService userRoleService;
 
     @Transactional
     public RegisterResponse register(RegisterRequest request) {
@@ -106,6 +108,7 @@ public class AuthService {
         boolean isSpecialist = RegisterType.SPECIALIST.equals(RegisterType.fromValue(cacheUser.getRegisterType()));
         if (isSpecialist) {
             registerSpecialist(cacheUser.getSpecialityId(), user);
+            userRoleService.addRoleToUser(user.getId(), RoleEnum.SPECIALIST);
         }
 
         UserDeviceDto deviceDto = request.getUserDeviceDto();
