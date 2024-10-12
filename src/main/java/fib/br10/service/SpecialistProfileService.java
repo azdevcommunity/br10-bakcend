@@ -67,7 +67,7 @@ public class SpecialistProfileService {
         return specialistProfileRepository.findByUserId(
                 id,
                 EntityStatus.ACTIVE.getValue(),
-                LangEnum.fromValue(provider.getLang()).getCode()
+                LangEnum.AZ.getCode()
         );
     }
 
