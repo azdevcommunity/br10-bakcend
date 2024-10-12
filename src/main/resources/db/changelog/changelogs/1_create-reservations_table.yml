@@ -54,11 +54,6 @@ databaseChangeLog:
                   name: CUSTOMER_USER_ID
                   type: BIGINT
               - column:
-                  name: SPECIALIST_SERVICE_ID
-                  type: BIGINT
-                  constraints:
-                    nullable: false
-              - column:
                   name: PRICE
                   type: NUMERIC(19, 2)
                   constraints:
