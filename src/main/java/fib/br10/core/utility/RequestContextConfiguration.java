@@ -96,6 +96,7 @@ public class RequestContextConfiguration {
 
         provider.setPhoneNumber(authentication.getName());
         provider.setUserId(Long.valueOf(userIdInt));
+        ThreadContext.put(USER_ID.getValue(),userIdInt.toString());
         RequestContext.set(TOKEN_ID, tokenId);
         RequestContext.set(JWT_EXPIRATION, expiration);
     }

@@ -62,6 +62,7 @@ dependencies {
 
     //PostgreSQL
     runtimeOnly 'org.postgresql:postgresql'
+    implementation 'org.postgresql:postgresql:42.6.0'
 
     //Lombok
     compileOnly 'org.projectlombok:lombok'
@@ -73,9 +74,8 @@ dependencies {
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.2.Final'
 
     //Logging
-    implementation 'org.apache.logging.log4j:log4j-api:2.20.0'
-    implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
-    implementation 'org.apache.logging.log4j:log4j-slf4j-impl:2.20.0'
+    implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0")
+    implementation("com.github.jsqlparser:jsqlparser:4.6")
 
     //QueryDSL
     annotationProcessor "com.querydsl:querydsl-apt:${querydslVersion}:jakarta"

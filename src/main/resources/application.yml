@@ -88,6 +88,12 @@ security:
     - /specialities/**
   endpoint-black-list:
     - /auth/logout
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
+      custom-appender-class: fib.br10.core.utility.CustomSQLFormat
+      logging: custom
 
 log-level: info
 
