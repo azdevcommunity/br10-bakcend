@@ -49,7 +49,7 @@ public class SpecialistProfileService {
     ImageService imageService;
     RequestContextProvider provider;
 
-//    @Cacheable(value = SPECIALIST_PROFILE, key = "#id")
+    @Cacheable(value = SPECIALIST_PROFILE, key = "#id")
     public SpecialistProfileReadResponse read(Long id) {
         //TODO: refactor this select image with join
         SpecialistProfile specialistProfile = findBySpecialistUserId(id);
