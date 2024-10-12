@@ -1,13 +1,12 @@
 package fib.br10.dto.reservation.request;
 
 import fib.br10.utility.Messages;
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.math.BigDecimal;
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,7 +24,7 @@ public class CreateReservationRequest {
     Long customerUserId;
 
     @NotNull(message = Messages.SPECIALIST_SERVICE_ID_REQUIRED)
-    Long specialistServiceId;
+    List<Long> specialistServiceIds;
 
     @NotNull(message = Messages.RESERVATION_SOURCE_REQUIRED)
     Integer reservationSource;

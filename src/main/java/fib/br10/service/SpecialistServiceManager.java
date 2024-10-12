@@ -185,4 +185,10 @@ public class SpecialistServiceManager {
                 .orElseThrow(SpecialistServiceNotFoundException::new);
     }
 
+    public List<SpecialistService> findAllByIds(List<Long> id) {
+        return specialistServicesRepository.findAllByIdIn(id);
+    }
+
+
+
 }
