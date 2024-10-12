@@ -18,10 +18,10 @@ public class CreateReservationRequest {
     @NotNull(message = Messages.RESERVATION_DATE_REQUIRED)
     OffsetDateTime reservationDate;
 
-    @NotNull(message = Messages.SPECIALIST_USER_ID_REQUIRED)
+//    @NotNull(message = Messages.SPECIALIST_USER_ID_REQUIRED)
     Long specialistUserId;
 
-    @NotNull(message = Messages.CUSTOMER_USER_ID_REQUIRED)
+//    @NotNull(message = Messages.CUSTOMER_USER_ID_REQUIRED)
     Long customerUserId;
 
     @NotNull(message = Messages.SPECIALIST_SERVICE_ID_REQUIRED)
