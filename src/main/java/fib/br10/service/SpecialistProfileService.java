@@ -65,12 +65,19 @@ public class SpecialistProfileService {
         specialistProfile = specialistProfileMapper.updateSpecialistProfileRequestToSpecialistProfile(specialistProfile, request);
         specialistProfileRepository.save(specialistProfile);
 
+            User user = userService.findById(userId);
+            user.setUsername(request.getSurname());
+            user.setSurname(request.getSurname());
+            userService.save(user);
+
         SpecialistProfileReadResponse response = specialistProfileMapper.specialistProfileToSpecialistProfileResponse(specialistProfile);
         response.setSpeciality(specialityService.findSpecialistyName(response.getSpecialityId()));
         Image image = imageService.findById(specialistProfile.getImageId());
         if (Objects.nonNull(image)) {
             response.setProfilePicture(image.getPath());
         }
+        response.setUsername(user.getUsername());
+        response.setSurname(user.getSurname());
         return response;
     }
 
@@ -108,6 +115,11 @@ public class SpecialistProfileService {
         SpecialistProfileReadResponse response = specialistProfileMapper.specialistProfileToSpecialistProfileResponse(specialistProfile);
         response.setProfilePicture(imageResponse.getPath());
         response.setSpeciality(specialityService.findSpecialistyName(response.getSpecialityId()));
+
+        User user = userService.findById(userId);
+        response.setUsername(user.getUsername());
+        response.setSurname(user.getSurname());
+
         return response;
     }
 

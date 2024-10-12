@@ -3,7 +3,7 @@ Configuration:
   Appenders:
     JDBC:
       name: DatabaseAppender
-      tableName: LOG_TABLE
+      tableName: LOGS
       ConnectionFactory:
         class: com.zaxxer.hikari.HikariDataSource
         Property:
@@ -34,7 +34,7 @@ Configuration:
       name: ConsoleAppender
       target: SYSTEM_OUT
       PatternLayout:
-        pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n%throwable"
+        pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg [%X{ACTIVITY_ID}]%n%throwable"
       Filters:
         ThresholdFilter:
           level: debug

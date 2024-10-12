@@ -1,0 +1,32 @@
+databaseChangeLog:
+  - changeSet:
+      id: CREATE_LOGS_TABLE
+      author: YUSIF_HASANOV
+      changes:
+        - createTable:
+            tableName: LOGS
+            columns:
+              - column:
+                  name: ID
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: LOG_LEVEL
+                  type: VARCHAR(10)
+              - column:
+                  name: LOGGER
+                  type: VARCHAR(255)
+              - column:
+                  name: MESSAGE
+                  type: TEXT
+              - column:
+                  name: TIMESTAMP
+                  type: TIMESTAMP
+              - column:
+                  name: EXCEPTION
+                  type: TEXT
+              - column:
+                  name: ACTIVITY_ID
+                  type: VARCHAR(255)
