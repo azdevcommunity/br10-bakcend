@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: CREATE_LOGS_TABLE
+      id: LOGS_TABLE_CREATE
       author: YUSIF_HASANOV
       changes:
         - createTable:
@@ -8,8 +8,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: ID
-                  type: BIGINT
-                  autoIncrement: true
+                  type: SERIAL
                   constraints:
                     primaryKey: true
               - column:
@@ -29,4 +28,22 @@ databaseChangeLog:
                   type: TEXT
               - column:
                   name: ACTIVITY_ID
+                  type: VARCHAR(255)
+              - column:
+                  name: THREAD
+                  type: VARCHAR(255)
+              - column:
+                  name: CLASS
+                  type: VARCHAR(255)
+              - column:
+                  name: METHOD
+                  type: VARCHAR(255)
+              - column:
+                  name: FILE
+                  type: VARCHAR(255)
+              - column:
+                  name: LINE
+                  type: INT
+              - column:
+                  name: USER_ID
                   type: VARCHAR(255)

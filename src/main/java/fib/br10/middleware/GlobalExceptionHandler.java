@@ -85,5 +85,6 @@ public class  GlobalExceptionHandler {
 
     private void logError(Exception ex) {
         log.error(ex);
+        ex.printStackTrace();
     }
 }

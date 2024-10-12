@@ -3,6 +3,7 @@ package fib.br10.middleware;
 
 import com.fasterxml.jackson.core.JsonEncoding;
 import fib.br10.core.dto.ResponseWrapper;
+import fib.br10.core.exception.BaseException;
 import fib.br10.core.exception.NotFoundException;
 import fib.br10.core.service.RequestContextProvider;
 import fib.br10.core.utility.JsonSerializer;
@@ -26,6 +27,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -47,6 +49,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final TokenService tokenService;
     private final RequestContextProvider provider;
     private final SecurityUtil securityUtil;
+
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
@@ -86,11 +89,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (IOException | ServletException e) {
             log.error(e);
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        } catch (NotFoundException e) {
+        } catch (BaseException | ExpiredJwtException | UsernameNotFoundException e) {
             log.error(e);
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-        } catch (ExpiredJwtException | JWTRequiredException | InvalidJWTClaimException e) {
-           log.error(e);
             modifyResponseBody(request.getLocale(), response, e.getMessage());
         } catch (Exception e) {
             log.error(e);

@@ -1,10 +1,10 @@
 package fib.br10.dto.userdevice.request;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.apache.logging.log4j.core.config.plugins.validation.constraints.NotBlank;
 
 
 @AllArgsConstructor
