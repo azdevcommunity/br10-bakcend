@@ -24,17 +24,5 @@ public class SpecialistProfileReadResponse {
     String tiktok;
     String facebook;
     String profilePicture;
-    String userName;
-    public SpecialistProfileReadResponse(Long id, Long specialistUserId, String speciality, Long specialityId, String address, String city, String instagram, String tiktok, String facebook, String profilePicture) {
-        this.id = id;
-        this.specialistUserId = specialistUserId;
-        this.speciality = speciality;
-        this.specialityId = specialityId;
-        this.address = address;
-        this.city = city;
-        this.instagram = instagram;
-        this.tiktok = tiktok;
-        this.facebook = facebook;
-        this.profilePicture = profilePicture;
-    }
+
 }
