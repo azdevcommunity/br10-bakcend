@@ -12,6 +12,7 @@ import fib.br10.dto.specialist.specialistprofile.response.SpecialistProfileReadR
 import fib.br10.entity.Image;
 import fib.br10.entity.specialist.SpecialistProfile;
 import fib.br10.entity.specialist.Speciality;
+import fib.br10.entity.user.User;
 import fib.br10.exception.specialist.specialistprofile.SpecialistProfileAlreadyExists;
 import fib.br10.exception.specialist.specialistprofile.SpecialistProfileNotFoundException;
 import fib.br10.mapper.SpecialistProfileMapper;
@@ -53,7 +54,8 @@ public class SpecialistProfileService {
         //TODO: refactor this select image with join
         SpecialistProfile specialistProfile = findBySpecialistUserId(id);
         SpecialistProfileReadResponse response = specialistProfileMapper.specialistProfileToSpecialistProfileResponse(specialistProfile);
-
+        User user = userService.findById(specialistProfile.getSpecialistUserId());
+        response.setUserName(user.getUsername());
         if (Objects.nonNull(specialistProfile.getImageId())) {
             Image image = imageService.findById(specialistProfile.getImageId());
             if (Objects.nonNull(image))
