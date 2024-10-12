@@ -1,75 +1,49 @@
 Configuration:
-    status: error
+  status: WARN
+  Appenders:
+    JDBC:
+      name: DatabaseAppender
+      tableName: LOG_TABLE
+      ConnectionFactory:
+        class: com.zaxxer.hikari.HikariDataSource
+        Property:
+          - name: jdbcUrl
+            value: "${spring:spring.datasource.url}"
+          - name: username
+            value: "${spring:spring.datasource.username}"
+          - name: password
+            value: "${spring:spring.datasource.password}"
+          - name: driverClassName
+            value: "com.mysql.cj.jdbc.Driver"
+      Column:
+        - name: LOG_LEVEL
+          pattern: "%level"
+        - name: LOGGER
+          pattern: "%logger"
+        - name: MESSAGE
+          pattern: "%msg"
+        - name: TIMESTAMP
+          pattern: "%d{yyyy-MM-dd HH:mm:ss}"
+        - name: EXCEPTION
+          pattern: "%throwable"
+        - name: ACTIVITY_ID
+          pattern: "%X{ACTIVITY_ID}"
 
-    properties:
-        property:
-            - name: name
-              value: "@project.artifactId@-@project.version@-${hostName}"
-            - name: application_log_path
-              value: "log/tezpay-dev/${name}/application"
-            - name: service_log_path
-              value: "log/tezpay-dev/${name}/service"
 
-    Appenders:
-        Console:
-            name: console
-            PatternLayout:
-                pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS}  %highlight{%p}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=green, DEBUG=green bold, TRACE=blue} %style{${sys:PID}}{magenta} [%15.15t] %style{%-40.40C{1.}}{cyan} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}"
+    Console:
+      name: ConsoleAppender
+      target: SYSTEM_OUT
+      PatternLayout:
+        pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n%throwable"
+      Filters:
+        ThresholdFilter:
+          level: debug
+          onMatch: ACCEPT
+          onMismatch: DENY
 
-        RollingFile:
-            - name: application_log_appender
-              fileName: "${application_log_path}/${name}-application.log"
-              filePattern: "${application_log_path}/${name}-application-log-%d{yyyy-MM-dd-HHZ}-%i.log.gz"
-              JsonTemplateLayout:
-                  eventTemplateUri: classpath:Ecs-template.json
-              Policies:
-                  OnStartupTriggeringPolicy: { }
-                  TimeBasedTriggeringPolicy:
-                      interval: 1
-                      modulate: true
-                  SizeBasedTriggeringPolicy:
-                      size: 30 MB
-              DefaultRolloverStrategy:
-                  Delete:
-                      basePath: "${application_log_path}"
-                      maxDepth: 1
-                      IfAll:
-                          IfAccumulatedFileCount:
-                              exceeds: 10000
-
-            - name: service_log_appender
-              fileName: "${service_log_path}/${name}-service.log"
-              filePattern: "${service_log_path}/${name}-service-log-%d{yyyy-MM-dd-HHZ}-%i.log.gz"
-              JsonTemplateLayout:
-                  eventTemplateUri: classpath:Ecs-template.json
-                  locationInfoEnabled: true
-              Policies:
-                  OnStartupTriggeringPolicy: { }
-                  TimeBasedTriggeringPolicy:
-                      interval: 1
-                      modulate: true
-                  SizeBasedTriggeringPolicy:
-                      size: 30 MB
-              DefaultRolloverStrategy:
-                  Delete:
-                      basePath: "${service_log_path}"
-                      maxDepth: 1
-                      IfAll:
-                          IfAccumulatedFileCount:
-                              exceeds: 10000
-
-    Loggers:
-        Root:
-            level: info
-            includeLocation: true
-            AppenderRef:
-                - ref: console
-                - ref: application_log_appender
-
-        AsyncLogger:
-            - name: az.tezpay.middleware
-              level: info
-              additivity: false
-              AppenderRef:
-                  - ref: service_log_appender
-                  
+  Loggers:
+    Root:
+      level: info
+      AppenderRef:
+        - ref: DatabaseAppender
+        - ref: ConsoleAppender

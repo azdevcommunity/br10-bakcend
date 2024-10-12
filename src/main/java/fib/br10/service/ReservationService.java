@@ -151,7 +151,7 @@ public class ReservationService {
 
         if (reservationExist) {
             //TODO: change it more readable error
-            throw new BaseException(Messages.RESERVATION_CONFLICT);
+            throw new BaseException("Bu tarixe reservasiya olunub");
         }
 
         //TODO:if client have reservatin for same time
