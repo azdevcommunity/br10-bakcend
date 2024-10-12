@@ -8,6 +8,7 @@ import io.jsonwebtoken.Claims;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.ThreadContext;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -71,6 +72,7 @@ public class RequestContextConfiguration {
         }
 
         provider.setActivityId(activityId);
+        ThreadContext.put(ACTIVITY_ID.getValue(),activityId);
     }
 
     private void configureLocalization(String lang) {
