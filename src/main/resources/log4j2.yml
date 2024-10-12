@@ -14,7 +14,7 @@ Configuration:
           - name: password
             value: "${spring:spring.datasource.password}"
           - name: driverClassName
-            value: "com.mysql.cj.jdbc.Driver"
+            value: "org.postgresql.Driver"
       Column:
         - name: LOG_LEVEL
           pattern: "%level"

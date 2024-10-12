@@ -27,4 +27,5 @@ public class SpecialistProfileReadResponse {
     String username;
     String name;
     String surname;
+    String phoneNumber;
 }
