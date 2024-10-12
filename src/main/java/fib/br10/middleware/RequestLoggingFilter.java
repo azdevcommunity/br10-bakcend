@@ -22,17 +22,13 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
 
 
-        log.info("Incoming request: {} {}", request.getMethod(), request.getRequestURI());
+        filterChain.doFilter(request, response);
 
         log.info("Path: {} Method: {} IP: {} Status: {}",
                 request.getServletPath(),
                 request.getMethod(),
                 request.getRemoteAddr(),
                 response.getStatus());
-
-        filterChain.doFilter(request, response);
-
-        log.info("Response  {}", response);
 
     }
 }

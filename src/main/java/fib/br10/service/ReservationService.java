@@ -215,7 +215,7 @@ public class ReservationService {
         return reservation.getId();
     }
 
-    public Map<Object, Object> findAllReservations() {
+    public  List<ReservationResponse> findAllReservations() {
 //        Long userId = ThreadContextUtil.get(ThreadContextConstants.CURRENT_USER_ID, Long.class);
 
         //check does user is specialist or not
@@ -239,12 +239,12 @@ public class ReservationService {
                 startOfDay, endOfDay, EntityStatus.ACTIVE.getValue(), ReservationStatus.PENDING.getValue()
         );
         Map<Object,Object> map =new HashMap<>();
-        List<ReservationDetail> reservationDetails= new ArrayList<>();
+
         for (ReservationResponse reservation : reservations) {
             List<ReservationDetail> reservationDetail =reservationDetailRepository.findByReservationId(reservation.getId()) ;
-            map.put(reservation,reservationDetail);
+            reservation.setReservationDetail(reservationDetail);
         }
-        return map;
+        return reservations;
     }
 
     public Reservation findOne(BooleanBuilder predicate) {
