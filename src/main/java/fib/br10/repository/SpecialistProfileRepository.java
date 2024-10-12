@@ -24,7 +24,7 @@ public interface SpecialistProfileRepository extends JpaRepository<SpecialistPro
                      case when :lang = 2 then s.name_en
                               when :lang = 3 then s.name_ru
                               else s.name end,
-                    s.id,sp.address,sp.city,sp.instagram,sp.tiktok,sp.facebook,img.path
+                    s.id,sp.address,sp.city,sp.instagram,sp.tiktok,sp.facebook,img.path, u.username
                    )
                     from User u
                     join SpecialistProfile sp on sp.specialistUserId = u.id
@@ -40,7 +40,7 @@ public interface SpecialistProfileRepository extends JpaRepository<SpecialistPro
                      case when :lang = 2 then s.name_en
                               when :lang = 3 then s.name_ru
                               else s.name end,
-                    s.id,sp.address,sp.city,sp.instagram,sp.tiktok,sp.facebook,img.path
+                    s.id,sp.address,sp.city,sp.instagram,sp.tiktok,sp.facebook,img.path, u.username
                    )
                     from User u
                     join SpecialistProfile sp on sp.specialistUserId = u.id
@@ -56,7 +56,7 @@ public interface SpecialistProfileRepository extends JpaRepository<SpecialistPro
                      case when :lang = 2 then s.name_en
                               when :lang = 3 then s.name_ru
                               else s.name end,
-                    s.id,sp.address,sp.city,sp.instagram,sp.tiktok,sp.facebook,img.path
+                    s.id,sp.address,sp.city,sp.instagram,sp.tiktok,sp.facebook,img.path,u.username
                    )
                     from User u
                     join SpecialistProfile sp on sp.specialistUserId = u.id
@@ -72,7 +72,7 @@ public interface SpecialistProfileRepository extends JpaRepository<SpecialistPro
                      case when :lang = 2 then s.name_en
                               when :lang = 3 then s.name_ru
                               else s.name end,
-                    s.id,sp.address,sp.city,sp.instagram,sp.tiktok,sp.facebook,img.path
+                    s.id,sp.address,sp.city,sp.instagram,sp.tiktok,sp.facebook,img.path,u.username
                    )
                     from User u
                     join SpecialistProfile sp on sp.specialistUserId = u.id

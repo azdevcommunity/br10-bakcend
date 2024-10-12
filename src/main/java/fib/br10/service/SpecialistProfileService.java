@@ -49,11 +49,13 @@ public class SpecialistProfileService {
     ImageService imageService;
     RequestContextProvider provider;
 
-//    @Cacheable(value = SPECIALIST_PROFILE, key = "#id")
+    @Cacheable(value = SPECIALIST_PROFILE, key = "#id")
     public SpecialistProfileReadResponse read(Long id) {
         //TODO: refactor this select image with join
         SpecialistProfile specialistProfile = findBySpecialistUserId(id);
+        User user = userService.findById(id);
         SpecialistProfileReadResponse response = specialistProfileMapper.specialistProfileToSpecialistProfileResponse(specialistProfile);
+        response.setUsername(user.getUsername());
         if (Objects.nonNull(specialistProfile.getImageId())) {
             Image image = imageService.findById(specialistProfile.getImageId());
             if (Objects.nonNull(image))

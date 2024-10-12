@@ -24,5 +24,5 @@ public class SpecialistProfileReadResponse {
     String tiktok;
     String facebook;
     String profilePicture;
-
+    String username;
 }
