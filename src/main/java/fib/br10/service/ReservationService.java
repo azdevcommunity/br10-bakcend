@@ -8,6 +8,7 @@ import fib.br10.core.utility.DateUtil;
 import fib.br10.dto.reservation.request.CancelReservationRequest;
 import fib.br10.dto.reservation.request.CreateReservationRequest;
 import fib.br10.dto.reservation.request.UpdateReservationRequest;
+import fib.br10.dto.reservation.response.ReservationDetailResponse;
 import fib.br10.dto.reservation.response.ReservationResponse;
 import fib.br10.entity.reservation.*;
 import fib.br10.entity.specialist.SpecialistService;
@@ -242,7 +243,19 @@ public class ReservationService {
 
         for (ReservationResponse reservation : reservations) {
             List<ReservationDetail> reservationDetail =reservationDetailRepository.findByReservationId(reservation.getId()) ;
-            reservation.setReservationDetail(reservationDetail);
+            List<ReservationDetailResponse> detailResponses =new ArrayList<>();
+            for (ReservationDetail detail : reservationDetail) {
+                SpecialistService service = specialistServiceManager.findById(detail.getServiceId());
+                detailResponses.add(ReservationDetailResponse.builder()
+                                .id(detail.getId())
+                                .serviceName(service.getName())
+                                .duration(service.getDuration())
+                                .serviceId(service.getId())
+                                .reservationId(reservation.getId())
+                                .price(detail.getPrice())
+                        .build());
+            }
+            reservation.setReservationDetail(detailResponses);
         }
         return reservations;
     }
