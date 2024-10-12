@@ -37,11 +37,10 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
     @Query("""
                 select new fib.br10.dto.reservation.response.ReservationResponse(
                  r.id, r.createdDate, r.reservationDate, r.specialistUserId, su.username, cu.id, cu.username,
-                                        cu.phoneNumber, ss.id, ss.price, r.reservationSource, r.reservationStatus, ss.duration)
+                                        cu.phoneNumber, r.price, r.reservationSource, r.reservationStatus, r.duration)
                 from Reservation r
                 left join User su on r.specialistUserId =  su.id
                 left join User cu on r.customerUserId = cu.id
-                left join SpecialistService ss on r.specialistServiceId  = ss.id
                 where r.specialistUserId =:userId  and r.status =:entityStatus and r.reservationStatus =:reservationStatus
                 and r.reservationDate between :startOfDay and :endOfDay
             """)
@@ -53,5 +52,5 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
 
     boolean findByCustomerUserIdAndReservationStatusAndStatus(Long userId, Integer reservStatus,Integer status);
 
-    boolean existsBySpecialistServiceIdAndStatusNot(Long specialistServiceId, Integer status);
+//    boolean existsBySpecialistServiceIdAndStatusNot(Long specialistServiceId, Integer status);
 }
