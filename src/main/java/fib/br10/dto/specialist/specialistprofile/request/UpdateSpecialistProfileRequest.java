@@ -30,5 +30,9 @@ public class UpdateSpecialistProfileRequest {
 
     String facebook;
 
+    String name;
+
+    String surname;
+
 //    MultipartFile profilePicture;
 }

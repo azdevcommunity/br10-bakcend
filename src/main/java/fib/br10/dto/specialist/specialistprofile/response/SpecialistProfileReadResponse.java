@@ -25,4 +25,6 @@ public class SpecialistProfileReadResponse {
     String facebook;
     String profilePicture;
     String username;
+    String name;
+    String surname;
 }
