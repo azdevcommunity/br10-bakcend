@@ -14,7 +14,6 @@ import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
-@EnableWebMvc
 
 public class WebConfig implements WebMvcConfigurer {
 
