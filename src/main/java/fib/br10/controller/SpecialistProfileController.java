@@ -69,6 +69,13 @@ public class SpecialistProfileController {
         return ResponseEntity.ok(specialistProfileService.readBySearch(search));
     }
 
+    @PreAuthorize("permitAll()")
+    @GetMapping("/search/{phoneNumberOrUserName}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<SpecialistProfileReadResponse>> readBySearch(@PathVariable("phoneNumberOrUserName") @NotNull  String phoneNumberOrUserName) {
+        return ResponseEntity.ok(specialistProfileService.readBySearch(phoneNumberOrUserName));
+    }
+
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<SpecialistProfileReadResponse> update(@RequestBody @Valid UpdateSpecialistProfileRequest request) {

@@ -43,7 +43,6 @@ spring:
     encoding: utf-8
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
-
 file:
   upload-dir: ${BR10_UPLOAD_DIR:uploads}
 cloudinary:
@@ -83,6 +82,7 @@ security:
     - /ws/**
     - /v3/api-docs/**
     - /swagger-ui.html/**
+    - /swagger-ui/**
     - /actuator/**
     - /app/**
     - /specialities/**

@@ -110,6 +110,9 @@ dependencies {
 
     //Firebase
     implementation 'com.google.firebase:firebase-admin:9.3.0'
+
+
+
 }
 
 
