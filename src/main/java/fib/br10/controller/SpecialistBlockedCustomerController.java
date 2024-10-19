@@ -15,6 +15,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.PermitAll;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 
@@ -30,7 +33,7 @@ public class SpecialistBlockedCustomerController {
 
     @PutMapping("/block")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Boolean> blockCustomer(@RequestBody @Valid BlockCustomerRequest request) {
+    public ResponseEntity<SpecialistBlockedCustomerResponse> blockCustomer(@RequestBody @Valid BlockCustomerRequest request) {
         return ResponseEntity.ok(specialistBlockedCustomerService.blockCustomer(request, provider.getUserId()));
     }
 
@@ -42,8 +45,17 @@ public class SpecialistBlockedCustomerController {
 
     @PutMapping("/unblock")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Boolean> unblockCustomer(@RequestBody @Valid UnBlockCustomerRequest request) {
+    public ResponseEntity<SpecialistBlockedCustomerResponse> unblockCustomer(@RequestBody @Valid UnBlockCustomerRequest request) {
         return ResponseEntity.ok(specialistBlockedCustomerService.unblockCustomer(request, provider.getUserId()));
+    }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping("/reservations")
+    public ResponseEntity<List<SpecialistBlockedCustomerResponse>> findReservations(
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "pageCount", required = false) Integer pageCount,
+            @RequestParam(value = "reservationDate", required = false) LocalDate reservationDate) {
+        return ResponseEntity.ok(specialistBlockedCustomerService.getBlockedCustomers(provider.getUserId()));
     }
 }
 
