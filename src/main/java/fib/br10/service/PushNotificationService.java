@@ -16,11 +16,13 @@ import java.util.Objects;
 @Service
 @Log4j2
 @AllArgsConstructor
-public class NotificationService {
+public class PushNotificationService {
 
     private final FirebaseMessaging firebaseMessaging;
     private final FcmTokenService fcmTokenService;
     private final NotificationRepository notificationRepository;
+    private final static String TITLE = "title";
+    private final static String BODY = "title";
 
     @Async
     public void sendAll(List<PushNotificationRequest> requests) {
@@ -104,15 +106,15 @@ public class NotificationService {
     private Message getMessage(PushNotificationRequest request) {
         return Message.builder()
                 .setToken(request.getTargetToken())
-                .putData("title", request.getTitle())
-                .putData("body", request.getBody())
+                .putData(TITLE, request.getTitle())
+                .putData(BODY, request.getBody())
                 .build();
     }
 
     private MulticastMessage getMulticastMessage(List<String> tokens, String title, String body) {
         return MulticastMessage.builder()
-                .putData("title", title)
-                .putData("body", body)
+                .putData(TITLE, title)
+                .putData(BODY, body)
                 .addAllTokens(tokens)
                 .build();
     }

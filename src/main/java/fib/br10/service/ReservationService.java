@@ -186,8 +186,9 @@ public class ReservationService {
                 request.getCustomerUserId()
         );
 
-
-        webSocketHandler.publish(WebSocketQueues.RESERVATION_CREATED, response, provider.getPhoneNumber());
+        webSocketHandler.publish(WebSocketQueues.RESERVATION_CREATED,
+                response, provider.getPhoneNumber()
+        );
         return response;
     }
 

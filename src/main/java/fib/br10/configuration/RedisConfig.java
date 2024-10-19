@@ -40,7 +40,8 @@ public class RedisConfig {
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer));
 
         Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
-        cacheConfigurations.put(CacheKeys.SPECIALITIES, defaultCacheConfig.entryTtl(Duration.ofMinutes(10)));
+        cacheConfigurations.put(CacheKeys.SPECIALITIES, defaultCacheConfig.entryTtl(Duration.ofHours(24)));
+        cacheConfigurations.put(CacheKeys.SPECIALIST_PROFILE, defaultCacheConfig.entryTtl(Duration.ofMinutes(30)));
 
         return RedisCacheManager.builder(redisConnectionFactory)
                 .cacheDefaults(defaultCacheConfig)

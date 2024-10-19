@@ -5,7 +5,6 @@ import fib.br10.core.dto.Token;
 import fib.br10.core.dto.UserDetailModel;
 import fib.br10.core.entity.EntityStatus;
 import fib.br10.core.exception.BaseException;
-import fib.br10.core.service.RequestContextProvider;
 import fib.br10.core.utility.*;
 import fib.br10.dto.auth.request.*;
 import fib.br10.dto.auth.response.OtpResponse;
@@ -51,9 +50,7 @@ public class AuthService {
     SpecialistAvailabilityService specialistAvailabilityService;
     SpecialityService specialityService;
     UserDeviceService userDeviceService;
-    RequestContextProvider provider;
     CacheService<String, Integer> cacheService;
-    SecurityEnv securityEnv;
     UserRoleService userRoleService;
 
     @Transactional
@@ -95,17 +92,20 @@ public class AuthService {
     @Transactional
     public Token activateUserVerifyOtp(ActivateUserVerifyOtpRequest request) {
         CacheUser cacheUser = userService.findUserFromCache(request.getPhoneNumber());
-
-//        if (EntityStatus.ACTIVE.getValue().equals(user.getStatus())) {
-//            throw new BaseException("user already activated");
-//        }
+        userService.checkUserAlreadyExists(cacheUser.getUsername(),
+                cacheUser.getPhoneNumber()
+        );
 
         otpService.verify(cacheUser.getPhoneNumber(), request.getOtp());
+
         User user = userMapper.cacheUserToEntity(cacheUser);
         user.setStatus(EntityStatus.ACTIVE.getValue());
         user = userService.save(user);
 
-        boolean isSpecialist = RegisterType.SPECIALIST.equals(RegisterType.fromValue(cacheUser.getRegisterType()));
+        boolean isSpecialist = RegisterType.SPECIALIST.equals(
+                RegisterType.fromValue(cacheUser.getRegisterType())
+        );
+
         if (isSpecialist) {
             registerSpecialist(cacheUser.getSpecialityId(), user);
             userRoleService.addRoleToUser(user.getId(), RoleEnum.SPECIALIST);

@@ -13,7 +13,6 @@ import fib.br10.entity.QImage;
 import fib.br10.entity.reservation.ReservationStatus;
 import fib.br10.entity.specialist.QSpecialistService;
 import fib.br10.entity.specialist.SpecialistService;
-import fib.br10.exception.specialist.specialistservice.ServiceAlreadyUsedOnAnyReservationException;
 import fib.br10.exception.specialist.specialistservice.SpecialistServiceAlreadyExistsException;
 import fib.br10.exception.specialist.specialistservice.SpecialistServiceNotFoundException;
 import fib.br10.mapper.SpecialistServiceMapper;

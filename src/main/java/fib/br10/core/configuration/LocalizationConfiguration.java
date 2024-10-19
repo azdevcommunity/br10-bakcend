@@ -22,7 +22,7 @@ public class LocalizationConfiguration {
     public MessageSource messageSource() {
         YamlMessageSource messageSource = new YamlMessageSource();
         messageSource.setBasename("classpath:messages/messages");
-        messageSource.setDefaultEncoding("UTF-8");
+        messageSource.setDefaultEncoding(StandardCharsets.UTF_8.name());
         return messageSource;
     }
 

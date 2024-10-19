@@ -55,11 +55,10 @@ public class RequestContextConfiguration {
     private void configureTimeZone(String timeZone, String jwt) {
         boolean isWhiteListed = provider.getIsPublicEndpoint();
 
-        if (isWhiteListed && Objects.isNull(timeZone) && !environmentUtil.isDevelopment()) {
-            throw new TimeZoneRequiredException();
-        }
-
-        if (!isWhiteListed) {
+        if (isWhiteListed ) {
+            if(Objects.isNull(timeZone))
+                timeZone = "+04:00";
+        }else{
             timeZone = jwtService.extractClaim(jwt, ClaimTypes.TIME_ZONE);
         }
 

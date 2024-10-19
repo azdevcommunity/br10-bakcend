@@ -3,6 +3,7 @@ package fib.br10.service;
 
 import fib.br10.core.exception.BaseException;
 import fib.br10.core.service.RequestContextProvider;
+import fib.br10.dto.gallery.response.DeleteGalleriesRequest;
 import fib.br10.dto.gallery.response.GalleryImageResponse;
 import fib.br10.dto.image.response.CreateImageResponse;
 import fib.br10.entity.GalleryImage;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -69,6 +71,10 @@ public class GalleryImageService {
     }
 
     @Transactional
+    public void delete(DeleteGalleriesRequest request) {
+        request.getGalleryIds().forEach(this::delete);
+    }
+
     public GalleryImageResponse update(Long id, MultipartFile image) {
         if (Objects.isNull(image)) {
             throw new BaseException("Image is required");

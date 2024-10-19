@@ -1,5 +1,6 @@
 package fib.br10.controller;
 
+import fib.br10.dto.gallery.response.DeleteGalleriesRequest;
 import fib.br10.dto.gallery.response.GalleryImageResponse;
 import fib.br10.service.GalleryImageService;
 import jakarta.annotation.Nonnull;
@@ -51,6 +52,14 @@ public class GalleryController {
         galleryImageService.delete(id);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Void> delete(@RequestBody @Valid DeleteGalleriesRequest request) {
+        galleryImageService.delete(request);
+        return ResponseEntity.ok().build();
+    }
+
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
