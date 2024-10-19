@@ -6,6 +6,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
@@ -62,6 +63,10 @@ public final class DateUtil {
 
     public static OffsetDateTime toOffsetDateTime(Date date) {
         return date.toInstant().atOffset(getZoneOffset());
+    }
+
+    public static OffsetDateTime toOffsetDateTime(LocalDateTime date) {
+        return date.atOffset(getZoneOffset());
     }
 
     public static long getDifferenceAsLong(Date date) {

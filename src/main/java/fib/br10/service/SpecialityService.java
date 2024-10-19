@@ -105,4 +105,6 @@ public class SpecialityService {
     public String findSpecialistyName(Long id) {
         return SpecialityUtil.getSpecialityName(findById(id));
     }
+
+
 }
