@@ -3,6 +3,7 @@ package fib.br10.service;
 
 import fib.br10.core.exception.BaseException;
 import fib.br10.core.service.RequestContextProvider;
+import fib.br10.dto.gallery.request.DeleteGalleryRequest;
 import fib.br10.dto.gallery.response.GalleryImageResponse;
 import fib.br10.dto.image.response.CreateImageResponse;
 import fib.br10.entity.GalleryImage;
@@ -66,6 +67,11 @@ public class GalleryImageService {
         GalleryImage galleryImage = findById(id);
         galleryImageRepository.delete(galleryImage);
         imageService.delete(galleryImage.getImageId());
+    }
+
+    @Transactional
+    public void delete(DeleteGalleryRequest request){
+        request.getGalleryIds().forEach(this::delete);
     }
 
     @Transactional

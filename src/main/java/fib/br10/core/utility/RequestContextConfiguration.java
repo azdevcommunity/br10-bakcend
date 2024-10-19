@@ -38,7 +38,7 @@ public class RequestContextConfiguration {
         );
     }
 
-    public void configure(String activityId, String lang, Authentication auth, String jwt, String timeZone,String ipAdress) {
+    public void configure(String activityId, String lang, Authentication auth, String jwt, String timeZone, String ipAdress) {
         configureActivityId(activityId);
         configureLocalization(lang);
         configureAuth(auth, jwt);
@@ -47,7 +47,7 @@ public class RequestContextConfiguration {
     }
 
     private void configureIpAddress(String ipAdress) {
-        if(Objects.nonNull(ipAdress)){
+        if (Objects.nonNull(ipAdress)) {
             provider.setIpAddress(ipAdress);
         }
     }
@@ -55,11 +55,10 @@ public class RequestContextConfiguration {
     private void configureTimeZone(String timeZone, String jwt) {
         boolean isWhiteListed = provider.getIsPublicEndpoint();
 
-        if (isWhiteListed && Objects.isNull(timeZone) && !environmentUtil.isDevelopment()) {
-            throw new TimeZoneRequiredException();
-        }
-
-        if (!isWhiteListed) {
+        if (isWhiteListed) {
+            if (Objects.isNull(timeZone))
+                timeZone = "+04:00";
+        } else {
             timeZone = jwtService.extractClaim(jwt, ClaimTypes.TIME_ZONE);
         }
 
@@ -72,7 +71,7 @@ public class RequestContextConfiguration {
         }
 
         provider.setActivityId(activityId);
-        ThreadContext.put(ACTIVITY_ID.getValue(),activityId);
+        ThreadContext.put(ACTIVITY_ID.getValue(), activityId);
     }
 
     private void configureLocalization(String lang) {
@@ -96,7 +95,7 @@ public class RequestContextConfiguration {
 
         provider.setPhoneNumber(authentication.getName());
         provider.setUserId(Long.valueOf(userIdInt));
-        ThreadContext.put(USER_ID.getValue(),userIdInt.toString());
+        ThreadContext.put(USER_ID.getValue(), userIdInt.toString());
         RequestContext.set(TOKEN_ID, tokenId);
         RequestContext.set(JWT_EXPIRATION, expiration);
     }
