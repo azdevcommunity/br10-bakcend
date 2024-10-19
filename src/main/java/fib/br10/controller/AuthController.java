@@ -5,6 +5,8 @@ import fib.br10.dto.auth.request.*;
 import fib.br10.dto.auth.response.OtpResponse;
 import fib.br10.dto.auth.response.RegisterResponse;
 import fib.br10.service.AuthService;
+//import io.swagger.v3.oas.annotations.Operation;
+//import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

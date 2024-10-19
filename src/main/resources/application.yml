@@ -43,7 +43,6 @@ spring:
     encoding: utf-8
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
-
 file:
   upload-dir: ${BR10_UPLOAD_DIR:uploads}
 cloudinary:
@@ -82,10 +81,11 @@ security:
     - /auth/login
     - /ws/**
     - /v3/api-docs/**
-    - /swagger-ui.html/**
+    - /swagger-ui/**
     - /actuator/**
     - /app/**
     - /specialities/**
+    - /swagger/**
   endpoint-black-list:
     - /auth/logout
 decorator:
@@ -100,6 +100,7 @@ log-level: info
 logging:
   level:
     org:
+      springdoc: DEBUG
       springframework:
         security: ${log-level}
         web: ${log-level}
@@ -108,3 +109,12 @@ logging:
         jpa: ${log-level}
         thymeleaf: ${log-level}
         springdoc: ${log-level}
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    url: /v3/api-docs
+    disable-swagger-default-url: true
+    enabled: true
