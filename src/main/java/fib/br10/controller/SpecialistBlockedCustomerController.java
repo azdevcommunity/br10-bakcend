@@ -1,6 +1,7 @@
 package fib.br10.controller;
 
 import fib.br10.core.service.RequestContextProvider;
+import fib.br10.dto.customer.response.ReadReservationsResponse;
 import fib.br10.dto.specialist.specialistprofile.request.BlockCustomerRequest;
 import fib.br10.dto.specialist.specialistprofile.request.UnBlockCustomerRequest;
 import fib.br10.dto.specialist.specialistprofile.response.SpecialistBlockedCustomerResponse;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.security.PermitAll;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 
@@ -51,11 +53,11 @@ public class SpecialistBlockedCustomerController {
 
     @PreAuthorize("permitAll()")
     @GetMapping("/reservations")
-    public ResponseEntity<List<SpecialistBlockedCustomerResponse>> findReservations(
-            @RequestParam(value = "pageSize", required = false) Integer pageSize,
-            @RequestParam(value = "pageCount", required = false) Integer pageCount,
-            @RequestParam(value = "reservationDate", required = false) LocalDate reservationDate) {
-        return ResponseEntity.ok(specialistBlockedCustomerService.getBlockedCustomers(provider.getUserId()));
+    public ResponseEntity<List<ReadReservationsResponse>> findReservations(
+            @RequestParam(value = "pageSize", required = false) Long pageSize,
+            @RequestParam(value = "pageNumber", required = false) Long pageNumber,
+            @RequestParam(value = "reservationDate", required = false) LocalDateTime reservationDate) {
+        return ResponseEntity.ok(specialistBlockedCustomerService.findAllReservations(pageSize, pageNumber, reservationDate));
     }
 }
 
