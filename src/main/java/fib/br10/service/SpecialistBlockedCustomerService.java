@@ -23,6 +23,7 @@ import fib.br10.exception.user.BlockedCustomerNotFoundException;
 import fib.br10.exception.user.CustomerAlreadyBlockedException;
 import fib.br10.exception.user.CustomerBlockedBySpecialistException;
 import fib.br10.repository.SpecialistBlockedCustomerRepository;
+import fib.br10.utility.PaginationUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -122,13 +123,12 @@ public class SpecialistBlockedCustomerService {
     }
 
 
-    public List<ReadReservationsResponse> findAllReservations(Long pageSize, Long pageCount, LocalDateTime reservationDate) {
+    public List<ReadReservationsResponse> findAllReservations(Long pageSize, Long pageNumber, LocalDateTime reservationDate) {
         QUser user = QUser.user;
         QReservation r = QReservation.reservation;
         QReservationDetail rd = QReservationDetail.reservationDetail;
         QSpecialistService ss = QSpecialistService.specialistService;
-        pageSize = Objects.isNull(pageSize) ? 10 : pageSize;
-        pageCount = Objects.isNull(pageCount) ? 10 : pageCount;
+
 
         OffsetDateTime startOfDay = DateUtil.toOffsetDateTime(reservationDate.toLocalDate().atStartOfDay());
         OffsetDateTime endOfDay = DateUtil.toOffsetDateTime(reservationDate
@@ -154,8 +154,8 @@ public class SpecialistBlockedCustomerService {
                 .leftJoin(rd).on(rd.id.eq(r.id))
                 .where(r.customerUserId.eq(provider.getUserId())
                         .and(r.reservationDate.between(startOfDay, endOfDay)))
-                .limit(pageSize)
-                .offset(pageCount * pageSize)
+                .limit(PaginationUtil.getPageSize(pageSize))
+                .offset(PaginationUtil.getOffset(pageSize, pageNumber))
                 .orderBy(r.reservationDate.desc())
                 .fetch();
 

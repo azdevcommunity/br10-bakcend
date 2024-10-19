@@ -59,7 +59,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String path = request.getServletPath();
             boolean isPublicEndpoint = securityUtil.isPublicEndpoint(path);
-            securityUtil.validateEndpointExists(request, isPublicEndpoint);
+            securityUtil.validateEndpointExists(request, isPublicEndpoint, path);
             provider.setRequestPath(path);
             provider.setIsPublicEnpoint(isPublicEndpoint);
 
@@ -89,18 +89,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (IOException | ServletException e) {
             log.error(e);
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        } catch (NotFoundException e) {
+            log.error(e);
+            modifyResponseBody(request.getLocale(), response, e.getMessage(), HttpServletResponse.SC_NOT_FOUND);
         } catch (BaseException | ExpiredJwtException | UsernameNotFoundException e) {
             log.error(e);
-            modifyResponseBody(request.getLocale(), response, e.getMessage());
+            modifyResponseBody(request.getLocale(), response, e.getMessage(), HttpServletResponse.SC_UNAUTHORIZED);
         } catch (Exception e) {
             log.error(e);
-            modifyResponseBody(request.getLocale(), response, Messages.ERROR);
+            modifyResponseBody(request.getLocale(), response, Messages.ERROR, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
-    private void modifyResponseBody(Locale locale, HttpServletResponse response, String message) {
+    private void modifyResponseBody(Locale locale, HttpServletResponse response, String message, Integer status) {
         ResponseWrapper<Object> body = ResponseWrapper.builder()
-                .code(HttpServletResponse.SC_UNAUTHORIZED)
+                .code(status)
                 .message(localization.getMessageOrCode(message, locale))
                 .data(null)
                 .build();
