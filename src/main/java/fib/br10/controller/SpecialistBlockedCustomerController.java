@@ -30,7 +30,7 @@ public class SpecialistBlockedCustomerController {
 
     @PutMapping("/block")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Boolean> blockCustomer(@RequestBody @Valid BlockCustomerRequest request) {
+    public ResponseEntity<SpecialistBlockedCustomerResponse> blockCustomer(@RequestBody @Valid BlockCustomerRequest request) {
         return ResponseEntity.ok(specialistBlockedCustomerService.blockCustomer(request, provider.getUserId()));
     }
 
@@ -42,7 +42,7 @@ public class SpecialistBlockedCustomerController {
 
     @PutMapping("/unblock")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Boolean> unblockCustomer(@RequestBody @Valid UnBlockCustomerRequest request) {
+    public ResponseEntity<SpecialistBlockedCustomerResponse> unblockCustomer(@RequestBody @Valid UnBlockCustomerRequest request) {
         return ResponseEntity.ok(specialistBlockedCustomerService.unblockCustomer(request, provider.getUserId()));
     }
 }

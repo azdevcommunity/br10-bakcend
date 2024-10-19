@@ -14,24 +14,25 @@ import java.util.Locale;
 public class Localization {
     private final MessageSource messageSource;
 
-    public String getMessage(String code, Locale locale) {
+    public String getMessage(String code, Locale locale, Object... args) {
         try {
-            return messageSource.getMessage(code, null, locale);
+            return messageSource.getMessage(code, args, locale);
         } catch (Exception e) {
             log.error(e);
             return null;
         }
     }
 
-    public String getMessageOrCode(String code, Locale locale) {
-        String message = getMessage(code, locale);
+    public String getMessage(String code, Locale locale) {
+        return getMessage(code, locale, (Object) null);
+    }
+
+    public String getMessageOrCode(String code, Locale locale, Object... args) {
+        String message = getMessage(code, locale, args);
         return message == null ? code : message;
     }
 
-    public String getMessageOrDefault(String code, Locale locale) {
-        String message = getMessage(code, locale);
-        return message == null ?
-                getMessage(Messages.ERROR, locale)
-                : message;
+    public String getMessageOrCode(String code, Locale locale) {
+        return getMessageOrCode(code, locale, (Object) null);
     }
 }

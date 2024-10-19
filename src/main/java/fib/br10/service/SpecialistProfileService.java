@@ -159,4 +159,9 @@ public class SpecialistProfileService {
                 LangEnum.fromValue(provider.getLang()).getCode()
         );
     }
+
+    @Cacheable(value = SPECIALIST_PROFILE, key = "#phoneNumberOrUserName")
+    public List<SpecialistProfileReadResponse> readBySearch(String phoneNumberOrUserName) {
+        return specialistProfileRepository.findAllBySearch(phoneNumberOrUserName, EntityStatus.ACTIVE.getValue(), LangEnum.fromValue(provider.getLang()).getCode());
+    }
 }

@@ -4,10 +4,8 @@ package fib.br10.middleware;
 import com.fasterxml.jackson.core.JsonEncoding;
 import fib.br10.core.dto.ResponseWrapper;
 import fib.br10.core.exception.BaseException;
-import fib.br10.core.exception.NotFoundException;
 import fib.br10.core.service.RequestContextProvider;
 import fib.br10.core.utility.JsonSerializer;
-import fib.br10.exception.token.InvalidJWTClaimException;
 import fib.br10.exception.token.JWTRequiredException;
 import fib.br10.utility.JwtService;
 import fib.br10.core.utility.Localization;
@@ -77,8 +75,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             var authentication = SecurityContextHolder.getContext().getAuthentication();
 
             if (Objects.isNull(authentication) || authentication.getPrincipal().equals("anonymousUser")) {
+                jwtService.validateToken(jwt, phoneNumber);
+
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(phoneNumber);
-                jwtService.validateToken(jwt, userDetails);
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities()
                 );

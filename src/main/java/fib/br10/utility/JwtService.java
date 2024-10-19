@@ -78,6 +78,12 @@ public class JwtService {
         }
     }
 
+    public void validateToken(String token, String phoneNumber) {
+        if (!isTokenValid(token, phoneNumber)) {
+            throw new JWTExpiredException();
+        }
+    }
+
     public boolean isTokenValid(String token, UserDetails userDetails) {
         return isTokenValid(token, userDetails.getUsername());
     }

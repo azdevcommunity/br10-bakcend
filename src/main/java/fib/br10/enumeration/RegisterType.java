@@ -18,6 +18,6 @@ public enum RegisterType {
                 return clientType;
             }
         }
-        throw new BaseException("Unknown value: " + value);
+        throw new BaseException("Unknown value for RegisterType value is: " + value);
     }
 }

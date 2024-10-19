@@ -35,7 +35,7 @@ public class SpecialistBlockedCustomerService {
     JPAQueryFactory jpaQuery;
 
     @CacheEvict(value = SPECIALIST_BLOCKED_CUSTOMERS, key = "#userId")
-    public boolean unblockCustomer(UnBlockCustomerRequest request, Long userId) {
+    public SpecialistBlockedCustomerResponse unblockCustomer(UnBlockCustomerRequest request, Long userId) {
         SpecialistBlockedCustomer blockedCustomer = findByCustomerUserIdAndSpecialistId(
                 request.getCustomerUserId(),
                 userId
@@ -43,7 +43,18 @@ public class SpecialistBlockedCustomerService {
 
         specialistBlockedCustomerRepository.delete(blockedCustomer);
 
-        return true;
+        QSpecialistBlockedCustomer spc = QSpecialistBlockedCustomer.specialistBlockedCustomer;
+        QUser user = QUser.user;
+
+        return jpaQuery.select(Projections.constructor(
+                        SpecialistBlockedCustomerResponse.class,
+                        user.id, user.username, user.phoneNumber, spc.createdDate))
+                .from(spc)
+                .innerJoin(user).on(user.id.eq(spc.customerUserId))
+                .where(spc.specialistUserId.eq(userId)
+                        .and(spc.customerUserId.eq(userId))
+                        .and(spc.status.eq(EntityStatus.ACTIVE.getValue())))
+                .fetchFirst();
     }
 
     @Cacheable(value = SPECIALIST_BLOCKED_CUSTOMERS, key = "#userId")
@@ -64,7 +75,7 @@ public class SpecialistBlockedCustomerService {
     }
 
     @CacheEvict(value = SPECIALIST_BLOCKED_CUSTOMERS, key = "#userId")
-    public boolean blockCustomer(BlockCustomerRequest request, Long userId) {
+    public SpecialistBlockedCustomerResponse blockCustomer(BlockCustomerRequest request, Long userId) {
         checkIsCustomerBlocked(userId, request.getCustomerUserId(), new CustomerAlreadyBlockedException());
 
         SpecialistBlockedCustomer specialistBlockedCustomer = SpecialistBlockedCustomer.builder()
@@ -73,9 +84,20 @@ public class SpecialistBlockedCustomerService {
                 .reason(request.getReason())
                 .build();
 
-        specialistBlockedCustomerRepository.save(specialistBlockedCustomer);
+        specialistBlockedCustomer = specialistBlockedCustomerRepository.save(specialistBlockedCustomer);
 
-        return true;
+        QSpecialistBlockedCustomer spc = QSpecialistBlockedCustomer.specialistBlockedCustomer;
+        QUser user = QUser.user;
+
+        return jpaQuery.select(Projections.constructor(
+                        SpecialistBlockedCustomerResponse.class,
+                        user.id, user.username, user.phoneNumber, spc.createdDate))
+                .from(spc)
+                .innerJoin(user).on(user.id.eq(spc.customerUserId))
+                .where(spc.specialistUserId.eq(userId)
+                        .and(spc.customerUserId.eq(userId))
+                        .and(spc.status.eq(EntityStatus.ACTIVE.getValue())))
+                .fetchFirst();
     }
 
     public SpecialistBlockedCustomer findByCustomerUserIdAndSpecialistId(Long customerUserId, Long specialistUserId) {
