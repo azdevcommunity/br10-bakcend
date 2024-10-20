@@ -79,7 +79,7 @@ public class AuthService {
 
 //        if (Objects.isNull(user)) {
 //            //add cache
-           CacheUser cacheUser = userService.addUserToCache(request);
+        CacheUser cacheUser = userService.addUserToCache(request);
 //        }
 
         CacheOtp cacheOtp = otpService.create(request.getPhoneNumber());
@@ -118,7 +118,13 @@ public class AuthService {
     }
 
     public OtpResponse getOtp(GetOtpRequest request) {
-//        User user = userService.findByUserNameOrPhoneNumber(request.getPhoneNumberOrUsername());
+        boolean userExists = userService.existsByPhoneNumber(request.getPhoneNumber());
+        CacheUser cacheUser = userService.findUserFromCache(request.getPhoneNumber());
+
+        if (!userExists || Objects.isNull(cacheUser)) {
+            throw new BaseException("Bu nomre sistemde movcud deyil");
+        }
+
         CacheOtp cacheOtp = otpService.create(request.getPhoneNumber());
         return new OtpResponse(cacheOtp.getOtp(), cacheOtp.getOtpExpireDate());
     }

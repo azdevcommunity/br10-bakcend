@@ -8,4 +8,6 @@ import java.util.Optional;
 
 public interface ReservationDetailRepository extends JpaRepository<ReservationDetail,Long> {
     List<ReservationDetail> findByReservationId(Long reservationId);
+
+    List<ReservationDetail> findAllByReservationIdIn(List<Long> reservationIds);
 }

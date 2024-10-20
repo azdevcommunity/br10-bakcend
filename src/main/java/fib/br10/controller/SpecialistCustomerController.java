@@ -16,10 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.security.PermitAll;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.util.List;
 
 
@@ -29,7 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Validated
 @PreAuthorize("hasRole('SPECIALIST')")
-public class SpecialistBlockedCustomerController {
+public class SpecialistCustomerController {
     SpecialistBlockedCustomerService specialistBlockedCustomerService;
     RequestContextProvider provider;
 

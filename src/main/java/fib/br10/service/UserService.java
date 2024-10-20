@@ -140,4 +140,8 @@ public class UserService implements UserDetailsService {
             throw new CategoryNotBelongToUserException();
         }
     }
+
+    public boolean existsByPhoneNumber(String phoneNumber) {
+        return userRepository.existsByPhoneNumber(phoneNumber);
+    }
 }

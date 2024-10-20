@@ -33,6 +33,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -56,13 +57,13 @@ public class ReservationService {
         Integer reservationSource = request.getReservationSource();
 
         if (reservationSource.equals(ReservationSource.APP.getValue())
-            && !userId.equals(request.getCustomerUserId())
+                && !userId.equals(request.getCustomerUserId())
         ) {
             throw new ReservationCustomerUserIdNotMatchException();
         }
 
         if (reservationSource.equals(ReservationSource.MANUAL.getValue())
-            && !userId.equals(request.getSpecialistUserId())
+                && !userId.equals(request.getSpecialistUserId())
         ) {
             throw new ReservationSpecialistUserIdNotMatchException();
         }
@@ -117,18 +118,16 @@ public class ReservationService {
         }
 
         if (isSpecialist) {
-            if (Objects.isNull(request.getCustomerUserId()))
+            if (Objects.isNull(request.getCustomerUserId())) {
                 throw new BaseException("Customer id null ola bilmez");
+            }
             request.setSpecialistUserId(provider.getUserId());
-        }
-
-        if (!isSpecialist) {
+        } else {
             if (Objects.isNull(request.getSpecialistServiceIds())) {
                 throw new BaseException("Customer id null ola bilmez");
             }
             request.setCustomerUserId(provider.getUserId());
         }
-
 
         validateReservation(
                 request.getReservationSource(),
@@ -159,8 +158,10 @@ public class ReservationService {
             }
             totalPrice = totalPrice.add(service.getPrice());
             totalDuration = totalDuration + service.getDuration();
-            //TODO:if client have reservatin for same time
+
         }
+
+        //TODO:Create new reservation
         Reservation newReservation = new Reservation();
         newReservation = reservationMapper.createReservationRequestToReservation(newReservation, request);
         newReservation.setPrice(totalPrice);
@@ -216,18 +217,7 @@ public class ReservationService {
         return reservation.getId();
     }
 
-    public  List<ReservationResponse> findAllReservations() {
-//        Long userId = ThreadContextUtil.get(ThreadContextConstants.CURRENT_USER_ID, Long.class);
-
-        //check does user is specialist or not
-        //TODO: in future it will be globall role based permision filter
-
-//        User user = userService.findById(userId);
-//        if (!user.getUserType().equals(UserType.SPECIALIST.getValue())) {
-//            //TODO: CHANGE ERROR MESSAGE
-//            throw new BaseException(Messages.ERROR);
-//        }
-
+    public List<ReservationResponse> findAllReservations() {
         OffsetDateTime now = DateUtil.getCurrentDateTime();
 
         OffsetDateTime startOfDay = now.truncatedTo(ChronoUnit.DAYS);
@@ -239,24 +229,51 @@ public class ReservationService {
         List<ReservationResponse> reservations = reservationRepository.findAllPendingReservations(provider.getUserId(),
                 startOfDay, endOfDay, EntityStatus.ACTIVE.getValue(), ReservationStatus.PENDING.getValue()
         );
-        Map<Object,Object> map =new HashMap<>();
 
-        for (ReservationResponse reservation : reservations) {
-            List<ReservationDetail> reservationDetail =reservationDetailRepository.findByReservationId(reservation.getId()) ;
-            List<ReservationDetailResponse> detailResponses =new ArrayList<>();
-            for (ReservationDetail detail : reservationDetail) {
-                SpecialistService service = specialistServiceManager.findById(detail.getServiceId());
-                detailResponses.add(ReservationDetailResponse.builder()
+        if (reservations.isEmpty()) {
+            return reservations;
+        }
+
+        List<Long> reservationIds = reservations.stream()
+                .map(ReservationResponse::getId)
+                .collect(Collectors.toList());
+
+        List<ReservationDetail> reservationDetails = reservationDetailRepository.findAllByReservationIdIn(reservationIds);
+
+        List<Long> serviceIds = reservationDetails.stream()
+                .map(ReservationDetail::getServiceId)
+                .distinct()
+                .collect(Collectors.toList());
+
+        List<SpecialistService> specialists = specialistServiceManager.findAllByIds(serviceIds);
+
+        Map<Long, List<ReservationDetail>> reservationDetailsMap = reservationDetails.stream()
+                .collect(Collectors.groupingBy(ReservationDetail::getReservationId));
+
+        Map<Long, SpecialistService> servicesMap = specialists.stream()
+                .collect(Collectors.toMap(SpecialistService::getId, service -> service));
+
+        reservations.parallelStream().forEach(reservation -> {
+            List<ReservationDetail> details = reservationDetailsMap.get(reservation.getId());
+            List<ReservationDetailResponse> detailResponses = new ArrayList<>();
+            if (Objects.nonNull(details)) {
+                details.forEach(detail -> {
+                    SpecialistService service = servicesMap.get(detail.getServiceId());
+                    if (Objects.nonNull(service)) {
+                        detailResponses.add(ReservationDetailResponse.builder()
                                 .id(detail.getId())
                                 .serviceName(service.getName())
                                 .duration(service.getDuration())
                                 .serviceId(service.getId())
                                 .reservationId(reservation.getId())
                                 .price(detail.getPrice())
-                        .build());
+                                .build());
+                    }
+                });
             }
             reservation.setReservationDetail(detailResponses);
-        }
+        });
+
         return reservations;
     }
 
@@ -289,13 +306,13 @@ public class ReservationService {
                                      Long specialistUserId,
                                      Long cutomerUserId) {
         if (source.equals(ReservationSource.MANUAL.getValue())
-            && !userId.equals(specialistUserId)
+                && !userId.equals(specialistUserId)
         ) {
             throw new ReservationSpecialistUserIdNotMatchException();
         }
 
         if (source.equals(ReservationSource.APP.getValue())
-            && !userId.equals(cutomerUserId)
+                && !userId.equals(cutomerUserId)
         ) {
             throw new ReservationCustomerUserIdNotMatchException();
         }
