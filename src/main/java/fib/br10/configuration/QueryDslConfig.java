@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @Configuration
 @EnableJpaAuditing
 @EnableJpaRepositories(basePackages = "fib.br10.repository")
-public class QueryDslConfiguration {
+public class QueryDslConfig {
 
     @PersistenceContext
     private EntityManager entityManager;

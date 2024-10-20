@@ -22,9 +22,8 @@ import java.util.List;
 @EnableWebSocketMessageBroker
 @RequiredArgsConstructor
 @Log4j2
-public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer {
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    private final SecurityEnv securityEnv;
     private final WebSocketSecurityInterceptor webSocketSecurityInterceptor;
     private final ObjectMapper objectMapper;
 

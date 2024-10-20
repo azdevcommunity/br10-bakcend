@@ -2,6 +2,7 @@ package fib.br10.core.middleware;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fib.br10.core.dto.ResponseWrapper;
+import fib.br10.utility.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
@@ -18,8 +19,8 @@ import java.nio.charset.StandardCharsets;
 @ControllerAdvice
 @RequiredArgsConstructor
 public class ResponseWrapperAdvice implements ResponseBodyAdvice<Object> {
-    private final AntPathMatcher antPathMatcher;
     private final ObjectMapper objectMapper;
+    private final SecurityUtil securityUtil;
 
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
@@ -34,7 +35,7 @@ public class ResponseWrapperAdvice implements ResponseBodyAdvice<Object> {
             return body;
         }
 
-        if (isExceptionalEndpoint(request.getURI().getPath())) {
+        if (securityUtil.isSwaggerEndpoint(request.getURI().getPath())) {
             return handleExceptionalEndpoints(body);
         }
 
@@ -47,9 +48,5 @@ public class ResponseWrapperAdvice implements ResponseBodyAdvice<Object> {
         } catch (Exception e) {
             return body;
         }
-    }
-
-    private boolean isExceptionalEndpoint(String endpoint) {
-        return antPathMatcher.match("/**/v3/api-docs/**", endpoint);
     }
 }

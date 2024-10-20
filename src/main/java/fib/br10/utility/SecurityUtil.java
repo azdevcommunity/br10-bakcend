@@ -25,9 +25,7 @@ public class SecurityUtil {
     private final AntPathMatcher antPathMatcher;
     private final RequestMappingHandlerMapping requestMappingHandlerMapping;
     private final RequestMappingHandlerMapping controllerEndpointHandlerMapping;
-    private final List<String> swaggerEndpoints = List.of(
-            "/v3/api-docs/**", "/swagger-ui/**"
-    );
+    private final String swaggerEndpoint = "/**/swagger-ui/**";
 
     public boolean isPublicEndpoint(String endpoint) {
         boolean isWhiteListed = securityEnv.getEndpointWhiteList()
@@ -38,14 +36,15 @@ public class SecurityUtil {
                 .stream()
                 .anyMatch(url -> antPathMatcher.match(url, endpoint));
 
-        return isWhiteListed && !isBlackListed;
+        return isWhiteListed && !isBlackListed ;
     }
 
-    public void validateEndpointExists(HttpServletRequest request, boolean isPublicEndpoint, String endpoint) {
+    public void validateEndpointExists(HttpServletRequest request , String endpoint) {
         try {
-            if (isPublicEndpoint || swaggerEndpoints.stream().anyMatch(url -> antPathMatcher.match(url, endpoint))) {
+            if (isPublicEndpoint(endpoint) || isSwaggerEndpoint(endpoint)) {
                 return;
             }
+
             HandlerExecutionChain handlerExecutionChain = requestMappingHandlerMapping.getHandler(request);
             if (Objects.isNull(handlerExecutionChain)) {
                 handlerExecutionChain = controllerEndpointHandlerMapping.getHandler(request);
@@ -56,5 +55,9 @@ public class SecurityUtil {
         } catch (Exception e) {
             throw new NotFoundException(request.getRequestURI());
         }
+    }
+
+    public boolean isSwaggerEndpoint(String endpoint) {
+        return antPathMatcher.match(swaggerEndpoint, endpoint);
     }
 }
