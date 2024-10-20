@@ -240,40 +240,15 @@ public class ReservationServiceImpl implements ReservationService {
                 .map(ReservationResponse::getId)
                 .collect(Collectors.toList());
 
-        List<ReservationDetail> reservationDetails = reservationDetailRepository.findAllByReservationIdIn(reservationIds);
+        List<ReservationDetailResponse> reservationDetails = reservationDetailRepository.findAllReservationDetails(reservationIds);
 
-        List<Long> serviceIds = reservationDetails.stream()
-                .map(ReservationDetail::getServiceId)
-                .distinct()
-                .collect(Collectors.toList());
-
-        List<SpecialistService> specialists = specialistServiceManager.findAllByIds(serviceIds);
-
-        Map<Long, List<ReservationDetail>> reservationDetailsMap = reservationDetails.stream()
-                .collect(Collectors.groupingBy(ReservationDetail::getReservationId));
-
-        Map<Long, SpecialistService> servicesMap = specialists.stream()
-                .collect(Collectors.toMap(SpecialistService::getId, service -> service));
+        Map<Long, List<ReservationDetailResponse>> reservationDetailsMap = reservationDetails.stream()
+                .collect(Collectors.groupingBy(ReservationDetailResponse::getReservationId));
 
         reservations.parallelStream().forEach(reservation -> {
-            List<ReservationDetail> details = reservationDetailsMap.get(reservation.getId());
-            List<ReservationDetailResponse> detailResponses = new ArrayList<>();
-            if (Objects.nonNull(details)) {
-                details.forEach(detail -> {
-                    SpecialistService service = servicesMap.get(detail.getServiceId());
-                    if (Objects.nonNull(service)) {
-                        detailResponses.add(ReservationDetailResponse.builder()
-                                .id(detail.getId())
-                                .serviceName(service.getName())
-                                .duration(service.getDuration())
-                                .serviceId(service.getId())
-                                .reservationId(reservation.getId())
-                                .price(detail.getPrice())
-                                .build());
-                    }
-                });
-            }
-            reservation.setReservationDetail(detailResponses);
+            List<ReservationDetailResponse> details = reservationDetailsMap.get(reservation.getId());
+
+            reservation.setReservationDetail(details);
         });
 
         return reservations;
