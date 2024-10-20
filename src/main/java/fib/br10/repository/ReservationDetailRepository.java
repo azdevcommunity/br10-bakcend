@@ -20,6 +20,7 @@ public interface ReservationDetailRepository extends JpaRepository<ReservationDe
                     ss.name )
                     from ReservationDetail r
                     left join SpecialistService  ss on r.serviceId = ss.id
+                    where r.reservationId in :reservationIds
             """)
     List<ReservationDetailResponse> findAllReservationDetails(List<Long> reservationIds);
 }
