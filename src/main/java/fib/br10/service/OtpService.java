@@ -33,14 +33,17 @@ public class OtpService {
     SecurityEnv securityEnv;
 
     public CacheOtp create(String key) {
+        validateOtpRateLimit(key);
+        return generateNewOtp(key);
+    }
+
+    private void validateOtpRateLimit(String key) {
         final String otpCountKey = PrefixUtil.OTP_COUNT + key;
         final String lastOtpRequestTimeKey = PrefixUtil.LAST_OTP_REQUEST_TIME + key;
         final String dailyOtpCountKey = PrefixUtil.DAILY_OTP_COUNT + key;
 
-
         // Check Last Otp Send Date
         Object lastRequestStr = cacheService.get(lastOtpRequestTimeKey);
-
         log.info(String.format("Last otp request key : %s, lastRequestTime: %s", lastOtpRequestTimeKey, lastRequestStr));
 
         if (Objects.nonNull(lastRequestStr)) {
@@ -63,6 +66,12 @@ public class OtpService {
         if (otpCount >= securityEnv.getOtpConfig().otpTryLimit()) {
             throw new BaseException("Too many OTP requests in the last hour. Please try again later.");
         }
+    }
+
+    private CacheOtp generateNewOtp(String key) {
+        final String otpCountKey = PrefixUtil.OTP_COUNT + key;
+        final String lastOtpRequestTimeKey = PrefixUtil.LAST_OTP_REQUEST_TIME + key;
+        final String dailyOtpCountKey = PrefixUtil.DAILY_OTP_COUNT + key;
 
         Integer otp = RandomUtil.randomInt(1000, 9999);
         CacheOtp cacheOtp = CacheOtp.builder()
@@ -72,15 +81,16 @@ public class OtpService {
                 .build();
 
         cacheService.put(PrefixUtil.OTP + key, cacheOtp, securityEnv.getOtpConfig().otpExpirationTime(), TimeUnit.SECONDS);
-
         cacheService.put(lastOtpRequestTimeKey, DateUtil.getCurrentDateTime().toString(), 1, TimeUnit.MINUTES);
 
+        Object hourOtpCountStr = cacheService.get(otpCountKey);
         if (Objects.isNull(hourOtpCountStr)) {
             cacheService.put(otpCountKey, 1, 1, TimeUnit.HOURS);
         } else {
             cacheService.increment(otpCountKey);
         }
 
+        Object dailyOtpCountStr = cacheService.get(dailyOtpCountKey);
         if (Objects.isNull(dailyOtpCountStr)) {
             cacheService.put(dailyOtpCountKey, 1, 1, TimeUnit.DAYS);
         } else {
@@ -89,7 +99,6 @@ public class OtpService {
 
         return cacheOtp;
     }
-
 
     public CacheOtp find(String userId) {
         CacheOtp cacheOtp = (CacheOtp) cacheService.get(PrefixUtil.OTP + userId);

@@ -134,8 +134,8 @@ public class SpecialistBlockedCustomerService {
         OffsetDateTime endOfDay = DateUtil.toOffsetDateTime(reservationDate
                 .toLocalDate()
                 .atStartOfDay()
-                .plusDays(1).minusSeconds(1)
-        );
+                .plusDays(1)
+                .minusSeconds(1));
 
         List<ReadReservationsResponse> reservations = jpaQuery.select(
                         Projections.constructor(ReadReservationsResponse.class,
