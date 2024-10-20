@@ -112,7 +112,7 @@ public class ReservationServiceImpl implements ReservationService {
     @Transactional
     public ReservationResponse createReservation(CreateReservationRequest request) {
         //add check for availability
-        //bu userin baska specialist ucun olsa bele toqqusan reservi varmi
+
         boolean isSpecialist = ReservationSource.MANUAL.getValue().equals(request.getReservationSource());
         if (!isSpecialist && !ReservationSource.APP.getValue().equals(request.getReservationSource())
         ) {
@@ -130,6 +130,9 @@ public class ReservationServiceImpl implements ReservationService {
             }
             request.setCustomerUserId(provider.getUserId());
         }
+
+
+        specialistCustomerService.checkIsCustomerBlocked(request.getSpecialistUserId(), request.getCustomerUserId());
 
         validateReservation(
                 request.getReservationSource(),
