@@ -30,6 +30,9 @@ public class ResponseWrapperAdvice implements ResponseBodyAdvice<Object> {
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType,
                                   Class<? extends HttpMessageConverter<?>> selectedConverterType,
                                   ServerHttpRequest request, ServerHttpResponse response) {
+        if (body instanceof ResponseWrapper<?>) {
+            return body;
+        }
 
         if (isExceptionalEndpoint(request.getURI().getPath())) {
             return handleExceptionalEndpoints(body);
@@ -39,10 +42,6 @@ public class ResponseWrapperAdvice implements ResponseBodyAdvice<Object> {
     }
 
     private Object handleExceptionalEndpoints(Object body) {
-        if (body instanceof ResponseWrapper<?>) {
-            return body;
-        }
-
         try {
             return objectMapper.readTree(new String((byte[]) body, StandardCharsets.UTF_8).replace("\\\"", "\""));
         } catch (Exception e) {
@@ -51,7 +50,6 @@ public class ResponseWrapperAdvice implements ResponseBodyAdvice<Object> {
     }
 
     private boolean isExceptionalEndpoint(String endpoint) {
-        String exceptionalEndpoint = "/**/v3/api-docs/**";
-        return antPathMatcher.match(exceptionalEndpoint, endpoint);
+        return antPathMatcher.match("/**/v3/api-docs/**", endpoint);
     }
 }
