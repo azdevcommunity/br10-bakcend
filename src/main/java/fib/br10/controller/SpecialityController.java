@@ -4,7 +4,8 @@ import fib.br10.core.dto.RequestById;
 import fib.br10.dto.speciality.request.CreateSpecialityRequest;
 import fib.br10.dto.speciality.request.UpdateSpecialityRequest;
 import fib.br10.dto.speciality.response.SpecialityResponse;
-import fib.br10.service.SpecialityService;
+import fib.br10.service.SpecialityManagerImpl;
+import fib.br10.service.abstracts.SpecialityManager;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ import java.util.List;
 @Validated
 @PreAuthorize("hasRole('ADMIN')")
 public class SpecialityController {
-    SpecialityService specialityService;
+    SpecialityManager specialityService;
 
 
     @PostMapping

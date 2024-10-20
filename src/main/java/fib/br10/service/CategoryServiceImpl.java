@@ -11,6 +11,7 @@ import fib.br10.exception.category.CategoryNotFoundException;
 import fib.br10.mapper.CategoryMapper;
 import fib.br10.repository.CategoryRepository;
 import fib.br10.repository.ProductRepository;
+import fib.br10.service.abstracts.CategoryService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -22,13 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static fib.br10.utility.CacheKeys.CATEGORIES;
-import static fib.br10.utility.CacheKeys.PRODUCTS;
 
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class CategoryService {
+public class CategoryServiceImpl implements CategoryService {
     CategoryRepository categoryRepository;
     CategoryMapper categoryMapper;
     UserService userService;

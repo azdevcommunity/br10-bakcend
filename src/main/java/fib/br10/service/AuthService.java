@@ -23,7 +23,7 @@ import fib.br10.exception.token.EncryptException;
 import fib.br10.exception.token.TokenNotValidException;
 import fib.br10.exception.user.UserNotActiveException;
 import fib.br10.mapper.UserMapper;
-import fib.br10.service.abstracts.CacheService;
+import fib.br10.service.abstracts.*;
 import fib.br10.utility.CacheKeys;
 import fib.br10.utility.JwtService;
 import lombok.AccessLevel;
@@ -49,7 +49,7 @@ public class AuthService {
     UserMapper userMapper;
     TokenService tokenService;
     SpecialistAvailabilityService specialistAvailabilityService;
-    SpecialityService specialityService;
+    SpecialityManager specialityService;
     UserDeviceService userDeviceService;
     RequestContextProvider provider;
     CacheService<String, Integer> cacheService;
@@ -58,8 +58,6 @@ public class AuthService {
 
     @Transactional
     public RegisterResponse register(RegisterRequest request) {
-        //username varsa phone numberde eynidise problem deyl amma ferqlidise xeta at
-        //user insert edirem deactive;
 //        validateUserNotBlocked(provider.getIpAddress());
 //        validateRateLimit(securityEnv.getAuthRateLimit().register(), CacheKeys.REGISTER_TRY_COUNT + provider.getIpAddress());
 
@@ -77,16 +75,11 @@ public class AuthService {
             specialityService.checkSpecialityExists(request.getSpecialityId());
         }
 
-//        if (Objects.isNull(user)) {
-//            //add cache
+
         CacheUser cacheUser = userService.addUserToCache(request);
-//        }
 
         CacheOtp cacheOtp = otpService.create(request.getPhoneNumber());
 
-//        if (isSpecialist) {
-//            registerSpecialist(request, user);
-//        }
 
         //TODO: send otp to phone number from sms
         return userMapper.userToRegisterResponse(new RegisterResponse(), cacheUser, cacheOtp.getOtp(), cacheOtp.getOtpExpireDate());
@@ -96,9 +89,7 @@ public class AuthService {
     public Token activateUserVerifyOtp(ActivateUserVerifyOtpRequest request) {
         CacheUser cacheUser = userService.findUserFromCache(request.getPhoneNumber());
 
-//        if (EntityStatus.ACTIVE.getValue().equals(user.getStatus())) {
-//            throw new BaseException("user already activated");
-//        }
+        userService.validateExistsByPhoneNumber(cacheUser.getPhoneNumber());
 
         otpService.verify(cacheUser.getPhoneNumber(), request.getOtp());
         User user = userMapper.cacheUserToEntity(cacheUser);
@@ -238,7 +229,6 @@ public class AuthService {
         if (limitation.maxAllowedAttemps().equals(loginCount)) {
             throw new BaseException("qaqa besdi dahaa poxunu cixartma");
         }
-        //TODO: null olanda artirirmi baxmaq lazimdi
         cacheService.increment(key);
     }
 }

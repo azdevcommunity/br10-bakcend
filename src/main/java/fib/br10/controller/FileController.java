@@ -3,8 +3,9 @@ package fib.br10.controller;
 
 import fib.br10.core.service.RequestContextProvider;
 
-import fib.br10.service.ImageService;
+import fib.br10.service.ImageServiceImpl;
 import fib.br10.service.abstracts.FileService;
+import fib.br10.service.abstracts.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.validation.annotation.Validated;

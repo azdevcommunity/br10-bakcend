@@ -6,9 +6,7 @@ import fib.br10.core.entity.EntityStatus;
 import fib.br10.core.exception.BaseException;
 import fib.br10.core.service.RequestContextProvider;
 import fib.br10.core.utility.DateUtil;
-import fib.br10.core.utility.RequestContext;
 import fib.br10.dto.customer.response.ReadReservationsResponse;
-import fib.br10.dto.customer.response.ReservationServiceResponse;
 import fib.br10.dto.specialist.specialistprofile.request.BlockCustomerRequest;
 import fib.br10.dto.specialist.specialistprofile.request.UnBlockCustomerRequest;
 import fib.br10.dto.specialist.specialistprofile.response.SpecialistBlockedCustomerResponse;
@@ -18,11 +16,11 @@ import fib.br10.entity.specialist.QSpecialistBlockedCustomer;
 import fib.br10.entity.specialist.QSpecialistService;
 import fib.br10.entity.specialist.SpecialistBlockedCustomer;
 import fib.br10.entity.user.QUser;
-import fib.br10.entity.user.User;
 import fib.br10.exception.user.BlockedCustomerNotFoundException;
 import fib.br10.exception.user.CustomerAlreadyBlockedException;
 import fib.br10.exception.user.CustomerBlockedBySpecialistException;
 import fib.br10.repository.SpecialistBlockedCustomerRepository;
+import fib.br10.service.abstracts.SpecialistCustomerService;
 import fib.br10.utility.PaginationUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -30,9 +28,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.*;
@@ -44,7 +40,7 @@ import static fib.br10.utility.CacheKeys.SPECIALIST_BLOCKED_CUSTOMERS;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class SpecialistBlockedCustomerService {
+public class SpecialistCustomerServiceImpl implements SpecialistCustomerService {
     SpecialistBlockedCustomerRepository specialistBlockedCustomerRepository;
     JPAQueryFactory jpaQuery;
     RequestContextProvider provider;

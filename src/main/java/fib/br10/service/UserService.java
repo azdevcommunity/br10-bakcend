@@ -9,6 +9,7 @@ import fib.br10.exception.user.*;
 import fib.br10.mapper.UserMapper;
 import fib.br10.repository.UserRepository;
 import fib.br10.service.abstracts.CacheService;
+import fib.br10.service.abstracts.UserRoleService;
 import fib.br10.utility.CacheKeys;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -92,7 +93,6 @@ public class UserService implements UserDetailsService {
 //        userRoleService.addRoleToUser(user.getId(), RoleEnum.SPECIALIST);
         cacheService.put(CacheKeys.REGISTER_USER + request.getPhoneNumber(), cacheUser, 15, TimeUnit.MINUTES);
 
-//        return user;
         return cacheUser;
     }
 
@@ -143,5 +143,11 @@ public class UserService implements UserDetailsService {
 
     public boolean existsByPhoneNumber(String phoneNumber) {
         return userRepository.existsByPhoneNumber(phoneNumber);
+    }
+
+    public void validateExistsByPhoneNumber(String phoneNumber) {
+        if (userRepository.existsByPhoneNumber(phoneNumber)) {
+            throw new UserExistSamePhoneNumberException();
+        }
     }
 }

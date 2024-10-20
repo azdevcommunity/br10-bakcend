@@ -19,6 +19,8 @@ import fib.br10.exception.reservation.ReservationSpecialistUserIdNotMatchExcepti
 import fib.br10.mapper.ReservationMapper;
 import fib.br10.repository.ReservationDetailRepository;
 import fib.br10.repository.ReservationRepository;
+import fib.br10.service.abstracts.ReservationService;
+import fib.br10.service.abstracts.SpecialistCustomerService;
 import fib.br10.utility.Messages;
 import fib.br10.utility.WebSocketQueues;
 import fib.br10.service.abstracts.WebSocketHandler;
@@ -40,12 +42,12 @@ import java.util.stream.Collectors;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 @Log4j2
-public class ReservationService {
+public class ReservationServiceImpl implements ReservationService {
 
     ReservationRepository reservationRepository;
     ReservationMapper reservationMapper;
     SpecialistServiceManager specialistServiceManager;
-    SpecialistBlockedCustomerService specialistBlockedCustomerService;
+    SpecialistCustomerService specialistCustomerService;
     WebSocketHandler webSocketHandler;
     UserService userService;
     RequestContextProvider provider;
@@ -70,7 +72,7 @@ public class ReservationService {
 
         Reservation reservation = findById(request.getReservationId());
 
-        specialistBlockedCustomerService.checkIsCustomerBlocked(request.getSpecialistUserId(), request.getCustomerUserId());
+        specialistCustomerService.checkIsCustomerBlocked(request.getSpecialistUserId(), request.getCustomerUserId());
 
         SpecialistService service = specialistServiceManager.findById(request.getSpecialistServiceId());
 
@@ -238,40 +240,15 @@ public class ReservationService {
                 .map(ReservationResponse::getId)
                 .collect(Collectors.toList());
 
-        List<ReservationDetail> reservationDetails = reservationDetailRepository.findAllByReservationIdIn(reservationIds);
+        List<ReservationDetailResponse> reservationDetails = reservationDetailRepository.findAllReservationDetails(reservationIds);
 
-        List<Long> serviceIds = reservationDetails.stream()
-                .map(ReservationDetail::getServiceId)
-                .distinct()
-                .collect(Collectors.toList());
-
-        List<SpecialistService> specialists = specialistServiceManager.findAllByIds(serviceIds);
-
-        Map<Long, List<ReservationDetail>> reservationDetailsMap = reservationDetails.stream()
-                .collect(Collectors.groupingBy(ReservationDetail::getReservationId));
-
-        Map<Long, SpecialistService> servicesMap = specialists.stream()
-                .collect(Collectors.toMap(SpecialistService::getId, service -> service));
+        Map<Long, List<ReservationDetailResponse>> reservationDetailsMap = reservationDetails.stream()
+                .collect(Collectors.groupingBy(ReservationDetailResponse::getReservationId));
 
         reservations.parallelStream().forEach(reservation -> {
-            List<ReservationDetail> details = reservationDetailsMap.get(reservation.getId());
-            List<ReservationDetailResponse> detailResponses = new ArrayList<>();
-            if (Objects.nonNull(details)) {
-                details.forEach(detail -> {
-                    SpecialistService service = servicesMap.get(detail.getServiceId());
-                    if (Objects.nonNull(service)) {
-                        detailResponses.add(ReservationDetailResponse.builder()
-                                .id(detail.getId())
-                                .serviceName(service.getName())
-                                .duration(service.getDuration())
-                                .serviceId(service.getId())
-                                .reservationId(reservation.getId())
-                                .price(detail.getPrice())
-                                .build());
-                    }
-                });
-            }
-            reservation.setReservationDetail(detailResponses);
+            List<ReservationDetailResponse> details = reservationDetailsMap.get(reservation.getId());
+
+            reservation.setReservationDetail(details);
         });
 
         return reservations;

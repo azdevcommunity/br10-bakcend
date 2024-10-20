@@ -5,7 +5,7 @@ import fib.br10.dto.customer.response.ReadReservationsResponse;
 import fib.br10.dto.specialist.specialistprofile.request.BlockCustomerRequest;
 import fib.br10.dto.specialist.specialistprofile.request.UnBlockCustomerRequest;
 import fib.br10.dto.specialist.specialistprofile.response.SpecialistBlockedCustomerResponse;
-import fib.br10.service.SpecialistBlockedCustomerService;
+import fib.br10.service.SpecialistCustomerServiceImpl;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -27,25 +27,25 @@ import java.util.List;
 @Validated
 @PreAuthorize("hasRole('SPECIALIST')")
 public class SpecialistCustomerController {
-    SpecialistBlockedCustomerService specialistBlockedCustomerService;
+    SpecialistCustomerServiceImpl specialistCustomerService;
     RequestContextProvider provider;
 
     @PutMapping("/block")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<SpecialistBlockedCustomerResponse> blockCustomer(@RequestBody @Valid BlockCustomerRequest request) {
-        return ResponseEntity.ok(specialistBlockedCustomerService.blockCustomer(request, provider.getUserId()));
+        return ResponseEntity.ok(specialistCustomerService.blockCustomer(request, provider.getUserId()));
     }
 
     @GetMapping("/blocked-customers")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<SpecialistBlockedCustomerResponse>> getBlockedCustomers() {
-        return ResponseEntity.ok(specialistBlockedCustomerService.getBlockedCustomers(provider.getUserId()));
+        return ResponseEntity.ok(specialistCustomerService.getBlockedCustomers(provider.getUserId()));
     }
 
     @PutMapping("/unblock")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<SpecialistBlockedCustomerResponse> unblockCustomer(@RequestBody @Valid UnBlockCustomerRequest request) {
-        return ResponseEntity.ok(specialistBlockedCustomerService.unblockCustomer(request, provider.getUserId()));
+        return ResponseEntity.ok(specialistCustomerService.unblockCustomer(request, provider.getUserId()));
     }
 
     @PreAuthorize("permitAll()")
@@ -54,7 +54,7 @@ public class SpecialistCustomerController {
             @RequestParam(value = "pageSize", required = false) Long pageSize,
             @RequestParam(value = "pageNumber", required = false) Long pageNumber,
             @RequestParam(value = "reservationDate", required = false) LocalDateTime reservationDate) {
-        return ResponseEntity.ok(specialistBlockedCustomerService.findAllReservations(pageSize, pageNumber, reservationDate));
+        return ResponseEntity.ok(specialistCustomerService.findAllReservations(pageSize, pageNumber, reservationDate));
     }
 }
 

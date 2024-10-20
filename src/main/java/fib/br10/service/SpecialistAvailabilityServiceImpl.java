@@ -9,6 +9,7 @@ import fib.br10.dto.specialist.specialistavailability.response.SpecialistAvailab
 import fib.br10.entity.specialist.SpecialistAvailability;
 import fib.br10.mapper.SpecialistAvailabilityMapper;
 import fib.br10.repository.SpecialistAvailabilityRepository;
+import fib.br10.service.abstracts.SpecialistAvailabilityService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -21,7 +22,7 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class SpecialistAvailabilityService {
+public class SpecialistAvailabilityServiceImpl implements SpecialistAvailabilityService {
 
     SpecialistAvailabilityRepository specialistAvailabilityRepository;
     SpecialistAvailabilityMapper specialistAvailabilityMapper;

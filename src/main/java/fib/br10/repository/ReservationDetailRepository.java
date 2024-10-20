@@ -1,13 +1,25 @@
 package fib.br10.repository;
 
+import fib.br10.dto.reservation.response.ReservationDetailResponse;
 import fib.br10.entity.reservation.ReservationDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ReservationDetailRepository extends JpaRepository<ReservationDetail,Long> {
     List<ReservationDetail> findByReservationId(Long reservationId);
 
-    List<ReservationDetail> findAllByReservationIdIn(List<Long> reservationIds);
+    @Query("""
+                    select new fib.br10.dto.reservation.response.ReservationDetailResponse(
+                    r.id,
+                    r.reservationId,
+                    r.serviceId,
+                    r.duration,
+                    r.price,
+                    ss.name )
+                    from ReservationDetail r
+                    left join SpecialistService  ss on r.serviceId = ss.id
+            """)
+    List<ReservationDetailResponse> findAllReservationDetails(List<Long> reservationIds);
 }
