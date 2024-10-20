@@ -5,6 +5,8 @@ import fib.br10.dto.notification.PushNotificationRequest;
 import fib.br10.entity.Notification;
 import fib.br10.exception.notification.NotificationException;
 import fib.br10.repository.NotificationRepository;
+import fib.br10.service.abstracts.FcmTokenService;
+import fib.br10.service.abstracts.NotificationService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.Async;
@@ -16,7 +18,7 @@ import java.util.Objects;
 @Service
 @Log4j2
 @AllArgsConstructor
-public class NotificationService {
+public class NotificationServiceImpl implements NotificationService {
 
     private final FirebaseMessaging firebaseMessaging;
     private final FcmTokenService fcmTokenService;

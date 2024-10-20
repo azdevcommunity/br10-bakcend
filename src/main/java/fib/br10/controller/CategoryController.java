@@ -5,7 +5,7 @@ import fib.br10.core.service.RequestContextProvider;
 import fib.br10.dto.category.request.CreateCategoryRequest;
 import fib.br10.dto.category.request.UpdateCategoryRequest;
 import fib.br10.dto.category.response.CategoryResponse;
-import fib.br10.service.CategoryService;
+import fib.br10.service.abstracts.CategoryService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

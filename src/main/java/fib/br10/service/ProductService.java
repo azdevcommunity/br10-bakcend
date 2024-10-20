@@ -14,6 +14,8 @@ import fib.br10.exception.product.ProductExistsSameNameException;
 import fib.br10.exception.product.ProductNotFoundException;
 import fib.br10.mapper.ProductMapper;
 import fib.br10.repository.ProductRepository;
+import fib.br10.service.abstracts.CategoryService;
+import fib.br10.service.abstracts.ImageService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

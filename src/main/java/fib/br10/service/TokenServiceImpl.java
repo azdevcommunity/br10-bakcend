@@ -8,6 +8,7 @@ import fib.br10.core.utility.DateUtil;
 import fib.br10.dto.userdevice.request.UserDeviceDto;
 import fib.br10.exception.token.InvalidJWTClaimException;
 import fib.br10.exception.token.JWTExpiredException;
+import fib.br10.service.abstracts.TokenService;
 import fib.br10.utility.JwtService;
 import fib.br10.core.utility.RandomUtil;
 import fib.br10.dto.cache.CacheToken;
@@ -34,7 +35,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class TokenService {
+public class TokenServiceImpl implements TokenService {
 
     UserMapper userMapper;
     JwtService jwtService;
@@ -73,7 +74,6 @@ public class TokenService {
         cacheService.put(PrefixUtil.TOKEN + userId + "_" + tokenId, cacheToken, expiration, TimeUnit.SECONDS);
     }
 
-
     public boolean checkTokenExistsOnBlackList(String jwt) {
         final Integer userId = jwtService.extractClaim(jwt, ClaimTypes.USER_ID);
         final Integer tokenId = jwtService.extractClaim(jwt, ClaimTypes.TOKEN_ID);
@@ -90,7 +90,6 @@ public class TokenService {
             throw new JWTExpiredException();
         }
     }
-
 
     public Token get(User user, Map<String, Object> claims) {
         UserDetailModel userDetailModel = userMapper.userToUserDetails(new UserDetailModel(), user);

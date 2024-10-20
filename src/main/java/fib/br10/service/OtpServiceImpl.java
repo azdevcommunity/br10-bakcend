@@ -11,6 +11,7 @@ import fib.br10.exception.auth.OtpNotFoundException;
 import fib.br10.exception.auth.OtpNotalidException;
 import fib.br10.exception.auth.OtpRequiredException;
 import fib.br10.service.abstracts.CacheService;
+import fib.br10.service.abstracts.OtpService;
 import fib.br10.utility.PrefixUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 @Log4j2
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class OtpService {
+public class OtpServiceImpl implements OtpService {
 
     CacheService<String, Object> cacheService;
     RequestContextProvider provider;

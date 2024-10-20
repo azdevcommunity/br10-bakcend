@@ -16,7 +16,9 @@ import fib.br10.exception.specialist.specialistprofile.SpecialistProfileAlreadyE
 import fib.br10.exception.specialist.specialistprofile.SpecialistProfileNotFoundException;
 import fib.br10.mapper.SpecialistProfileMapper;
 import fib.br10.repository.SpecialistProfileRepository;
-import fib.br10.utility.LangEnum;
+import fib.br10.service.abstracts.ImageService;
+import fib.br10.service.abstracts.SpecialityManager;
+import fib.br10.enumeration.LangEnum;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -43,7 +45,7 @@ public class SpecialistProfileService {
     UserService userService;
     SpecialistProfileRepository specialistProfileRepository;
     SpecialistProfileMapper specialistProfileMapper;
-    SpecialityService specialityService;
+    SpecialityManager specialityService;
     ImageService imageService;
     RequestContextProvider provider;
 

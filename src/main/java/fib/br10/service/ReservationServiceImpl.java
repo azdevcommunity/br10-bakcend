@@ -19,6 +19,8 @@ import fib.br10.exception.reservation.ReservationSpecialistUserIdNotMatchExcepti
 import fib.br10.mapper.ReservationMapper;
 import fib.br10.repository.ReservationDetailRepository;
 import fib.br10.repository.ReservationRepository;
+import fib.br10.service.abstracts.ReservationService;
+import fib.br10.service.abstracts.SpecialistCustomerService;
 import fib.br10.utility.Messages;
 import fib.br10.utility.WebSocketQueues;
 import fib.br10.service.abstracts.WebSocketHandler;
@@ -40,12 +42,12 @@ import java.util.stream.Collectors;
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 @Log4j2
-public class ReservationService {
+public class ReservationServiceImpl implements ReservationService {
 
     ReservationRepository reservationRepository;
     ReservationMapper reservationMapper;
     SpecialistServiceManager specialistServiceManager;
-    SpecialistBlockedCustomerService specialistBlockedCustomerService;
+    SpecialistCustomerService specialistCustomerService;
     WebSocketHandler webSocketHandler;
     UserService userService;
     RequestContextProvider provider;
@@ -70,7 +72,7 @@ public class ReservationService {
 
         Reservation reservation = findById(request.getReservationId());
 
-        specialistBlockedCustomerService.checkIsCustomerBlocked(request.getSpecialistUserId(), request.getCustomerUserId());
+        specialistCustomerService.checkIsCustomerBlocked(request.getSpecialistUserId(), request.getCustomerUserId());
 
         SpecialistService service = specialistServiceManager.findById(request.getSpecialistServiceId());
 

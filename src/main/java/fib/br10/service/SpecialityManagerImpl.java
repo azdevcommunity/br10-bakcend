@@ -11,6 +11,7 @@ import fib.br10.exception.speciality.SpecialityNotFoundException;
 import fib.br10.mapper.SpecialityMapper;
 import fib.br10.repository.SpecialistProfileRepository;
 import fib.br10.repository.SpecialityRepository;
+import fib.br10.service.abstracts.SpecialityManager;
 import fib.br10.utility.SpecialityUtil;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -30,7 +31,7 @@ import static fib.br10.utility.CacheKeys.SPECIALITIES;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class SpecialityService {
+public class SpecialityManagerImpl implements SpecialityManager {
 
     SpecialistProfileRepository specialistProfileRepository;
     SpecialityRepository specialityRepository;
