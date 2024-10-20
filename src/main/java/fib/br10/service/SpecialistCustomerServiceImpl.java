@@ -54,18 +54,7 @@ public class SpecialistCustomerServiceImpl implements SpecialistCustomerService 
 
         specialistBlockedCustomerRepository.delete(blockedCustomer);
 
-        QSpecialistBlockedCustomer spc = QSpecialistBlockedCustomer.specialistBlockedCustomer;
-        QUser user = QUser.user;
-
-        return jpaQuery.select(Projections.constructor(
-                        SpecialistBlockedCustomerResponse.class,
-                        user.id, user.username, user.phoneNumber, spc.createdDate))
-                .from(spc)
-                .innerJoin(user).on(user.id.eq(spc.customerUserId))
-                .where(spc.specialistUserId.eq(userId)
-                        .and(spc.customerUserId.eq(blockedCustomer.getCustomerUserId()))
-                        .and(spc.status.eq(EntityStatus.ACTIVE.getValue())))
-                .fetchFirst();
+        return getSpecialistBlockedCustomerResponse(userId, blockedCustomer);
     }
 
     @Cacheable(value = SPECIALIST_BLOCKED_CUSTOMERS, key = "#userId")
@@ -97,18 +86,7 @@ public class SpecialistCustomerServiceImpl implements SpecialistCustomerService 
 
         specialistBlockedCustomer = specialistBlockedCustomerRepository.save(specialistBlockedCustomer);
 
-        QSpecialistBlockedCustomer spc = QSpecialistBlockedCustomer.specialistBlockedCustomer;
-        QUser user = QUser.user;
-
-        return jpaQuery.select(Projections.constructor(
-                        SpecialistBlockedCustomerResponse.class,
-                        user.id, user.username, user.phoneNumber, spc.createdDate))
-                .from(spc)
-                .innerJoin(user).on(user.id.eq(spc.customerUserId))
-                .where(spc.specialistUserId.eq(userId)
-                        .and(spc.customerUserId.eq(specialistBlockedCustomer.getCustomerUserId()))
-                        .and(spc.status.eq(EntityStatus.ACTIVE.getValue())))
-                .fetchFirst();
+        return getSpecialistBlockedCustomerResponse(userId, specialistBlockedCustomer);
     }
 
     public SpecialistBlockedCustomer findByCustomerUserIdAndSpecialistId(Long customerUserId, Long specialistUserId) {
@@ -189,4 +167,18 @@ public class SpecialistCustomerServiceImpl implements SpecialistCustomerService 
         }
     }
 
+    private SpecialistBlockedCustomerResponse getSpecialistBlockedCustomerResponse(Long userId, SpecialistBlockedCustomer blockedCustomer) {
+        QSpecialistBlockedCustomer spc = QSpecialistBlockedCustomer.specialistBlockedCustomer;
+        QUser user = QUser.user;
+
+        return jpaQuery.select(Projections.constructor(
+                        SpecialistBlockedCustomerResponse.class,
+                        user.id, user.username, user.phoneNumber, spc.createdDate))
+                .from(spc)
+                .innerJoin(user).on(user.id.eq(spc.customerUserId))
+                .where(spc.specialistUserId.eq(userId)
+                        .and(spc.customerUserId.eq(blockedCustomer.getCustomerUserId()))
+                        .and(spc.status.eq(EntityStatus.ACTIVE.getValue())))
+                .fetchFirst();
+    }
 }
