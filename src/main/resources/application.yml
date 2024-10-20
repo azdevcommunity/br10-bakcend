@@ -78,14 +78,11 @@ security:
     jwt-expiration: ${BR10_JWT_EXPIRATION:86400000}
   endpoint-white-list:
     - /auth/**
-    - /auth/login
     - /ws/**
-    - /v3/api-docs/**
     - /swagger-ui/**
     - /actuator/**
     - /app/**
     - /specialities/**
-    - /swagger/**
   endpoint-black-list:
     - /auth/logout
 decorator:
@@ -97,24 +94,13 @@ decorator:
 
 log-level: info
 
-logging:
-  level:
-    org:
-      springdoc: DEBUG
-      springframework:
-        security: ${log-level}
-        web: ${log-level}
-        data: ${log-level}
-        hibernate: ${log-level}
-        jpa: ${log-level}
-        thymeleaf: ${log-level}
-        springdoc: ${log-level}
 
 springdoc:
   api-docs:
     enabled: true
-    path: /v3/api-docs
+    path: /swagger-ui/api-docs
+
   swagger-ui:
-    url: /v3/api-docs
+    url: /swagger-ui/api-docs
     disable-swagger-default-url: true
     enabled: true

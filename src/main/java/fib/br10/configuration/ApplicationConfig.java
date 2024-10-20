@@ -33,7 +33,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @EnableAsync
-public class ApplicationBeanConfiguration {
+public class ApplicationConfig {
 
     SpecialityRepository specialityRepository;
     UserRepository userRepository;

@@ -1,14 +1,10 @@
 package fib.br10.configuration;
 
 import fib.br10.core.utility.EnvironmentUtil;
-import fib.br10.entity.user.RoleEnum;
 import fib.br10.middleware.JwtAuthenticationFilter;
-import fib.br10.utility.Messages;
-import fib.br10.utility.PrefixUtil;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -27,7 +23,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -37,7 +32,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @RequiredArgsConstructor
 @EnableMethodSecurity
 @EnableConfigurationProperties(SecurityEnv.class)
-public class SecurityConfiguration {
+public class SecurityConfig {
 
     private final SecurityEnv securityEnv;
     private final JwtAuthenticationFilter jwtAuthFilter;

@@ -12,7 +12,7 @@ import static fib.br10.utility.CloudinaryKeys.API_KEY;
 import static fib.br10.utility.CloudinaryKeys.API_SECRET;
 
 @Configuration
-public class CloudinaryConfiguration {
+public class CloudinaryConfig{
 
     @Value("${cloudinary.cloud-name}")
     private String cloudName;
