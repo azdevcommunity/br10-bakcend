@@ -11,5 +11,6 @@ public interface NotificationService {
      void sendAll(List<String> tokens, String body, String title) ;
 
      void send(PushNotificationRequest request) ;
+     void send(PushNotificationRequest request, Long userId) ;
 
 }
