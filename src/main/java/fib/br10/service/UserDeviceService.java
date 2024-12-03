@@ -55,4 +55,8 @@ public class UserDeviceService {
     public UserDevice finById(Long id) {
         return userDeviceRepository.findById(id).orElseThrow(BaseException::new);
     }
+
+    public UserDevice finByDeviceId(Long id) {
+        return userDeviceRepository.findById(id).orElseThrow(BaseException::new);
+    }
 }

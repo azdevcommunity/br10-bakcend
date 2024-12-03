@@ -109,10 +109,10 @@ public class AuthService {
     }
 
     public OtpResponse getOtp(GetOtpRequest request) {
-        boolean userExists = userService.existsByPhoneNumber(request.getPhoneNumber());
+//        boolean userExists = userService.existsByPhoneNumber(request.getPhoneNumber());
         CacheUser cacheUser = userService.findUserFromCache(request.getPhoneNumber());
 
-        if (!userExists || Objects.isNull(cacheUser)) {
+        if (Objects.isNull(cacheUser)) {
             throw new BaseException("Bu nomre sistemde movcud deyil");
         }
 
@@ -197,7 +197,7 @@ public class AuthService {
 
         tokenService.addTokenToBlackList(request.getRefreshToken());
 
-        Long deviceId = jwtService.extractClaim(request.getRefreshToken(), ClaimTypes.TOKEN_ID);
+        Long deviceId = Integer.toUnsignedLong(jwtService.extractClaim(request.getRefreshToken(), ClaimTypes.DEVICE_ID));
 
         UserDeviceDto userDeviceDto = userDeviceService.getUserDevice(deviceId);
 
