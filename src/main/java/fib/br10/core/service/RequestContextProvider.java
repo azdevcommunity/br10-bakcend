@@ -10,6 +10,7 @@ public interface RequestContextProvider {
      RequestState getRequestState();
 
      Long getUserId();
+     String getAuthorizationHeader();
 
      String getActivityId();
 
@@ -30,6 +31,8 @@ public interface RequestContextProvider {
      void setIpAddress(String ipAddress);
 
      void setLang(String lang);
+
+     void setAuthorizationHeader(String token);
 
      void setUserId(Long userId);
 

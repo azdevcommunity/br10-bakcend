@@ -4,14 +4,14 @@ package fib.br10.middleware;
 import com.fasterxml.jackson.core.JsonEncoding;
 import fib.br10.core.dto.ResponseWrapper;
 import fib.br10.core.exception.BaseException;
-import fib.br10.core.exception.NotFoundException;
 import fib.br10.core.service.RequestContextProvider;
 import fib.br10.core.utility.JsonSerializer;
-import fib.br10.exception.token.InvalidJWTClaimException;
-import fib.br10.exception.token.JWTRequiredException;
-import fib.br10.utility.JwtService;
 import fib.br10.core.utility.Localization;
+import fib.br10.core.utility.RequestContext;
+import fib.br10.core.utility.RequestContextEnum;
+import fib.br10.exception.token.JWTRequiredException;
 import fib.br10.service.TokenService;
+import fib.br10.utility.JwtService;
 import fib.br10.utility.Messages;
 import fib.br10.utility.SecurityUtil;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -19,6 +19,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Locale;
+import java.util.Objects;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -31,10 +34,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import java.io.IOException;
-import java.util.Locale;
-import java.util.Objects;
 
 
 @Log4j2
@@ -83,6 +82,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         userDetails, null, userDetails.getAuthorities()
                 );
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                RequestContext.set(RequestContextEnum.AUTHORIZATION_HEADER, jwt);
+                provider.setAuthorizationHeader(jwt);
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
             filterChain.doFilter(request, response);

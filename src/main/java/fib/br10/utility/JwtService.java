@@ -4,25 +4,26 @@ import fib.br10.configuration.SecurityEnv;
 import fib.br10.core.utility.DateUtil;
 import fib.br10.exception.token.InvalidJWTClaimException;
 import fib.br10.exception.token.JWTExpiredException;
-import fib.br10.exception.token.JWTRequiredException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
-
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class JwtService {
@@ -32,7 +33,7 @@ public class JwtService {
     public String extractUsername(String token) {
         String phoneNumber = extractClaim(token, Claims::getSubject);
 
-        if(Objects.isNull(phoneNumber)) {
+        if (Objects.isNull(phoneNumber)) {
             throw new InvalidJWTClaimException();
         }
 
@@ -90,15 +91,19 @@ public class JwtService {
     public String extractJwtFromRequest(HttpServletRequest request) {
         String jwt = request.getHeader("Authorization");
 
-        if(ObjectUtils.isEmpty(jwt)) {
-            return null;
-        }
-
-        if (jwt.startsWith("Bearer ")) {
+        if (!ObjectUtils.isEmpty(jwt) && jwt.startsWith("Bearer ")) {
             return jwt.substring(7);
         }
 
-        return jwt;
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("accessToken".equals(cookie.getName()) && (cookie.getValue() != null || !cookie.getValue().isBlank())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+
+        return null;
     }
 
     public Claims extractAllClaims(String token) {

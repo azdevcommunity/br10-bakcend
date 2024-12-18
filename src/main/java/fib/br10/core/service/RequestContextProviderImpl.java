@@ -5,17 +5,7 @@ import fib.br10.core.utility.RequestContext;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-
-import static fib.br10.core.utility.RequestContextEnum.ACTIVITY_ID;
-import static fib.br10.core.utility.RequestContextEnum.CLIENT_IP;
-import static fib.br10.core.utility.RequestContextEnum.IS_PUBLIC_ENDPOINT;
-import static fib.br10.core.utility.RequestContextEnum.JWT_EXPIRATION;
-import static fib.br10.core.utility.RequestContextEnum.LANG;
-import static fib.br10.core.utility.RequestContextEnum.PHONE_NUMBER;
-import static fib.br10.core.utility.RequestContextEnum.REQUEST_PATH;
-import static fib.br10.core.utility.RequestContextEnum.TIME_ZONE;
-import static fib.br10.core.utility.RequestContextEnum.TOKEN_ID;
-import static fib.br10.core.utility.RequestContextEnum.USER_ID;
+import static fib.br10.core.utility.RequestContextEnum.*;
 
 @Service
 public class RequestContextProviderImpl implements RequestContextProvider {
@@ -59,6 +49,11 @@ public class RequestContextProviderImpl implements RequestContextProvider {
     }
 
     @Override
+    public String getAuthorizationHeader() {
+        return RequestContext.get(AUTHORIZATION_HEADER, String.class);
+    }
+
+    @Override
     public Boolean getIsPublicEndpoint() {
         return RequestContext.get(IS_PUBLIC_ENDPOINT,Boolean.class);
     }
@@ -81,6 +76,11 @@ public class RequestContextProviderImpl implements RequestContextProvider {
     @Override
     public void setLang(String lang) {
         RequestContext.set(LANG,lang);
+    }
+
+    @Override
+    public void setAuthorizationHeader(String token) {
+        RequestContext.set(AUTHORIZATION_HEADER, token);
     }
 
     @Override

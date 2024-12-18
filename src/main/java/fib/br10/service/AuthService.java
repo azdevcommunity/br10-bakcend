@@ -6,8 +6,16 @@ import fib.br10.core.dto.UserDetailModel;
 import fib.br10.core.entity.EntityStatus;
 import fib.br10.core.exception.BaseException;
 import fib.br10.core.service.RequestContextProvider;
-import fib.br10.core.utility.*;
-import fib.br10.dto.auth.request.*;
+import fib.br10.core.utility.ClaimTypes;
+import fib.br10.core.utility.DateUtil;
+import fib.br10.core.utility.EncryptionUtil;
+import fib.br10.dto.auth.request.ActivateUserVerifyOtpRequest;
+import fib.br10.dto.auth.request.GetOtpRequest;
+import fib.br10.dto.auth.request.LoginRequest;
+import fib.br10.dto.auth.request.RefreshTokenRequest;
+import fib.br10.dto.auth.request.RegisterRequest;
+import fib.br10.dto.auth.request.ResetPasswordRequest;
+import fib.br10.dto.auth.request.VerifyOtpRequest;
 import fib.br10.dto.auth.response.OtpResponse;
 import fib.br10.dto.auth.response.RegisterResponse;
 import fib.br10.dto.cache.CacheOtp;
@@ -20,22 +28,26 @@ import fib.br10.enumeration.RegisterType;
 import fib.br10.exception.auth.ConfirmPasswordNotMatchException;
 import fib.br10.exception.token.DecryptException;
 import fib.br10.exception.token.EncryptException;
+import fib.br10.exception.token.JWTRequiredException;
 import fib.br10.exception.token.TokenNotValidException;
 import fib.br10.exception.user.UserNotActiveException;
 import fib.br10.mapper.UserMapper;
 import fib.br10.service.abstracts.CacheService;
 import fib.br10.utility.CacheKeys;
 import fib.br10.utility.JwtService;
+import fib.br10.utility.Messages;
+import jakarta.servlet.http.HttpServletResponse;
+import java.time.OffsetDateTime;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.OffsetDateTime;
-import java.util.Objects;
-
+@Log4j2
 @Service
 @AllArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
@@ -63,9 +75,7 @@ public class AuthService {
 //        validateUserNotBlocked(provider.getIpAddress());
 //        validateRateLimit(securityEnv.getAuthRateLimit().register(), CacheKeys.REGISTER_TRY_COUNT + provider.getIpAddress());
 
-        userService.checkUserAlreadyExists(request.getUsername(),
-                request.getPhoneNumber()
-        );
+        userService.checkUserAlreadyExists(request.getUsername(), request.getPhoneNumber());
 
         if (!request.getPassword().equals(request.getConfirmPassword())) {
             throw new ConfirmPasswordNotMatchException();
@@ -79,7 +89,7 @@ public class AuthService {
 
 //        if (Objects.isNull(user)) {
 //            //add cache
-           CacheUser cacheUser = userService.addUserToCache(request);
+        CacheUser cacheUser = userService.addUserToCache(request);
 //        }
 
         CacheOtp cacheOtp = otpService.create(request.getPhoneNumber());
@@ -123,8 +133,36 @@ public class AuthService {
         return new OtpResponse(cacheOtp.getOtp(), cacheOtp.getOtpExpireDate());
     }
 
+    public User validateToken(String token) {
+
+        if (token == null || token.isBlank()) {
+            throw new JWTRequiredException();  // Handle missing token case
+        }
+
+        if (tokenService.checkTokenExistsOnBlackList(token)) {
+            throw new TokenNotValidException();
+        }
+
+        String phoneNumber = jwtService.extractUsername(token);
+        User user = userService.findByPhoneNumber(phoneNumber);
+
+        if (user == null || !user.getStatus().equals(EntityStatus.ACTIVE.getValue())) {
+            throw new UserNotActiveException();
+        }
+
+        UserDetails userDetails = userMapper.userToUserDetails(new UserDetailModel(), user);
+
+        jwtService.validateToken(token, userDetails);
+
+        if (jwtService.isTokenExpired(token)) {
+            throw new TokenNotValidException();
+        }
+
+        return user;
+    }
+
     @Transactional
-    public Token login(LoginRequest request) {
+    public Token login(LoginRequest request, HttpServletResponse response) {
 //        validateUserNotBlocked(provider.getIpAddress());
 //        validateRateLimit(securityEnv.getAuthRateLimit().login(), CacheKeys.LOGIN_TRY_COUNT + provider.getIpAddress());
 
@@ -143,8 +181,14 @@ public class AuthService {
         userDeviceDto.setUserId(user.getId());
         userDeviceDto = userDeviceService.update(userDeviceDto);
 
+        Token token = tokenService.get(user, userDeviceDto);
         //send notification to all user devices with  CompletableFuture.runAsync
-        return tokenService.get(user, userDeviceDto);
+        if (request.getUserDeviceDto().getClientType() == 1) {
+            tokenService.setTokensInCookie(response, token.getAccessToken(), token.getRefreshToken());
+            return null;
+        } else {
+            return token;
+        }
     }
 
     public String resetPasswordVerifyOtp(VerifyOtpRequest request) {
@@ -154,8 +198,7 @@ public class AuthService {
 
         String payload = user.getId() + "*" + DateUtil.getCurrentDateTime().plusMinutes(5);
 
-        String key = encryptionUtil.encrypt(payload)
-                .orElseThrow(EncryptException::new);
+        String key = encryptionUtil.encrypt(payload).orElseThrow(EncryptException::new);
 
         userService.save(user);
 
@@ -163,8 +206,7 @@ public class AuthService {
     }
 
     public Long resetPassword(ResetPasswordRequest request) {
-        String key = encryptionUtil.decrypt(request.getToken())
-                .orElseThrow(DecryptException::new);
+        String key = encryptionUtil.decrypt(request.getToken()).orElseThrow(DecryptException::new);
 
         String[] parts = key.split("\\*");
 
@@ -187,22 +229,38 @@ public class AuthService {
         return user.getId();
     }
 
-    public Token refreshToken(RefreshTokenRequest request) {
-        tokenService.validateTokenExistsOnBlackList(request.getRefreshToken());
+    public Token refreshToken(RefreshTokenRequest request, String refreshToken) {
 
-        String phoneNumber = jwtService.extractUsername(request.getRefreshToken());
+        log.info("token of request dto: {}",request);
+        log.info("token of cookie: {}",refreshToken);
+
+        String token;
+
+        if (request != null && (request.getRefreshToken() != null && !request.getRefreshToken().isBlank())) {
+            token  = request.getRefreshToken();
+        }else {
+            token = refreshToken;
+        }
+
+        if (token == null || token.isBlank()) {
+            throw new RuntimeException(Messages.REFRESH_TOKEN_REQUIRED);
+        }
+
+        tokenService.validateTokenExistsOnBlackList(token);
+
+        String phoneNumber = jwtService.extractUsername(token);
 
         User user = userService.findByPhoneNumber(phoneNumber);
 
         UserDetails userDetails = userMapper.userToUserDetails(new UserDetailModel(), user);
 
-        tokenService.validateToken(request.getRefreshToken(), userDetails);
+        tokenService.validateToken(token, userDetails);
 
-        tokenService.addTokenToBlackList(request.getRefreshToken());
+        tokenService.addTokenToBlackList(token);
 
-        Long deviceId = jwtService.extractClaim(request.getRefreshToken(), ClaimTypes.TOKEN_ID);
+        Integer deviceId = jwtService.extractClaim(token, ClaimTypes.TOKEN_ID);
 
-        UserDeviceDto userDeviceDto = userDeviceService.getUserDevice(deviceId);
+        UserDeviceDto userDeviceDto = userDeviceService.getUserDevice(Long.valueOf(deviceId));
 
         return tokenService.get(user, userDeviceDto);
     }
@@ -211,12 +269,14 @@ public class AuthService {
         tokenService.addTokenToBlackList();
     }
 
+    public void logout(HttpServletResponse response) {
+        tokenService.addTokenToBlackList();
+        tokenService.clearTokenFromCookie(response);
+    }
+
     @Transactional
     protected void registerSpecialist(Long specialistId, User user) {
-        specialistProfileService.create(CreateSpecialistProfileRequest.builder()
-                .specialistUserId(user.getId())
-                .specialityId(specialistId)
-                .build());
+        specialistProfileService.create(CreateSpecialistProfileRequest.builder().specialistUserId(user.getId()).specialityId(specialistId).build());
         specialistAvailabilityService.addWeekendAvailability(user.getId());
     }
 
