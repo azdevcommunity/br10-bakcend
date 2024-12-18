@@ -2,6 +2,7 @@ package fib.br10.service;
 
 import com.google.firebase.messaging.*;
 import fib.br10.dto.notification.PushNotificationRequest;
+import fib.br10.entity.FcmToken;
 import fib.br10.entity.Notification;
 import fib.br10.exception.notification.NotificationException;
 import fib.br10.repository.NotificationRepository;
@@ -60,6 +61,12 @@ public class NotificationServiceImpl implements NotificationService {
             handleSendException(e, request.getTargetToken());
             throw new NotificationException();
         }
+    }
+
+    @Async
+    public void send(PushNotificationRequest request, Long userId) {
+        List<String> fcmTokens = fcmTokenService.findAllTokensByUserId(userId);
+        sendAll(fcmTokens,request.getBody(),request.getTitle());
     }
 
 

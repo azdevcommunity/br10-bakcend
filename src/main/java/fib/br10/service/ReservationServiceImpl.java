@@ -5,6 +5,7 @@ import fib.br10.core.entity.EntityStatus;
 import fib.br10.core.exception.BaseException;
 import fib.br10.core.service.RequestContextProvider;
 import fib.br10.core.utility.DateUtil;
+import fib.br10.dto.notification.PushNotificationRequest;
 import fib.br10.dto.reservation.request.CancelReservationRequest;
 import fib.br10.dto.reservation.request.CreateReservationRequest;
 import fib.br10.dto.reservation.request.UpdateReservationRequest;
@@ -19,6 +20,7 @@ import fib.br10.exception.reservation.ReservationSpecialistUserIdNotMatchExcepti
 import fib.br10.mapper.ReservationMapper;
 import fib.br10.repository.ReservationDetailRepository;
 import fib.br10.repository.ReservationRepository;
+import fib.br10.service.abstracts.NotificationService;
 import fib.br10.service.abstracts.ReservationService;
 import fib.br10.service.abstracts.SpecialistCustomerService;
 import fib.br10.utility.Messages;
@@ -52,6 +54,7 @@ public class ReservationServiceImpl implements ReservationService {
     UserService userService;
     RequestContextProvider provider;
     ReservationDetailRepository reservationDetailRepository;
+    NotificationService notificationService;
 
     @Transactional
     public ReservationResponse updateReservation(UpdateReservationRequest request) {
@@ -215,6 +218,14 @@ public class ReservationServiceImpl implements ReservationService {
         webSocketHandler.publish(WebSocketQueues.RESERVATION_CANCELED,
                 new ReservationResponse(request.getReservationId()),
                 provider.getPhoneNumber()
+        );
+
+        notificationService.send(
+                PushNotificationRequest.builder()
+                        .body("Reservation legv edildi")
+                        .title("RESERVATION_CANCELED")
+                        .build(),
+                provider.getUserId()
         );
 
         //notifiation to customerUser

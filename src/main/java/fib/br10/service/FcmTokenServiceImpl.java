@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
@@ -26,5 +28,10 @@ public class FcmTokenServiceImpl implements FcmTokenService {
 
     public void delete(String token) {
         fcmTokenRepository.findByToken(token).ifPresent(fcmTokenRepository::delete);
+    }
+
+    @Override
+    public List<String> findAllTokensByUserId(Long userId) {
+        return fcmTokenRepository.findAllByUserId(userId).stream().map(FcmToken::getToken).toList();
     }
 }
