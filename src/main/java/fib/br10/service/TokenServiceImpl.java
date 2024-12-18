@@ -5,32 +5,29 @@ import fib.br10.core.dto.UserDetailModel;
 import fib.br10.core.service.RequestContextProvider;
 import fib.br10.core.utility.ClaimTypes;
 import fib.br10.core.utility.DateUtil;
-import fib.br10.dto.userdevice.request.UserDeviceDto;
-import fib.br10.exception.token.InvalidJWTClaimException;
-import fib.br10.exception.token.JWTExpiredException;
-import fib.br10.service.abstracts.TokenService;
-import fib.br10.utility.JwtService;
 import fib.br10.core.utility.RandomUtil;
 import fib.br10.dto.cache.CacheToken;
 import fib.br10.dto.cache.TokenType;
+import fib.br10.dto.userdevice.request.UserDeviceDto;
 import fib.br10.entity.user.User;
+import fib.br10.exception.token.InvalidJWTClaimException;
+import fib.br10.exception.token.JWTExpiredException;
 import fib.br10.mapper.UserMapper;
 import fib.br10.service.abstracts.CacheService;
+import fib.br10.service.abstracts.TokenService;
+import fib.br10.utility.JwtService;
 import fib.br10.utility.PrefixUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-
-
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -101,6 +98,7 @@ public class TokenServiceImpl implements TokenService {
         Map<String, Object> refreshClaims = new HashMap<>();
         refreshClaims.put(ClaimTypes.TOKEN_ID, RandomUtil.randomInt(100000, 999999));
         refreshClaims.put(ClaimTypes.USER_ID, user.getId());
+        refreshClaims.put(ClaimTypes.DEVICE_ID, claims.get(ClaimTypes.DEVICE_ID));
 
         return Token.builder()
                 .accessToken(jwtService.generateToken(claims, userDetailModel))
