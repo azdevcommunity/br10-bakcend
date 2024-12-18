@@ -2,10 +2,8 @@ package fib.br10.middleware;
 
 import fib.br10.core.dto.ResponseWrapper;
 import fib.br10.core.exception.BaseException;
-import fib.br10.core.utility.EnvironmentUtil;
+import fib.br10.core.service.RequestContextProvider;
 import fib.br10.core.utility.Localization;
-import fib.br10.core.utility.RequestContextEnum;
-import fib.br10.core.utility.RequestContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -25,10 +23,10 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 @RequiredArgsConstructor
 @Log4j2
-public class  GlobalExceptionHandler {
+public class GlobalExceptionHandler {
 
     private final Localization localization;
-    private final EnvironmentUtil environmentUtil;
+    private final RequestContextProvider provider;
 
     @ExceptionHandler(BaseException.class)
     public ResponseEntity<ResponseWrapper<?>> handleBaseException(BaseException ex, WebRequest request) {
@@ -47,25 +45,24 @@ public class  GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ResponseWrapper<?>> handleValidationExceptions(MethodArgumentNotValidException ex, WebRequest request) {
-        logError(ex);
         return new ResponseEntity<>(handleValidationException(ex, request), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponseWrapper<?>> handleException(Exception ex, WebRequest request) {
-        logError(ex);
         return handleErrorResponse(ex, request, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private ResponseEntity<ResponseWrapper<?>> handleErrorResponse(Exception ex, WebRequest request, HttpStatus status) {
-
-        return new ResponseEntity<>(getResponseBody(ex.getMessage(), request.getLocale(), status), status);
+        return new ResponseEntity<>(getResponseBody(ex, request.getLocale(), status), status);
     }
 
-    private ResponseWrapper<?> getResponseBody(String code, Locale locale, HttpStatus status) {
+    private ResponseWrapper<?> getResponseBody(Exception exception, Locale locale, HttpStatus status) {
+        String message = localization.getMessageOrCode(exception.getMessage(), locale);
+        logExceptionDetails(exception,message);
         return ResponseWrapper.builder()
-                .activityId(RequestContext.get(RequestContextEnum.ACTIVITY_ID))
-                .message(localization.getMessageOrCode(code, locale))
+                .activityId(provider.getActivityId())
+                .message(message)
                 .code(status.value())
                 .build();
     }
@@ -77,14 +74,15 @@ public class  GlobalExceptionHandler {
                 .filter(Objects::nonNull)
                 .collect(Collectors.joining(", "));
 
+        logExceptionDetails(ex, message);
+
         return ResponseWrapper.builder()
                 .message(message)
                 .code(HttpStatus.BAD_REQUEST.value())
                 .build();
     }
 
-    private void logError(Exception ex) {
-        log.error(ex);
-        ex.printStackTrace();
+    private static void logExceptionDetails(Exception e, String message) {
+        log.error(message, e);
     }
 }

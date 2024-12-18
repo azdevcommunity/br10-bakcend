@@ -3,10 +3,10 @@ package fib.br10.controller;
 import fib.br10.dto.reservation.request.CancelReservationRequest;
 import fib.br10.dto.reservation.request.CreateReservationRequest;
 import fib.br10.dto.reservation.request.UpdateReservationRequest;
-import fib.br10.dto.reservation.response.ReservationListResponse;
 import fib.br10.dto.reservation.response.ReservationResponse;
+import fib.br10.service.abstracts.ReservationService;
 import jakarta.validation.Valid;
-import fib.br10.service.ReservationService;
+import fib.br10.service.ReservationServiceImpl;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -15,8 +15,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Controller
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)

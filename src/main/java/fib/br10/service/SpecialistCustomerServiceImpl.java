@@ -6,9 +6,7 @@ import fib.br10.core.entity.EntityStatus;
 import fib.br10.core.exception.BaseException;
 import fib.br10.core.service.RequestContextProvider;
 import fib.br10.core.utility.DateUtil;
-import fib.br10.core.utility.RequestContext;
 import fib.br10.dto.customer.response.ReadReservationsResponse;
-import fib.br10.dto.customer.response.ReservationServiceResponse;
 import fib.br10.dto.specialist.specialistprofile.request.BlockCustomerRequest;
 import fib.br10.dto.specialist.specialistprofile.request.UnBlockCustomerRequest;
 import fib.br10.dto.specialist.specialistprofile.response.SpecialistBlockedCustomerResponse;
@@ -18,20 +16,19 @@ import fib.br10.entity.specialist.QSpecialistBlockedCustomer;
 import fib.br10.entity.specialist.QSpecialistService;
 import fib.br10.entity.specialist.SpecialistBlockedCustomer;
 import fib.br10.entity.user.QUser;
-import fib.br10.entity.user.User;
 import fib.br10.exception.user.BlockedCustomerNotFoundException;
 import fib.br10.exception.user.CustomerAlreadyBlockedException;
 import fib.br10.exception.user.CustomerBlockedBySpecialistException;
 import fib.br10.repository.SpecialistBlockedCustomerRepository;
+import fib.br10.service.abstracts.SpecialistCustomerService;
+import fib.br10.utility.PaginationUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.*;
@@ -43,7 +40,7 @@ import static fib.br10.utility.CacheKeys.SPECIALIST_BLOCKED_CUSTOMERS;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class SpecialistBlockedCustomerService {
+public class SpecialistCustomerServiceImpl implements SpecialistCustomerService {
     SpecialistBlockedCustomerRepository specialistBlockedCustomerRepository;
     JPAQueryFactory jpaQuery;
     RequestContextProvider provider;
@@ -57,18 +54,7 @@ public class SpecialistBlockedCustomerService {
 
         specialistBlockedCustomerRepository.delete(blockedCustomer);
 
-        QSpecialistBlockedCustomer spc = QSpecialistBlockedCustomer.specialistBlockedCustomer;
-        QUser user = QUser.user;
-
-        return jpaQuery.select(Projections.constructor(
-                        SpecialistBlockedCustomerResponse.class,
-                        user.id, user.username, user.phoneNumber, spc.createdDate))
-                .from(spc)
-                .innerJoin(user).on(user.id.eq(spc.customerUserId))
-                .where(spc.specialistUserId.eq(userId)
-                        .and(spc.customerUserId.eq(blockedCustomer.getCustomerUserId()))
-                        .and(spc.status.eq(EntityStatus.ACTIVE.getValue())))
-                .fetchFirst();
+        return getSpecialistBlockedCustomerResponse(userId, blockedCustomer);
     }
 
     @Cacheable(value = SPECIALIST_BLOCKED_CUSTOMERS, key = "#userId")
@@ -100,18 +86,7 @@ public class SpecialistBlockedCustomerService {
 
         specialistBlockedCustomer = specialistBlockedCustomerRepository.save(specialistBlockedCustomer);
 
-        QSpecialistBlockedCustomer spc = QSpecialistBlockedCustomer.specialistBlockedCustomer;
-        QUser user = QUser.user;
-
-        return jpaQuery.select(Projections.constructor(
-                        SpecialistBlockedCustomerResponse.class,
-                        user.id, user.username, user.phoneNumber, spc.createdDate))
-                .from(spc)
-                .innerJoin(user).on(user.id.eq(spc.customerUserId))
-                .where(spc.specialistUserId.eq(userId)
-                        .and(spc.customerUserId.eq(specialistBlockedCustomer.getCustomerUserId()))
-                        .and(spc.status.eq(EntityStatus.ACTIVE.getValue())))
-                .fetchFirst();
+        return getSpecialistBlockedCustomerResponse(userId, specialistBlockedCustomer);
     }
 
     public SpecialistBlockedCustomer findByCustomerUserIdAndSpecialistId(Long customerUserId, Long specialistUserId) {
@@ -122,20 +97,19 @@ public class SpecialistBlockedCustomerService {
     }
 
 
-    public List<ReadReservationsResponse> findAllReservations(Long pageSize, Long pageCount, LocalDateTime reservationDate) {
+    public List<ReadReservationsResponse> findAllReservations(Long pageSize, Long pageNumber, LocalDateTime reservationDate) {
         QUser user = QUser.user;
         QReservation r = QReservation.reservation;
         QReservationDetail rd = QReservationDetail.reservationDetail;
         QSpecialistService ss = QSpecialistService.specialistService;
-        pageSize = Objects.isNull(pageSize) ? 10 : pageSize;
-        pageCount = Objects.isNull(pageCount) ? 10 : pageCount;
+
 
         OffsetDateTime startOfDay = DateUtil.toOffsetDateTime(reservationDate.toLocalDate().atStartOfDay());
         OffsetDateTime endOfDay = DateUtil.toOffsetDateTime(reservationDate
                 .toLocalDate()
                 .atStartOfDay()
-                .plusDays(1).minusSeconds(1)
-        );
+                .plusDays(1)
+                .minusSeconds(1));
 
         List<ReadReservationsResponse> reservations = jpaQuery.select(
                         Projections.constructor(ReadReservationsResponse.class,
@@ -154,8 +128,8 @@ public class SpecialistBlockedCustomerService {
                 .leftJoin(rd).on(rd.id.eq(r.id))
                 .where(r.customerUserId.eq(provider.getUserId())
                         .and(r.reservationDate.between(startOfDay, endOfDay)))
-                .limit(pageSize)
-                .offset(pageCount * pageSize)
+                .limit(PaginationUtil.getPageSize(pageSize))
+                .offset(PaginationUtil.getOffset(pageSize, pageNumber))
                 .orderBy(r.reservationDate.desc())
                 .fetch();
 
@@ -193,4 +167,18 @@ public class SpecialistBlockedCustomerService {
         }
     }
 
+    private SpecialistBlockedCustomerResponse getSpecialistBlockedCustomerResponse(Long userId, SpecialistBlockedCustomer blockedCustomer) {
+        QSpecialistBlockedCustomer spc = QSpecialistBlockedCustomer.specialistBlockedCustomer;
+        QUser user = QUser.user;
+
+        return jpaQuery.select(Projections.constructor(
+                        SpecialistBlockedCustomerResponse.class,
+                        user.id, user.username, user.phoneNumber, spc.createdDate))
+                .from(spc)
+                .innerJoin(user).on(user.id.eq(spc.customerUserId))
+                .where(spc.specialistUserId.eq(userId)
+                        .and(spc.customerUserId.eq(blockedCustomer.getCustomerUserId()))
+                        .and(spc.status.eq(EntityStatus.ACTIVE.getValue())))
+                .fetchFirst();
+    }
 }

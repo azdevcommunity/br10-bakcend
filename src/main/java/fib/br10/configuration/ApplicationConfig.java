@@ -33,7 +33,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @EnableAsync
-public class ApplicationBeanConfiguration {
+public class ApplicationConfig {
 
     SpecialityRepository specialityRepository;
     UserRepository userRepository;
@@ -42,17 +42,16 @@ public class ApplicationBeanConfiguration {
 
     @Bean
     public CommandLineRunner commandLineRunner() {
-        provider.setActivityId( RandomUtil.getUUIDAsString());
+        provider.setActivityId(RandomUtil.getUUIDAsString());
         return (args) -> {
-            if(!userRoleRepository.existsByRoleId(RoleEnum.ADMIN.getValue())){
-               final User user= User.builder()
+            if (!userRoleRepository.existsByRoleId(RoleEnum.ADMIN.getValue()) && !userRepository.existsByPhoneNumber("0551112211")) {
+                final User user = User.builder()
                         .phoneNumber("0551112211")
                         .name("admin")
                         .username("admin")
                         .password("admin")
                         .build();
                 userRepository.saveAndFlush(user);
-
             }
 
             if (specialityRepository.count() == 0) {

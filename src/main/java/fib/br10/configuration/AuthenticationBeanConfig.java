@@ -14,7 +14,7 @@ import org.springframework.util.AntPathMatcher;
 
 @Configuration
 @RequiredArgsConstructor
-public class AuthenticationBeanConfiguration {
+public class AuthenticationBeanConfig{
     private final UserDetailsService userDetailsService;
 
     @Bean

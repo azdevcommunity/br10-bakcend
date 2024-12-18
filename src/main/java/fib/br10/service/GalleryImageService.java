@@ -11,6 +11,7 @@ import fib.br10.exception.fileupload.ImageSaveException;
 import fib.br10.exception.galleryimage.GalleryImageNotFoundException;
 import fib.br10.mapper.GalleryImageMapper;
 import fib.br10.repository.GalleryImageRepository;
+import fib.br10.service.abstracts.ImageService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

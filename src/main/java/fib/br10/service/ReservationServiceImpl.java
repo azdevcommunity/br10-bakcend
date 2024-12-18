@@ -5,6 +5,7 @@ import fib.br10.core.entity.EntityStatus;
 import fib.br10.core.exception.BaseException;
 import fib.br10.core.service.RequestContextProvider;
 import fib.br10.core.utility.DateUtil;
+import fib.br10.dto.notification.PushNotificationRequest;
 import fib.br10.dto.reservation.request.CancelReservationRequest;
 import fib.br10.dto.reservation.request.CreateReservationRequest;
 import fib.br10.dto.reservation.request.UpdateReservationRequest;
@@ -19,6 +20,9 @@ import fib.br10.exception.reservation.ReservationSpecialistUserIdNotMatchExcepti
 import fib.br10.mapper.ReservationMapper;
 import fib.br10.repository.ReservationDetailRepository;
 import fib.br10.repository.ReservationRepository;
+import fib.br10.service.abstracts.NotificationService;
+import fib.br10.service.abstracts.ReservationService;
+import fib.br10.service.abstracts.SpecialistCustomerService;
 import fib.br10.utility.Messages;
 import fib.br10.utility.WebSocketQueues;
 import fib.br10.service.abstracts.WebSocketHandler;
@@ -33,22 +37,24 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
 @RequiredArgsConstructor
 @Log4j2
-public class ReservationService {
+public class ReservationServiceImpl implements ReservationService {
 
     ReservationRepository reservationRepository;
     ReservationMapper reservationMapper;
     SpecialistServiceManager specialistServiceManager;
-    SpecialistBlockedCustomerService specialistBlockedCustomerService;
+    SpecialistCustomerService specialistCustomerService;
     WebSocketHandler webSocketHandler;
     UserService userService;
     RequestContextProvider provider;
     ReservationDetailRepository reservationDetailRepository;
+    NotificationService notificationService;
 
     @Transactional
     public ReservationResponse updateReservation(UpdateReservationRequest request) {
@@ -56,20 +62,20 @@ public class ReservationService {
         Integer reservationSource = request.getReservationSource();
 
         if (reservationSource.equals(ReservationSource.APP.getValue())
-            && !userId.equals(request.getCustomerUserId())
+                && !userId.equals(request.getCustomerUserId())
         ) {
             throw new ReservationCustomerUserIdNotMatchException();
         }
 
         if (reservationSource.equals(ReservationSource.MANUAL.getValue())
-            && !userId.equals(request.getSpecialistUserId())
+                && !userId.equals(request.getSpecialistUserId())
         ) {
             throw new ReservationSpecialistUserIdNotMatchException();
         }
 
         Reservation reservation = findById(request.getReservationId());
 
-        specialistBlockedCustomerService.checkIsCustomerBlocked(request.getSpecialistUserId(), request.getCustomerUserId());
+        specialistCustomerService.checkIsCustomerBlocked(request.getSpecialistUserId(), request.getCustomerUserId());
 
         SpecialistService service = specialistServiceManager.findById(request.getSpecialistServiceId());
 
@@ -109,7 +115,7 @@ public class ReservationService {
     @Transactional
     public ReservationResponse createReservation(CreateReservationRequest request) {
         //add check for availability
-        //bu userin baska specialist ucun olsa bele toqqusan reservi varmi
+
         boolean isSpecialist = ReservationSource.MANUAL.getValue().equals(request.getReservationSource());
         if (!isSpecialist && !ReservationSource.APP.getValue().equals(request.getReservationSource())
         ) {
@@ -117,18 +123,19 @@ public class ReservationService {
         }
 
         if (isSpecialist) {
-            if (Objects.isNull(request.getCustomerUserId()))
+            if (Objects.isNull(request.getCustomerUserId())) {
                 throw new BaseException("Customer id null ola bilmez");
+            }
             request.setSpecialistUserId(provider.getUserId());
-        }
-
-        if (!isSpecialist) {
+        } else {
             if (Objects.isNull(request.getSpecialistServiceIds())) {
                 throw new BaseException("Customer id null ola bilmez");
             }
             request.setCustomerUserId(provider.getUserId());
         }
 
+
+        specialistCustomerService.checkIsCustomerBlocked(request.getSpecialistUserId(), request.getCustomerUserId());
 
         validateReservation(
                 request.getReservationSource(),
@@ -159,8 +166,10 @@ public class ReservationService {
             }
             totalPrice = totalPrice.add(service.getPrice());
             totalDuration = totalDuration + service.getDuration();
-            //TODO:if client have reservatin for same time
+
         }
+
+        //TODO:Create new reservation
         Reservation newReservation = new Reservation();
         newReservation = reservationMapper.createReservationRequestToReservation(newReservation, request);
         newReservation.setPrice(totalPrice);
@@ -211,23 +220,20 @@ public class ReservationService {
                 provider.getPhoneNumber()
         );
 
+        notificationService.send(
+                PushNotificationRequest.builder()
+                        .body("Reservation legv edildi")
+                        .title("RESERVATION_CANCELED")
+                        .build(),
+                provider.getUserId()
+        );
+
         //notifiation to customerUser
 
         return reservation.getId();
     }
 
-    public  List<ReservationResponse> findAllReservations() {
-//        Long userId = ThreadContextUtil.get(ThreadContextConstants.CURRENT_USER_ID, Long.class);
-
-        //check does user is specialist or not
-        //TODO: in future it will be globall role based permision filter
-
-//        User user = userService.findById(userId);
-//        if (!user.getUserType().equals(UserType.SPECIALIST.getValue())) {
-//            //TODO: CHANGE ERROR MESSAGE
-//            throw new BaseException(Messages.ERROR);
-//        }
-
+    public List<ReservationResponse> findAllReservations() {
         OffsetDateTime now = DateUtil.getCurrentDateTime();
 
         OffsetDateTime startOfDay = now.truncatedTo(ChronoUnit.DAYS);
@@ -239,24 +245,26 @@ public class ReservationService {
         List<ReservationResponse> reservations = reservationRepository.findAllPendingReservations(provider.getUserId(),
                 startOfDay, endOfDay, EntityStatus.ACTIVE.getValue(), ReservationStatus.PENDING.getValue()
         );
-        Map<Object,Object> map =new HashMap<>();
 
-        for (ReservationResponse reservation : reservations) {
-            List<ReservationDetail> reservationDetail =reservationDetailRepository.findByReservationId(reservation.getId()) ;
-            List<ReservationDetailResponse> detailResponses =new ArrayList<>();
-            for (ReservationDetail detail : reservationDetail) {
-                SpecialistService service = specialistServiceManager.findById(detail.getServiceId());
-                detailResponses.add(ReservationDetailResponse.builder()
-                                .id(detail.getId())
-                                .serviceName(service.getName())
-                                .duration(service.getDuration())
-                                .serviceId(service.getId())
-                                .reservationId(reservation.getId())
-                                .price(detail.getPrice())
-                        .build());
-            }
-            reservation.setReservationDetail(detailResponses);
+        if (reservations.isEmpty()) {
+            return reservations;
         }
+
+        List<Long> reservationIds = reservations.stream()
+                .map(ReservationResponse::getId)
+                .collect(Collectors.toList());
+
+        List<ReservationDetailResponse> reservationDetails = reservationDetailRepository.findAllReservationDetails(reservationIds);
+
+        Map<Long, List<ReservationDetailResponse>> reservationDetailsMap = reservationDetails.stream()
+                .collect(Collectors.groupingBy(ReservationDetailResponse::getReservationId));
+
+        reservations.parallelStream().forEach(reservation -> {
+            List<ReservationDetailResponse> details = reservationDetailsMap.get(reservation.getId());
+
+            reservation.setReservationDetail(details);
+        });
+
         return reservations;
     }
 
@@ -289,13 +297,13 @@ public class ReservationService {
                                      Long specialistUserId,
                                      Long cutomerUserId) {
         if (source.equals(ReservationSource.MANUAL.getValue())
-            && !userId.equals(specialistUserId)
+                && !userId.equals(specialistUserId)
         ) {
             throw new ReservationSpecialistUserIdNotMatchException();
         }
 
         if (source.equals(ReservationSource.APP.getValue())
-            && !userId.equals(cutomerUserId)
+                && !userId.equals(cutomerUserId)
         ) {
             throw new ReservationCustomerUserIdNotMatchException();
         }

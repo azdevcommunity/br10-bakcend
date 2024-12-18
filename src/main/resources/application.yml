@@ -43,7 +43,6 @@ spring:
     encoding: utf-8
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
-
 file:
   upload-dir: ${BR10_UPLOAD_DIR:uploads}
 cloudinary:
@@ -79,10 +78,8 @@ security:
     jwt-expiration: ${BR10_JWT_EXPIRATION:86400000}
   endpoint-white-list:
     - /auth/**
-    - /auth/login
     - /ws/**
-    - /v3/api-docs/**
-    - /swagger-ui.html/**
+    - /swagger-ui/**
     - /actuator/**
     - /app/**
     - /specialities/**
@@ -97,14 +94,13 @@ decorator:
 
 log-level: info
 
-logging:
-  level:
-    org:
-      springframework:
-        security: ${log-level}
-        web: ${log-level}
-        data: ${log-level}
-        hibernate: ${log-level}
-        jpa: ${log-level}
-        thymeleaf: ${log-level}
-        springdoc: ${log-level}
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /swagger-ui/api-docs
+
+  swagger-ui:
+    url: /swagger-ui/api-docs
+    disable-swagger-default-url: true
+    enabled: true

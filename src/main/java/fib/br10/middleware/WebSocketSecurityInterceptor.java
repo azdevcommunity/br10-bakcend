@@ -2,12 +2,14 @@ package fib.br10.middleware;
 
 
 import fib.br10.core.exception.BaseException;
+import fib.br10.core.service.RequestContextProvider;
 import fib.br10.core.utility.*;
 import fib.br10.exception.token.JWTRequiredException;
-import fib.br10.service.TokenService;
+import fib.br10.service.TokenServiceImpl;
+import fib.br10.service.abstracts.TokenService;
 import fib.br10.utility.JwtService;
 import fib.br10.utility.SecurityUtil;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.messaging.Message;
@@ -33,7 +35,7 @@ import static fib.br10.core.utility.RequestContextEnum.TIME_ZONE;
 
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = lombok.AccessLevel.PRIVATE)
 @Log4j2
 public class WebSocketSecurityInterceptor implements ChannelInterceptor {
@@ -41,6 +43,7 @@ public class WebSocketSecurityInterceptor implements ChannelInterceptor {
     JwtService jwtService;
     UserDetailsService userDetailsService;
     RequestContextConfiguration requestContextConfiguration;
+    RequestContextProvider requestContextProvider;
     TokenService tokenService;
     SecurityUtil securityUtil;
     Stream<StompCommand> WHITE_LIST = Stream.of(StompCommand.CONNECT, StompCommand.SEND, StompCommand.MESSAGE);
@@ -101,7 +104,7 @@ public class WebSocketSecurityInterceptor implements ChannelInterceptor {
 
         accessor.setUser(authToken);
 
-        RequestContext.set(RequestContextEnum.IS_PUBLIC_ENDPOINT, securityUtil.isPublicEndpoint(accessor.getDestination()));
+        requestContextProvider.setIsPublicEnpoint(securityUtil.isPublicEndpoint(accessor.getDestination()));
 
         requestContextConfiguration.configure(
                 multiValueMap.getFirst(ACTIVITY_ID.getValue()),

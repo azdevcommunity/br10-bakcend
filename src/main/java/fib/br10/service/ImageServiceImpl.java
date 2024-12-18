@@ -1,6 +1,5 @@
 package fib.br10.service;
 
-import fib.br10.core.exception.BaseException;
 import fib.br10.core.service.RequestContextProvider;
 import fib.br10.dto.file.response.FileUploadResponse;
 import fib.br10.dto.image.response.CreateImageResponse;
@@ -9,6 +8,7 @@ import fib.br10.exception.fileupload.ImageSaveException;
 import fib.br10.mapper.ImageMapper;
 import fib.br10.repository.ImageRepository;
 import fib.br10.service.abstracts.FileService;
+import fib.br10.service.abstracts.ImageService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -27,7 +26,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Log4j2
-public class ImageService {
+public class ImageServiceImpl implements ImageService {
 
     ImageRepository imageRepository;
     FileService fileService;

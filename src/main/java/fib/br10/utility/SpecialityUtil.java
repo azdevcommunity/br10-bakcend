@@ -3,6 +3,7 @@ package fib.br10.utility;
 import fib.br10.core.utility.RequestContextEnum;
 import fib.br10.core.utility.RequestContext;
 import fib.br10.entity.specialist.Speciality;
+import fib.br10.enumeration.LangEnum;
 
 public class SpecialityUtil {
 

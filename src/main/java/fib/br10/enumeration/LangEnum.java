@@ -1,4 +1,4 @@
-package fib.br10.utility;
+package fib.br10.enumeration;
 
 import fib.br10.core.exception.BaseException;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,7 @@
 package fib.br10.core.middleware;
 
 
-import fib.br10.core.utility.*;
+import fib.br10.middleware.RequestContextConfiguration;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

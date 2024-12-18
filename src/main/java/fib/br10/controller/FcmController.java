@@ -1,7 +1,8 @@
 package fib.br10.controller;
 
 import fib.br10.dto.fcmtoken.request.CreateFcmTokenRequest;
-import fib.br10.service.FcmTokenService;
+import fib.br10.service.FcmTokenServiceImpl;
+import fib.br10.service.abstracts.FcmTokenService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

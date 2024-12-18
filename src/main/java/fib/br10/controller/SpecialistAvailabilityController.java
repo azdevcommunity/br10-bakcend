@@ -2,7 +2,8 @@ package fib.br10.controller;
 
 import fib.br10.dto.specialist.specialistavailability.request.CreateSpecialistAvailabilityRequest;
 import fib.br10.dto.specialist.specialistavailability.response.SpecialistAvailabilityReadResponse;
-import fib.br10.service.SpecialistAvailabilityService;
+import fib.br10.service.SpecialistAvailabilityServiceImpl;
+import fib.br10.service.abstracts.SpecialistAvailabilityService;
 import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ import java.util.List;
 @PreAuthorize("hasRole('SPECIALIST')")
 public class SpecialistAvailabilityController {
 
-   SpecialistAvailabilityService specialistAvailabilityService;
+    SpecialistAvailabilityService specialistAvailabilityService;
 
 
     @PostMapping

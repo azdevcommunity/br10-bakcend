@@ -1,10 +1,10 @@
 package fib.br10.service;
 
-//import fib.br10.entity.user.UserRole;
 
 import fib.br10.entity.user.RoleEnum;
 import fib.br10.entity.user.UserRole;
 import fib.br10.repository.UserRoleRepository;
+import fib.br10.service.abstracts.UserRoleService;
 import fib.br10.utility.PrefixUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PRIVATE)
-public class UserRoleService {
+public class UserRoleServiceImpl implements UserRoleService {
 
     UserRoleRepository userRoleRepository;
 
