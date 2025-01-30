@@ -10,7 +10,7 @@ import fib.br10.core.utility.Localization;
 import fib.br10.core.utility.RequestContext;
 import fib.br10.core.utility.RequestContextEnum;
 import fib.br10.exception.token.JWTRequiredException;
-import fib.br10.service.TokenService;
+import fib.br10.service.abstracts.TokenService;
 import fib.br10.utility.JwtService;
 import fib.br10.utility.Messages;
 import fib.br10.utility.SecurityUtil;
@@ -58,7 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String path = request.getServletPath();
             boolean isPublicEndpoint = securityUtil.isPublicEndpoint(path);
-            securityUtil.validateEndpointExists(request, isPublicEndpoint);
+            securityUtil.validateEndpointExists(request, path);
             provider.setRequestPath(path);
             provider.setIsPublicEnpoint(isPublicEndpoint);
 

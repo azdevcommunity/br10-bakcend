@@ -33,6 +33,11 @@ import fib.br10.exception.token.TokenNotValidException;
 import fib.br10.exception.user.UserNotActiveException;
 import fib.br10.mapper.UserMapper;
 import fib.br10.service.abstracts.CacheService;
+import fib.br10.service.abstracts.OtpService;
+import fib.br10.service.abstracts.SpecialistAvailabilityService;
+import fib.br10.service.abstracts.SpecialityManager;
+import fib.br10.service.abstracts.TokenService;
+import fib.br10.service.abstracts.UserRoleService;
 import fib.br10.utility.CacheKeys;
 import fib.br10.utility.JwtService;
 import fib.br10.utility.Messages;
@@ -61,7 +66,7 @@ public class AuthService {
     UserMapper userMapper;
     TokenService tokenService;
     SpecialistAvailabilityService specialistAvailabilityService;
-    SpecialityService specialityService;
+    SpecialityManager specialityService;
     UserDeviceService userDeviceService;
     RequestContextProvider provider;
     CacheService<String, Integer> cacheService;
@@ -184,7 +189,7 @@ public class AuthService {
         Token token = tokenService.get(user, userDeviceDto);
         //send notification to all user devices with  CompletableFuture.runAsync
         if (request.getUserDeviceDto().getClientType() == 1) {
-            tokenService.setTokensInCookie(response, token.getAccessToken(), token.getRefreshToken());
+//            tokenService.setTokensInCookie(response, token.getAccessToken(), token.getRefreshToken());
             return null;
         } else {
             return token;
@@ -271,7 +276,7 @@ public class AuthService {
 
     public void logout(HttpServletResponse response) {
         tokenService.addTokenToBlackList();
-        tokenService.clearTokenFromCookie(response);
+//        tokenService.clearTokenFromCookie(response);
     }
 
     @Transactional
