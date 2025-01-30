@@ -4,14 +4,14 @@ package fib.br10.middleware;
 import com.fasterxml.jackson.core.JsonEncoding;
 import fib.br10.core.dto.ResponseWrapper;
 import fib.br10.core.exception.BaseException;
-import fib.br10.core.exception.NotFoundException;
 import fib.br10.core.service.RequestContextProvider;
 import fib.br10.core.utility.JsonSerializer;
-import fib.br10.exception.token.JWTRequiredException;
-import fib.br10.service.abstracts.TokenService;
-import fib.br10.utility.JwtService;
 import fib.br10.core.utility.Localization;
-import fib.br10.service.TokenServiceImpl;
+import fib.br10.core.utility.RequestContext;
+import fib.br10.core.utility.RequestContextEnum;
+import fib.br10.exception.token.JWTRequiredException;
+import fib.br10.service.TokenService;
+import fib.br10.utility.JwtService;
 import fib.br10.utility.Messages;
 import fib.br10.utility.SecurityUtil;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -19,6 +19,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Locale;
+import java.util.Objects;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -31,10 +34,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import java.io.IOException;
-import java.util.Locale;
-import java.util.Objects;
 
 
 @Log4j2
@@ -59,7 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String path = request.getServletPath();
             boolean isPublicEndpoint = securityUtil.isPublicEndpoint(path);
-            securityUtil.validateEndpointExists(request, path);
+            securityUtil.validateEndpointExists(request, isPublicEndpoint);
             provider.setRequestPath(path);
             provider.setIsPublicEnpoint(isPublicEndpoint);
 
@@ -83,27 +82,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         userDetails, null, userDetails.getAuthorities()
                 );
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                RequestContext.set(RequestContextEnum.AUTHORIZATION_HEADER, jwt);
+                provider.setAuthorizationHeader(jwt);
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
             filterChain.doFilter(request, response);
         } catch (IOException | ServletException e) {
             log.error(e);
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        } catch (NotFoundException e) {
-            log.error(e);
-            modifyResponseBody(request.getLocale(), response, e.getMessage(), HttpServletResponse.SC_NOT_FOUND);
         } catch (BaseException | ExpiredJwtException | UsernameNotFoundException e) {
             log.error(e);
-            modifyResponseBody(request.getLocale(), response, e.getMessage(), HttpServletResponse.SC_UNAUTHORIZED);
+            modifyResponseBody(request.getLocale(), response, e.getMessage());
         } catch (Exception e) {
             log.error(e);
-            modifyResponseBody(request.getLocale(), response, Messages.ERROR, HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            modifyResponseBody(request.getLocale(), response, Messages.ERROR);
         }
     }
 
-    private void modifyResponseBody(Locale locale, HttpServletResponse response, String message, Integer status) {
+    private void modifyResponseBody(Locale locale, HttpServletResponse response, String message) {
         ResponseWrapper<Object> body = ResponseWrapper.builder()
-                .code(status)
+                .code(HttpServletResponse.SC_UNAUTHORIZED)
                 .message(localization.getMessageOrCode(message, locale))
                 .data(null)
                 .build();

@@ -15,6 +15,5 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 public class RefreshTokenRequest {
 
-    @NotBlank(message = Messages.REFRESH_TOKEN_REQUIRED)
     String refreshToken;
 }
