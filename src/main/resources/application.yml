@@ -10,7 +10,7 @@ spring:
       max-file-size: ${BR10_MAX_FILE_SIZE:10MB}
       max-request-size: ${BR10_MAX_REQUEST_SIZE:10MB}
   datasource:
-    url: ${BR10_DB_URL:jdbc:postgresql://localhost:5433/br10db}
+    url: ${BR10_DB_URL:jdbc:postgresql://localhost:5432/br10db}
     username: ${BR10_DB_USERNAME:postgres}
     password: ${BR10_DB_PASSWORD:123456789}
   jpa:
@@ -26,8 +26,10 @@ spring:
     name: br10
   data:
     redis:
-      host: ${BR10_REDIS_HOST:localhost}
-      port: ${BR10_REDIS_PORT:6379}
+      database: 0
+      password: ${BR10_REDIS_PASSWORD:LFMFMCn0qsmRhuYAUXRPZFzUO7bFOPSi}
+      host: ${BR10_REDIS_HOST:redis-16724.c300.eu-central-1-1.ec2.redns.redis-cloud.com}
+      port: ${BR10_REDIS_PORT:16724}
   jackson:
     serialization:
       write-dates-as-timestamps: false

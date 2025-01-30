@@ -13,6 +13,8 @@ spring:
     password: ${BR10_DB_PASSWORD:123456789}
   data:
     redis:
+      database: 0
+      password: ${BR10_REDIS_PASSWORD:LFMFMCn0qsmRhuYAUXRPZFzUO7bFOPSi}
       host: ${BR10_REDIS_HOST:localhost}
       port: ${BR10_REDIS_PORT:6379}
 file:

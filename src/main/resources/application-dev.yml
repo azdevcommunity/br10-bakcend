@@ -8,13 +8,15 @@ spring:
       max-file-size: ${BR10_MAX_FILE_SIZE:10MB}
       max-request-size: ${BR10_MAX_REQUEST_SIZE:10MB}
   datasource:
-    url: ${BR10_DB_URL:jdbc:postgresql://localhost:5433/br10db}
+    url: ${BR10_DB_URL:jdbc:postgresql://localhost:5432/br10db}
     username: ${BR10_DB_USERNAME:postgres}
     password: ${BR10_DB_PASSWORD:123456789}
   application:
     name: br10
   data:
     redis:
+      database: 0
+      password: ${BR10_REDIS_PASSWORD:LFMFMCn0qsmRhuYAUXRPZFzUO7bFOPSi}
       host: ${BR10_REDIS_HOST:localhost}
       port: ${BR10_REDIS_PORT:6379}
 
