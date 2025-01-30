@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/customers")
 @RequiredArgsConstructor
 @Validated
-@PreAuthorize("hasRole('CUSTOMER')")
+//@PreAuthorize("hasRole('CUSTOMER')")
 public class CustomerController {
 
     CustomerHistoryService customerHistoryService;
