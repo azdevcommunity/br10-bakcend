@@ -2,17 +2,18 @@ package fib.br10.repository;
 
 import fib.br10.dto.reservation.response.ReservationResponse;
 import fib.br10.entity.reservation.Reservation;
+import java.time.OffsetDateTime;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import org.springframework.stereotype.Repository;
 
-import java.time.OffsetDateTime;
-import java.util.List;
-
 @Repository
 public interface ReservationRepository extends JpaRepository<Reservation, Long>,
         QuerydslPredicateExecutor<Reservation> {
+
+    List<Reservation> findAllByCustomerUserId(Long customerId);
 
     @Query("""
             SELECT CASE WHEN COUNT(r) > 0 THEN TRUE ELSE FALSE END
@@ -50,7 +51,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
                                                          int entityStatus,
                                                          int reservationStatus);
 
-    boolean findByCustomerUserIdAndReservationStatusAndStatus(Long userId, Integer reservStatus,Integer status);
+    boolean findByCustomerUserIdAndReservationStatusAndStatus(Long userId, Integer reservStatus, Integer status);
 
 //    boolean existsBySpecialistServiceIdAndStatusNot(Long specialistServiceId, Integer status);
 }

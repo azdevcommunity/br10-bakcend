@@ -5,8 +5,7 @@ import fib.br10.dto.reservation.request.CancelReservationRequest;
 import fib.br10.dto.reservation.request.CreateReservationRequest;
 import fib.br10.dto.reservation.request.UpdateReservationRequest;
 import fib.br10.dto.reservation.response.ReservationResponse;
-import fib.br10.entity.reservation.*;
-
+import fib.br10.entity.reservation.Reservation;
 import java.util.List;
 
 public interface ReservationService {
@@ -21,4 +20,6 @@ public interface ReservationService {
     Reservation findOne(BooleanBuilder predicate);
 
     Reservation findById(Long id);
+
+    List<ReservationResponse> findAllByCustomerId(Long customerId);
 }

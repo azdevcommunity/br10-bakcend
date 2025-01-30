@@ -2,19 +2,14 @@ package fib.br10.utility;
 
 import fib.br10.configuration.SecurityEnv;
 import fib.br10.core.exception.NotFoundException;
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.logging.Handler;
 
 @Component
 @Getter
@@ -36,10 +31,10 @@ public class SecurityUtil {
                 .stream()
                 .anyMatch(url -> antPathMatcher.match(url, endpoint));
 
-        return isWhiteListed && !isBlackListed ;
+        return isWhiteListed && !isBlackListed;
     }
 
-    public void validateEndpointExists(HttpServletRequest request , String endpoint) {
+    public void validateEndpointExists(HttpServletRequest request, String endpoint) {
         try {
             if (isPublicEndpoint(endpoint) || isSwaggerEndpoint(endpoint)) {
                 return;
