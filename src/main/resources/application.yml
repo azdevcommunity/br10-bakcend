@@ -10,9 +10,9 @@ spring:
       max-file-size: ${BR10_MAX_FILE_SIZE:10MB}
       max-request-size: ${BR10_MAX_REQUEST_SIZE:10MB}
   datasource:
-    url: ${BR10_DB_URL:jdbc:postgresql://localhost:5432/br10db}
-    username: ${BR10_DB_USERNAME:postgres}
-    password: ${BR10_DB_PASSWORD:123456789}
+    url: ${BR10_DB_URL:jdbc:postgresql://ep-aged-glitter-a2lnphh0-pooler.eu-central-1.aws.neon.tech/br10db}
+    username: ${BR10_DB_USERNAME:neondb_owner}
+    password: ${BR10_DB_PASSWORD:npg_9WNinYgzGMb5}
   jpa:
     hibernate:
       ddl-auto: none
