@@ -46,9 +46,10 @@ public class AuthController {
     }
 
     @PostMapping("/refresh-token")
-    public ResponseEntity<Token> refreshToken(@CookieValue(value = "refreshToken", required = false) String refreshToken,
-                                              @RequestBody @Nullable RefreshTokenRequest request) {
-        return ResponseEntity.ok(authService.refreshToken(request, refreshToken));
+    public ResponseEntity<Token> refreshToken(
+//            @CookieValue(value = "refreshToken", required = false) String refreshToken,
+                                              @RequestBody RefreshTokenRequest request) {
+        return ResponseEntity.ok(authService.refreshToken(request));
     }
 
     @PostMapping("/activate-user-verify-otp")

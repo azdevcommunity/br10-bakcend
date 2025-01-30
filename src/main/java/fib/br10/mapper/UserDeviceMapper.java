@@ -15,6 +15,8 @@ public interface UserDeviceMapper {
 
     UserDevice userDeviceDtoToUserDevice(UserDeviceDto userDeviceDto);
 
+
+    @Mapping(target = "id", ignore = true) // ID değişmemeli
     UserDevice userDeviceDtoToUserDevice(@MappingTarget UserDevice userDevice, UserDeviceDto userDeviceDto);
 
     UserDeviceDto userDeviceUserDeviceToUserDeviceDto(UserDevice userDevice);

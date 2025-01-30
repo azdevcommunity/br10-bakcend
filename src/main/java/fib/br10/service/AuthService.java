@@ -43,6 +43,7 @@ import fib.br10.utility.JwtService;
 import fib.br10.utility.Messages;
 import jakarta.servlet.http.HttpServletResponse;
 import java.time.OffsetDateTime;
+import java.util.HashMap;
 import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -234,24 +235,21 @@ public class AuthService {
         return user.getId();
     }
 
-    public Token refreshToken(RefreshTokenRequest request, String refreshToken) {
+    public Token refreshToken(RefreshTokenRequest request) {
 
         log.info("token of request dto: {}",request);
-        log.info("token of cookie: {}",refreshToken);
 
-        String token;
+        String token = null;
 
         if (request != null && (request.getRefreshToken() != null && !request.getRefreshToken().isBlank())) {
             token  = request.getRefreshToken();
-        }else {
-            token = refreshToken;
         }
 
         if (token == null || token.isBlank()) {
             throw new RuntimeException(Messages.REFRESH_TOKEN_REQUIRED);
         }
 
-        tokenService.validateTokenExistsOnBlackList(token);
+//        tokenService.validateTokenExistsOnBlackList(token);
 
         String phoneNumber = jwtService.extractUsername(token);
 
@@ -265,9 +263,11 @@ public class AuthService {
 
         Integer deviceId = jwtService.extractClaim(token, ClaimTypes.TOKEN_ID);
 
-        UserDeviceDto userDeviceDto = userDeviceService.getUserDevice(Long.valueOf(deviceId));
+//        UserDeviceDto userDeviceDto = userDeviceService.getUserDevice(Long.valueOf(deviceId));
 
-        return tokenService.get(user, userDeviceDto);
+        HashMap<String, Object> claims = new HashMap<>();
+        claims.put(ClaimTypes.DEVICE_ID, deviceId);
+        return tokenService.get(user, claims);
     }
 
     public void logout() {
