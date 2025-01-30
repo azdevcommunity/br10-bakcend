@@ -125,7 +125,7 @@ public class OtpServiceImpl implements OtpService {
             throw new OtpExpiredException();
         }
 
-        if (!cacheOtp.getOtp().equals(requestOtp) || !cacheOtp.getActivityId().equals(provider.getActivityId())) {
+        if (!cacheOtp.getOtp().equals(requestOtp)) {
             throw new OtpNotalidException();
         }
     }
