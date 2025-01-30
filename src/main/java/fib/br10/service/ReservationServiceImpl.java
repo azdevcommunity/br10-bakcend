@@ -11,7 +11,11 @@ import fib.br10.dto.reservation.request.CreateReservationRequest;
 import fib.br10.dto.reservation.request.UpdateReservationRequest;
 import fib.br10.dto.reservation.response.ReservationDetailResponse;
 import fib.br10.dto.reservation.response.ReservationResponse;
-import fib.br10.entity.reservation.*;
+import fib.br10.entity.reservation.QReservation;
+import fib.br10.entity.reservation.Reservation;
+import fib.br10.entity.reservation.ReservationDetail;
+import fib.br10.entity.reservation.ReservationSource;
+import fib.br10.entity.reservation.ReservationStatus;
 import fib.br10.entity.specialist.SpecialistService;
 import fib.br10.entity.user.User;
 import fib.br10.exception.reservation.ReservationCustomerUserIdNotMatchException;
@@ -23,21 +27,23 @@ import fib.br10.repository.ReservationRepository;
 import fib.br10.service.abstracts.NotificationService;
 import fib.br10.service.abstracts.ReservationService;
 import fib.br10.service.abstracts.SpecialistCustomerService;
+import fib.br10.service.abstracts.WebSocketHandler;
 import fib.br10.utility.Messages;
 import fib.br10.utility.WebSocketQueues;
-import fib.br10.service.abstracts.WebSocketHandler;
+import java.math.BigDecimal;
+import java.time.OffsetDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
-import java.time.OffsetDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -62,13 +68,13 @@ public class ReservationServiceImpl implements ReservationService {
         Integer reservationSource = request.getReservationSource();
 
         if (reservationSource.equals(ReservationSource.APP.getValue())
-                && !userId.equals(request.getCustomerUserId())
+            && !userId.equals(request.getCustomerUserId())
         ) {
             throw new ReservationCustomerUserIdNotMatchException();
         }
 
         if (reservationSource.equals(ReservationSource.MANUAL.getValue())
-                && !userId.equals(request.getSpecialistUserId())
+            && !userId.equals(request.getSpecialistUserId())
         ) {
             throw new ReservationSpecialistUserIdNotMatchException();
         }
@@ -276,6 +282,15 @@ public class ReservationServiceImpl implements ReservationService {
         return reservationRepository.findById(id).orElseThrow(ReservationNotFoundException::new);
     }
 
+    @Override
+    public List<ReservationResponse> findAllByCustomerId(Long customerId) {
+        List<Reservation> reservation = reservationRepository.findAllByCustomerUserId(customerId);
+
+        return reservation.stream()
+                .map(res -> prepareResponse(res, res.getSpecialistUserId(), res.getCustomerUserId()))
+                .collect(Collectors.toList());
+    }
+
     private ReservationResponse prepareResponse(Reservation reservation,
                                                 Long specialistUserId,
                                                 Long customerUserId) {
@@ -297,13 +312,13 @@ public class ReservationServiceImpl implements ReservationService {
                                      Long specialistUserId,
                                      Long cutomerUserId) {
         if (source.equals(ReservationSource.MANUAL.getValue())
-                && !userId.equals(specialistUserId)
+            && !userId.equals(specialistUserId)
         ) {
             throw new ReservationSpecialistUserIdNotMatchException();
         }
 
         if (source.equals(ReservationSource.APP.getValue())
-                && !userId.equals(cutomerUserId)
+            && !userId.equals(cutomerUserId)
         ) {
             throw new ReservationCustomerUserIdNotMatchException();
         }
@@ -311,4 +326,5 @@ public class ReservationServiceImpl implements ReservationService {
         userService.existsById(cutomerUserId);
         userService.existsByIdAndUserRoleSpecialist(specialistUserId);
     }
+
 }
