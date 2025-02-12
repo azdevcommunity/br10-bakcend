@@ -1,24 +1,33 @@
 package fib.br10.service;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.group.GroupBy;
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import fib.br10.core.entity.EntityStatus;
 import fib.br10.core.exception.BaseException;
 import fib.br10.core.service.RequestContextProvider;
 import fib.br10.core.utility.DateUtil;
-import fib.br10.dto.history.customer.response.CustomerHistoryDetailsProjection;
+import fib.br10.dto.history.customer.response.CustomerHistoryDetailsDTO;
 import fib.br10.dto.history.customer.response.CustomerHistoryResponse;
+import fib.br10.dto.history.customer.response.ServiceResponseDTO;
 import fib.br10.dto.notification.PushNotificationRequest;
 import fib.br10.dto.reservation.request.CancelReservationRequest;
 import fib.br10.dto.reservation.request.CreateReservationRequest;
 import fib.br10.dto.reservation.request.UpdateReservationRequest;
 import fib.br10.dto.reservation.response.ReservationDetailResponse;
 import fib.br10.dto.reservation.response.ReservationResponse;
+import fib.br10.entity.QImage;
 import fib.br10.entity.reservation.QReservation;
+import fib.br10.entity.reservation.QReservationDetail;
 import fib.br10.entity.reservation.Reservation;
 import fib.br10.entity.reservation.ReservationDetail;
 import fib.br10.entity.reservation.ReservationSource;
 import fib.br10.entity.reservation.ReservationStatus;
+import fib.br10.entity.specialist.QSpecialistService;
 import fib.br10.entity.specialist.SpecialistService;
+import fib.br10.entity.user.QUser;
 import fib.br10.entity.user.User;
 import fib.br10.exception.reservation.ReservationCustomerUserIdNotMatchException;
 import fib.br10.exception.reservation.ReservationNotFoundException;
@@ -63,6 +72,7 @@ public class ReservationServiceImpl implements ReservationService {
     RequestContextProvider provider;
     ReservationDetailRepository reservationDetailRepository;
     NotificationService notificationService;
+    JPAQueryFactory jpa;
 
     @Transactional
     public ReservationResponse updateReservation(UpdateReservationRequest request) {
@@ -295,12 +305,72 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public List<CustomerHistoryResponse> findHistory(Long customerId) {
-        return reservationRepository.getCustomerHistory(customerId);
+        QReservation r = QReservation.reservation;
+        QUser su = QUser.user;
+        QReservationDetail rd = QReservationDetail.reservationDetail;
+        QSpecialistService ss = QSpecialistService.specialistService;
+
+        return jpa
+                .select(Projections.constructor(
+                        CustomerHistoryResponse.class,
+                        r.id,
+                        r.reservationDate,
+                        r.reservationStatus,
+                        su.username,
+                        r.specialistUserId,
+                        Expressions.stringTemplate("string_agg({0}, ',')", ss.name).coalesce(""),
+                        r.price
+                ))
+                .from(r)
+                .leftJoin(su).on(r.specialistUserId.eq(su.id))
+                .leftJoin(rd).on(rd.reservationId.eq(r.id))
+                .leftJoin(ss).on(ss.id.eq(rd.serviceId))
+                .where(r.customerUserId.eq(customerId))
+                .groupBy(r.id, r.reservationDate, r.reservationStatus, su.username, r.specialistUserId, r.price)
+                .fetch();
     }
 
     @Override
-    public List<CustomerHistoryDetailsProjection> getCustomerHistoryByReservation(long reservationId) {
-        return reservationRepository.getCustomerHistoryDetails(reservationId);
+    public List<CustomerHistoryDetailsDTO> getCustomerHistoryByReservation(long reservationId) {
+
+        QReservationDetail reservationDetail = QReservationDetail.reservationDetail;
+        QSpecialistService specialistService = QSpecialistService.specialistService;
+        QUser user = QUser.user;
+        QImage image = QImage.image;
+// queryFactory, JPAQueryFactory nesnesidir; injection veya new ile oluşturabilirsiniz.
+        List<CustomerHistoryDetailsDTO> result = jpa
+                .from(reservationDetail)
+                // ReservationDetail'deki serviceId ile SpecialistService arasında join:
+                .leftJoin(specialistService).on(reservationDetail.serviceId.eq(specialistService.id))
+                // SpecialistService'deki specialistUserId ile User arasında join:
+                .leftJoin(user).on(specialistService.specialistUserId.eq(user.id))
+                // GroupBy ile reservationId bazında gruplayıp, her rezervasyon için DTO oluşturuyoruz:
+                .leftJoin(image).on(specialistService.imageId.eq(image.id))
+                // GroupBy ile reservationId bazında gruplayıp, her rezervasyon için DTO oluşturuyoruz:
+                .transform(GroupBy.groupBy(reservationDetail.reservationId).list(
+                        Projections.constructor(CustomerHistoryDetailsDTO.class,
+                                reservationDetail.reservationId,                          // reservationId
+                                reservationDetail.createdDate,                            // Örneğin BaseEntity’den gelen tarih alanı (reservationDate)
+                                reservationDetail.status,                      // rezervasyon durumu (reservationStatus)
+                                user.name,                                                // specialistName (User tablosundan örnek olarak)
+                                user.id,                                                  // specialistId
+                                reservationDetail.price,                                  // rezervasyon fiyatı
+                                // Servis listesini nested olarak maplemek için:
+                                GroupBy.list(
+                                        Projections.constructor(ServiceResponseDTO.class,
+                                                specialistService.id,                             // serviceId
+                                                specialistService.name,                           // serviceName
+                                                specialistService.price,                          // price
+                                                specialistService.duration,                       // duration
+                                                specialistService.description,                    // description
+                                                image.path                         // imageId
+                                        )
+                                )
+                        )
+                ));
+
+
+        return result;
     }
 
     private ReservationResponse prepareResponse(Reservation reservation,
@@ -323,15 +393,11 @@ public class ReservationServiceImpl implements ReservationService {
                                      Long userId,
                                      Long specialistUserId,
                                      Long cutomerUserId) {
-        if (source.equals(ReservationSource.MANUAL.getValue())
-            && !userId.equals(specialistUserId)
-        ) {
+        if (source.equals(ReservationSource.MANUAL.getValue()) && !userId.equals(specialistUserId)) {
             throw new ReservationSpecialistUserIdNotMatchException();
         }
 
-        if (source.equals(ReservationSource.APP.getValue())
-            && !userId.equals(cutomerUserId)
-        ) {
+        if (source.equals(ReservationSource.APP.getValue()) && !userId.equals(cutomerUserId)) {
             throw new ReservationCustomerUserIdNotMatchException();
         }
 

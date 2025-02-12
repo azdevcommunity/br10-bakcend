@@ -1,7 +1,7 @@
 package fib.br10.service;
 
 import fib.br10.core.service.RequestContextProvider;
-import fib.br10.dto.history.customer.response.CustomerHistoryDetailsProjection;
+import fib.br10.dto.history.customer.response.CustomerHistoryDetailsDTO;
 import fib.br10.dto.history.customer.response.CustomerHistoryResponse;
 import fib.br10.service.abstracts.CustomerHistoryService;
 import fib.br10.service.abstracts.ReservationService;
@@ -28,7 +28,7 @@ public class CustomerHistoryServiceImpl implements CustomerHistoryService {
     }
 
     @Override
-    public List<CustomerHistoryDetailsProjection> getCustomerHistoryByReservation(long reservationId) {
+    public List<CustomerHistoryDetailsDTO> getCustomerHistoryByReservation(long reservationId) {
         return reservationService.getCustomerHistoryByReservation(reservationId);
     }
 

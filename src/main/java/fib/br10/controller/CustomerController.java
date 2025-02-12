@@ -1,6 +1,6 @@
 package fib.br10.controller;
 
-import fib.br10.dto.history.customer.response.CustomerHistoryDetailsProjection;
+import fib.br10.dto.history.customer.response.CustomerHistoryDetailsDTO;
 import fib.br10.dto.history.customer.response.CustomerHistoryResponse;
 import fib.br10.service.abstracts.CustomerHistoryService;
 import java.util.List;
@@ -28,7 +28,7 @@ public class CustomerController {
 
     }
     @GetMapping("/history/id")
-    public List<CustomerHistoryDetailsProjection> getCustomerHistory(Long reservationId) {
+    public List<CustomerHistoryDetailsDTO> getCustomerHistory(Long reservationId) {
         return customerHistoryService.getCustomerHistoryByReservation(reservationId);
     }
 
