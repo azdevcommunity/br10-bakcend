@@ -1,5 +1,7 @@
 package fib.br10.repository;
 
+import fib.br10.dto.history.customer.response.CustomerHistoryDetailsProjection;
+import fib.br10.dto.history.customer.response.CustomerHistoryResponse;
 import fib.br10.dto.reservation.response.ReservationResponse;
 import fib.br10.entity.reservation.Reservation;
 import java.time.OffsetDateTime;
@@ -7,6 +9,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -54,4 +57,42 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
     boolean findByCustomerUserIdAndReservationStatusAndStatus(Long userId, Integer reservStatus, Integer status);
 
 //    boolean existsBySpecialistServiceIdAndStatusNot(Long specialistServiceId, Integer status);
+
+
+    @Query("""
+            
+                select new fib.br10.dto.history.customer.response.CustomerHistoryResponse(
+                r.id,
+                r.reservationDate,
+                r.reservationStatus,
+                su.username,
+                r.specialistUserId,
+                COALESCE(GROUP_CONCAT(ss.name), ''),
+                r.price
+            )
+            from Reservation r
+            left join User su on r.specialistUserId = su.id
+            left join ReservationDetail rd on rd.reservationId = r.id
+            left join SpecialistService ss on ss.id = rd.serviceId
+            where r.customerUserId = :customerUserId
+            group by r.id, su.username
+            """)
+    List<CustomerHistoryResponse> getCustomerHistory(@Param("customerUserId") Long customerUserId);
+
+    @Query("""
+                select r.id as reservationId,
+                       r.reservationDate as reservationDate,
+                       r.reservationStatus as reservationStatus,
+                       su.username as specialistName,
+                       r.specialistUserId as specialistId,
+                       r.price as price,
+                       ss as services
+                from Reservation r
+                left join User su on r.specialistUserId = su.id
+                left join ReservationDetail rd on rd.reservationId = r.id
+                left join SpecialistService ss on ss.id = rd.serviceId
+                where r.customerUserId = :customerUserId
+            """)
+    List<CustomerHistoryDetailsProjection> getCustomerHistoryDetails(@Param("customerUserId") Long customerUserId);
+
 }

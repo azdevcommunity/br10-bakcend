@@ -1,5 +1,6 @@
 package fib.br10.controller;
 
+import fib.br10.dto.history.customer.response.CustomerHistoryDetailsProjection;
 import fib.br10.dto.history.customer.response.CustomerHistoryResponse;
 import fib.br10.service.abstracts.CustomerHistoryService;
 import java.util.List;
@@ -17,15 +18,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/customers")
 @RequiredArgsConstructor
 @Validated
-//@PreAuthorize("hasRole('CUSTOMER')")
 public class CustomerController {
 
     CustomerHistoryService customerHistoryService;
 
-    @GetMapping("/history/{customerId}")
-    public List<CustomerHistoryResponse> getCustomerHistory(@PathVariable Long customerId) {
-        return customerHistoryService.getCustomerHistories(customerId);
+    @GetMapping("/history")
+    public List<CustomerHistoryResponse> getCustomerHistory() {
+        return customerHistoryService.getCustomerHistories();
 
+    }
+    @GetMapping("/history/id")
+    public List<CustomerHistoryDetailsProjection> getCustomerHistory(Long reservationId) {
+        return customerHistoryService.getCustomerHistoryByReservation(reservationId);
     }
 
 }

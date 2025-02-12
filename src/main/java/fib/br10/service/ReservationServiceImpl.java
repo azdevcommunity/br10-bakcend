@@ -5,6 +5,8 @@ import fib.br10.core.entity.EntityStatus;
 import fib.br10.core.exception.BaseException;
 import fib.br10.core.service.RequestContextProvider;
 import fib.br10.core.utility.DateUtil;
+import fib.br10.dto.history.customer.response.CustomerHistoryDetailsProjection;
+import fib.br10.dto.history.customer.response.CustomerHistoryResponse;
 import fib.br10.dto.notification.PushNotificationRequest;
 import fib.br10.dto.reservation.request.CancelReservationRequest;
 import fib.br10.dto.reservation.request.CreateReservationRequest;
@@ -289,6 +291,16 @@ public class ReservationServiceImpl implements ReservationService {
         return reservation.stream()
                 .map(res -> prepareResponse(res, res.getSpecialistUserId(), res.getCustomerUserId()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CustomerHistoryResponse> findHistory(Long customerId) {
+        return reservationRepository.getCustomerHistory(customerId);
+    }
+
+    @Override
+    public List<CustomerHistoryDetailsProjection> getCustomerHistoryByReservation(long reservationId) {
+        return reservationRepository.getCustomerHistoryDetails(reservationId);
     }
 
     private ReservationResponse prepareResponse(Reservation reservation,

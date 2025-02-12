@@ -1,12 +1,11 @@
 package fib.br10.service;
 
+import fib.br10.core.service.RequestContextProvider;
+import fib.br10.dto.history.customer.response.CustomerHistoryDetailsProjection;
 import fib.br10.dto.history.customer.response.CustomerHistoryResponse;
-import fib.br10.dto.reservation.response.ReservationResponse;
 import fib.br10.service.abstracts.CustomerHistoryService;
 import fib.br10.service.abstracts.ReservationService;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -18,27 +17,19 @@ import org.springframework.stereotype.Service;
 public class CustomerHistoryServiceImpl implements CustomerHistoryService {
 
     ReservationService reservationService;
+    RequestContextProvider provider;
 
     @Override
-    public List<CustomerHistoryResponse> getCustomerHistories(Long customerId) {
-        if (reservationService == null) {
-            return Collections.emptyList();
-        }
+    public List<CustomerHistoryResponse> getCustomerHistories() {
+        Long userId = provider.getUserId();
+        List<CustomerHistoryResponse> reservations = reservationService.findHistory(userId);
 
-        List<ReservationResponse> reservations = reservationService.findAllByCustomerId(customerId);
+        return reservations;
+    }
 
-        if (reservations == null || reservations.isEmpty()) {
-            return Collections.emptyList();
-        }
-
-        return reservations.stream()
-                .filter(Objects::nonNull)
-                .map(reservationResponse ->
-                        new CustomerHistoryResponse(
-                                reservationResponse.getId() != null ? reservationResponse.getId() : -1L // Default ID if null
-                        )
-                )
-                .toList();
+    @Override
+    public List<CustomerHistoryDetailsProjection> getCustomerHistoryByReservation(long reservationId) {
+        return reservationService.getCustomerHistoryByReservation(reservationId);
     }
 
 }

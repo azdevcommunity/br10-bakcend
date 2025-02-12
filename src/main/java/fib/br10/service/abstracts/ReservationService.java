@@ -1,6 +1,8 @@
 package fib.br10.service.abstracts;
 
 import com.querydsl.core.BooleanBuilder;
+import fib.br10.dto.history.customer.response.CustomerHistoryDetailsProjection;
+import fib.br10.dto.history.customer.response.CustomerHistoryResponse;
 import fib.br10.dto.reservation.request.CancelReservationRequest;
 import fib.br10.dto.reservation.request.CreateReservationRequest;
 import fib.br10.dto.reservation.request.UpdateReservationRequest;
@@ -22,4 +24,8 @@ public interface ReservationService {
     Reservation findById(Long id);
 
     List<ReservationResponse> findAllByCustomerId(Long customerId);
+
+    List<CustomerHistoryResponse> findHistory(Long customerId);
+
+    List<CustomerHistoryDetailsProjection> getCustomerHistoryByReservation(long reservationId);
 }
