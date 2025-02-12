@@ -1,4 +1,4 @@
-FROM gradle:8.4.0-jdk17 as build
+FROM gradle:8.4.0-jdk21 as build
 
 WORKDIR /app
 
@@ -8,7 +8,7 @@ COPY src /app/src
 
 RUN gradle build --no-daemon && ls -l /app/build/libs
 
-FROM openjdk:17-jdk
+FROM openjdk:21-jdk
  
 WORKDIR /app 
 
