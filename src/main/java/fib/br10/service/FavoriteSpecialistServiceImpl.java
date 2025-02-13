@@ -3,12 +3,12 @@ package fib.br10.service;
 import fib.br10.core.exception.BaseException;
 import fib.br10.core.exception.NotFoundException;
 import fib.br10.core.service.RequestContextProvider;
-import fib.br10.dto.specialist.favoritespecialist.request.FavoriteSpecialistCreateRequest;
 import fib.br10.dto.specialist.favoritespecialist.response.FavoriteSpecialistResponse;
 import fib.br10.entity.specialist.FavoriteSpecialist;
 import fib.br10.mapper.FavoriteSpecialistMapper;
 import fib.br10.repository.FavoriteSpecialistRepository;
 import fib.br10.service.abstracts.FavoriteSpecialistService;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -53,16 +53,8 @@ public class FavoriteSpecialistServiceImpl implements FavoriteSpecialistService 
         favoriteSpecialistRepository.delete(favoriteSpecialist);
     }
 
-    public FavoriteSpecialistResponse delete(FavoriteSpecialistCreateRequest request) {
-        Long userId = provider.getUserId();
-
-        userService.existsByIdAndUserRoleSpecialist(request.getSpecialistId());
-
-        FavoriteSpecialist favoriteSpecialist = favoriteSpecialistMapper.toEntity(request);
-        favoriteSpecialist.setUserId(userId);
-
-        favoriteSpecialistRepository.save(favoriteSpecialist);
-
-        return favoriteSpecialistMapper.toResponse(favoriteSpecialist);
+    @Override
+    public List<FavoriteSpecialistResponse> findAll() {
+        return favoriteSpecialistRepository.findByCustomerId(provider.getUserId());
     }
 }

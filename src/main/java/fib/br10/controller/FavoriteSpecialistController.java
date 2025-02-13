@@ -4,12 +4,14 @@ package fib.br10.controller;
 import fib.br10.dto.specialist.favoritespecialist.response.FavoriteSpecialistResponse;
 import fib.br10.service.abstracts.FavoriteSpecialistService;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,5 +35,10 @@ public class FavoriteSpecialistController {
     public ResponseEntity<?> delete(@Valid @PathVariable Long id) {
         favoriteSpecialistService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<FavoriteSpecialistResponse>> findAll() {
+        return ResponseEntity.ok(favoriteSpecialistService.findAll());
     }
 }

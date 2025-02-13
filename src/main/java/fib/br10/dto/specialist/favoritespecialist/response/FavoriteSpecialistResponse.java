@@ -15,4 +15,13 @@ public class FavoriteSpecialistResponse {
     private String userName;
     private Long specialistId;
     private String specialistName;
+    private String image;
+
+    public FavoriteSpecialistResponse(Long id, Long userId, String userName, Long specialistId, String specialistName) {
+        this.id = id;
+        this.userId = userId;
+        this.userName = userName;
+        this.specialistId = specialistId;
+        this.specialistName = specialistName;
+    }
 }
